@@ -3545,3 +3545,331 @@ body.saindo-sistema {
         grid-column: 1 !important;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 2.6 - ENQUADRAMENTO DESKTOP PADRONIZADO
+   Objetivos:
+   - sidebar sempre com a mesma largura em todas as páginas
+   - bloco da logo sempre com a mesma altura
+   - topbar sempre com a mesma altura
+   - conteúdo central com largura/padding consistentes
+   - painéis, tabelas e cabeçalhos sem alterar o enquadramento
+   - não interfere no layout de celular/tablet
+   ============================================================ */
+
+@media (min-width: 1025px) {
+    html,
+    body.corpo-dashboard {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body.corpo-dashboard {
+        background: #f4f6f9;
+    }
+
+    .layout-sistema {
+        display: flex !important;
+        width: 100% !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        overflow: hidden !important;
+    }
+
+    /* SIDEBAR: nunca encolhe por causa do conteúdo da página */
+    .sidebar {
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        background: #7a0b0b !important;
+    }
+
+    /* O "quadrado" superior da logo fica idêntico em todas as páginas */
+    .sidebar-topo {
+        flex: 0 0 82px !important;
+        width: 100% !important;
+        height: 82px !important;
+        min-height: 82px !important;
+        max-height: 82px !important;
+        padding: 16px 18px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        overflow: hidden !important;
+        border-bottom: 1px solid rgba(255,255,255,.12) !important;
+    }
+
+    .logo-sidebar {
+        flex: 0 0 46px !important;
+        width: 46px !important;
+        height: 46px !important;
+        min-width: 46px !important;
+        min-height: 46px !important;
+        max-width: 46px !important;
+        max-height: 46px !important;
+        object-fit: cover !important;
+        border-radius: 50% !important;
+        box-sizing: border-box !important;
+    }
+
+    .logo-texto {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: calc(100% - 58px) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        line-height: 1.15 !important;
+        overflow: hidden !important;
+    }
+
+    .logo-titulo {
+        display: block !important;
+        width: 100% !important;
+        font-size: 15px !important;
+        line-height: 18px !important;
+        font-weight: 900 !important;
+        letter-spacing: .4px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .logo-sub {
+        display: block !important;
+        width: 100% !important;
+        margin-top: 3px !important;
+        font-size: 10px !important;
+        line-height: 13px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .sidebar-menu {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        width: 100% !important;
+        padding: 14px 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+
+    .menu-item {
+        width: 100% !important;
+        min-height: 44px !important;
+        padding: 11px 20px !important;
+        box-sizing: border-box !important;
+    }
+
+    .sidebar-sair {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+    }
+
+    /* CONTEÚDO: não consegue empurrar/encolher a sidebar */
+    .conteudo-principal {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        width: auto !important;
+        height: 100vh !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        background: #f4f6f9 !important;
+    }
+
+    /* Barra superior idêntica em todas as páginas */
+    .topbar {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+        flex: 0 0 70px !important;
+        width: 100% !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        max-height: 70px !important;
+        padding: 0 30px !important;
+        box-sizing: border-box !important;
+        background: #fff !important;
+        border-bottom: 1px solid #e5e7eb !important;
+    }
+
+    .topbar-marca,
+    .topbar-usuario {
+        min-width: 0 !important;
+    }
+
+    .topbar-marca {
+        flex: 1 1 auto !important;
+        overflow: hidden !important;
+    }
+
+    .topbar-titulo,
+    .topbar-sub {
+        white-space: nowrap !important;
+    }
+
+    .topbar-usuario {
+        flex: 0 0 auto !important;
+    }
+
+    /* Todas as páginas internas começam e terminam no mesmo alinhamento */
+    .dashboard-container,
+    .relatorios-container {
+        width: 100% !important;
+        max-width: 1500px !important;
+        min-width: 0 !important;
+        margin: 0 auto !important;
+        padding: 28px 32px 36px !important;
+        box-sizing: border-box !important;
+    }
+
+    .dashboard-cabecalho,
+    .topo-acoes,
+    .config-cabecalho {
+        width: 100% !important;
+        min-height: 42px !important;
+        margin-top: 0 !important;
+        margin-bottom: 22px !important;
+        box-sizing: border-box !important;
+        align-items: center !important;
+    }
+
+    .dashboard-cabecalho h1,
+    .topo-acoes h1,
+    .config-cabecalho h1 {
+        margin: 0 !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Cards e blocos seguem a mesma linguagem visual */
+    .cards-grid,
+    .cards-relatorio-grid,
+    .inferior-grid,
+    .config-grid,
+    .abas-relatorio {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .card-resumo,
+    .card-stat,
+    .painel-bloco,
+    .painel-tabela,
+    .tabela-relatorio-box,
+    .config-card,
+    .aba-card,
+    .filtros-box {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Dashboard: cards com alturas consistentes */
+    .cards-grid {
+        align-items: stretch !important;
+    }
+
+    .card-resumo {
+        height: 100% !important;
+        min-height: 150px !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .card-rodape {
+        margin-top: auto !important;
+    }
+
+    .inferior-grid {
+        align-items: stretch !important;
+    }
+
+    .painel-bloco {
+        height: 100% !important;
+    }
+
+    /* Tabelas ficam contidas no painel e nunca alteram a largura geral */
+    .painel-tabela,
+    .tabela-relatorio-box {
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .tabela-scroll,
+    .painel-tabela > div[style*="overflow-x"],
+    .tabela-relatorio-box > div[style*="overflow-x"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+    }
+
+    .tabela-dados {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .tabela-dados th,
+    .tabela-dados td {
+        box-sizing: border-box !important;
+    }
+
+    /* Campos de busca/filtros não estouram seus painéis */
+    .barra-pesquisa,
+    .filtros-box {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .barra-pesquisa input,
+    .barra-pesquisa select,
+    .filtro-grupo input,
+    .filtro-grupo select {
+        box-sizing: border-box !important;
+    }
+
+    /* Modais centralizados de forma consistente no desktop */
+    .modal-fundo {
+        padding: 24px !important;
+    }
+
+    .modal-caixa {
+        width: min(520px, calc(100vw - 48px)) !important;
+        max-width: 520px !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* Notebooks menores ainda usam o mesmo cabeçalho, apenas com menos padding */
+@media (min-width: 1025px) and (max-width: 1199px) {
+    .dashboard-container,
+    .relatorios-container {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+
+    .topbar {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .inferior-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
