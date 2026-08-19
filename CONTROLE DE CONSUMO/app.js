@@ -39,7 +39,7 @@
     }
 
 // ========================================================
-    // X-BURGUER PWA 3.3 - sem botão visual de instalação
+    // X-BURGUER PWA 3.4 - sem botão visual de instalação
     // ========================================================
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {

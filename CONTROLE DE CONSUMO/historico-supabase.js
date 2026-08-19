@@ -13,6 +13,26 @@
             .replaceAll("'", "&#039;");
     }
 
+
+    function nomeUsuarioParaTela(valor) {
+        const nome = String(valor || "").trim();
+
+        if (!nome) return "X-Burguer";
+
+        const normalizado = nome.toLowerCase();
+
+        if (
+            normalizado === "administrador" ||
+            normalizado === "admin" ||
+            normalizado.includes("xburguer@") ||
+            normalizado.includes("x-burguer@")
+        ) {
+            return "X-Burguer";
+        }
+
+        return nome;
+    }
+
     function definirStatus(texto, tipo = "normal") {
         const el = $("status-historico-banco");
         if (!el) return;
