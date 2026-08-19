@@ -1,9 +1,9 @@
 (function () {
-    window.XBURGUER_VERSAO = "2.6.0";
+    window.XBURGUER_VERSAO = "2.7.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     // ========================================================
-    // X-BURGUER PWA 2.6
+    // X-BURGUER PWA 2.7
     // ========================================================
     let xburguerInstallPrompt = null;
 
