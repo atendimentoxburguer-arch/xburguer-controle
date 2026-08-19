@@ -1,9 +1,45 @@
 (function () {
-    window.XBURGUER_VERSAO = "3.2.0";
+    window.XBURGUER_VERSAO = "3.3.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
-    // ========================================================
-    // X-BURGUER PWA 3.2 - sem botão visual de instalação
+    
+
+    function sincronizarAlturaVisivel() {
+        const altura = window.visualViewport
+            ? window.visualViewport.height
+            : window.innerHeight;
+
+        if (altura && Number.isFinite(altura)) {
+            document.documentElement.style.setProperty(
+                "--x-viewport-height",
+                `${Math.round(altura)}px`
+            );
+        }
+    }
+
+    window.sincronizarAlturaVisivel = sincronizarAlturaVisivel;
+    sincronizarAlturaVisivel();
+
+    window.addEventListener("resize", sincronizarAlturaVisivel, { passive: true });
+    window.addEventListener("orientationchange", function () {
+        window.setTimeout(sincronizarAlturaVisivel, 80);
+    });
+
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener(
+            "resize",
+            sincronizarAlturaVisivel,
+            { passive: true }
+        );
+        window.visualViewport.addEventListener(
+            "scroll",
+            sincronizarAlturaVisivel,
+            { passive: true }
+        );
+    }
+
+// ========================================================
+    // X-BURGUER PWA 3.3 - sem botão visual de instalação
     // ========================================================
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {

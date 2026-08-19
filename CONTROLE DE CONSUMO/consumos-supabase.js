@@ -305,7 +305,19 @@
         $("cad-obs").value = "";
         document.querySelector('input[name="tipo-consumo"][value="produto"]').checked = true;
         alternarTipoConsumo();
-        $("modal-consumo").style.display = "flex";
+
+        const modal = $("modal-consumo");
+        modal.style.display = "flex";
+
+        const caixa = modal.querySelector(".modal-caixa");
+        if (caixa) {
+            caixa.scrollTop = 0;
+        }
+        modal.scrollTop = 0;
+
+        if (typeof window.sincronizarAlturaVisivel === "function") {
+            window.sincronizarAlturaVisivel();
+        }
     };
 
     window.fecharModalCadastro = function () {
