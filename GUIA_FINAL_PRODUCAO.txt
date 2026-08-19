@@ -1,0 +1,48 @@
+X-BURGUER - VERSÃO 2.0.0 - PRONTO PARA PRODUÇÃO
+
+ANTES DE PUBLICAR
+1. Execute SUPABASE/ETAPA_11_PRODUCAO_FINAL.sql no SQL Editor.
+2. Confirme os privilégios:
+   funcionarios: DELETE, INSERT, SELECT, UPDATE
+   produtos: DELETE, INSERT, SELECT, UPDATE
+   consumos: DELETE, INSERT, SELECT
+   faltas: DELETE, INSERT, SELECT
+   historico_acoes: INSERT, SELECT
+3. Confirme que a consulta de 'anon' retorna 0 linhas.
+4. Faça um backup JSON em Configurações e guarde fora do computador.
+
+PUBLICAÇÃO EM HOSPEDAGEM ESTÁTICA / GITHUB PAGES
+- Publique TODO o conteúdo deste ZIP, incluindo:
+  index.html
+  404.html
+  .nojekyll
+  pasta CONTROLE DE CONSUMO
+- O index.html da raiz abre automaticamente a tela de login.
+- A Publishable Key do Supabase pode ficar no frontend.
+- NUNCA coloque sb_secret_ ou service_role em nenhum arquivo do site.
+
+TESTE APÓS PUBLICAR
+1. Abra o endereço público.
+2. Faça login.
+3. Cadastre um funcionário de teste.
+4. Abra o sistema em outro navegador ou computador.
+5. Faça login com uma conta autorizada e confirme que o registro aparece.
+6. Registre produto, consumo e falta de teste.
+7. Confira Dashboard, Relatórios e Histórico.
+8. Gere um backup.
+9. Exclua somente os registros de teste.
+
+IMPORTANTE SOBRE USUÁRIOS
+- Nesta versão, qualquer conta criada em Supabase Authentication e autenticada
+  recebe as permissões operacionais do sistema.
+- Portanto, crie no Supabase apenas contas de pessoas realmente autorizadas.
+- Use SUPABASE/AUDITAR_USUARIOS_AUTH.sql para conferir as contas cadastradas.
+- Se futuramente quiser níveis diferentes (Administrador / Funcionário),
+  será necessário adicionar perfis e políticas por função.
+
+ROTINA RECOMENDADA
+- Gere backup sempre antes de mudanças importantes.
+- Faça backup periódico e guarde uma cópia fora do computador da empresa.
+- Não apague funcionários antigos que tenham histórico; prefira status Inativo.
+- Não compartilhe senhas.
+- Não compartilhe nenhuma chave sb_secret_.

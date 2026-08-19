@@ -1,0 +1,19 @@
+CHECKLIST FINAL DE TESTE - X-BURGUER
+
+[ ] Login correto entra no Dashboard
+[ ] Senha incorreta não entra
+[ ] Sair encerra a sessão
+[ ] Funcionário cadastra, edita, ativa/inativa e salva
+[ ] Produto cadastra, edita, ativa/inativa e salva
+[ ] Consumo com produto salva
+[ ] Consumo avulso com preço e observação salva
+[ ] Falta salva e filtra corretamente
+[ ] Histórico registra as ações
+[ ] Dashboard atualiza cards e gráfico
+[ ] Relatórios mensal / funcionário / produto funcionam
+[ ] Backup JSON baixa normalmente
+[ ] Recuperação de registro de teste funciona
+[ ] Sistema avisa quando fica sem internet
+[ ] Dados aparecem em outro navegador/computador
+[ ] Usuário anon não possui privilégios nas tabelas
+[ ] Backup final guardado fora do computador
