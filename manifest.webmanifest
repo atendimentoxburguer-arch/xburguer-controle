@@ -1,0 +1,63 @@
+{
+  "id": "./",
+  "name": "X-Burguer Controle de Consumo",
+  "short_name": "X-Burguer",
+  "description": "Sistema interno X-Burguer para controle de funcionários, produtos, consumos, faltas, relatórios e histórico.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "./CONTROLE%20DE%20CONSUMO/login.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#7a0b0b",
+  "theme_color": "#7a0b0b",
+  "orientation": "any",
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "./icons/xburguer-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/xburguer-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/xburguer-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "./CONTROLE%20DE%20CONSUMO/dashboard.html",
+      "icons": [
+        {
+          "src": "./icons/xburguer-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Registrar consumo",
+      "short_name": "Consumo",
+      "url": "./CONTROLE%20DE%20CONSUMO/consumos.html",
+      "icons": [
+        {
+          "src": "./icons/xburguer-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

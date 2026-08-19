@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#7a0b0b">
+<title>X-Burguer | Sem conexão</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#f7f4f4;color:#2f2626}
+body{min-height:100dvh;display:grid;place-items:center;padding:24px}
+.card{width:min(100%,430px);background:#fff;border:1px solid #eadede;border-radius:18px;padding:28px;box-shadow:0 14px 36px rgba(70,0,0,.10);text-align:center}
+.logo{width:92px;height:92px;border-radius:20px;object-fit:cover;margin-bottom:14px}
+h1{margin:0 0 10px;font-size:24px;color:#7a0b0b}
+p{line-height:1.5;color:#625757;margin:0 0 18px}
+button{width:100%;border:0;border-radius:10px;background:#7a0b0b;color:#fff;font-weight:700;padding:13px 16px;font-size:15px;cursor:pointer}
+small{display:block;margin-top:16px;color:#8b8181}
+</style>
+</head>
+<body>
+<main class="card">
+<img class="logo" src="./icons/xburguer-192.png" alt="X-Burguer">
+<h1>Sem conexão com a internet</h1>
+<p>O aplicativo está instalado, mas os dados do sistema ficam no Supabase e precisam de internet para consultar ou salvar informações.</p>
+<button onclick="location.reload()">Tentar novamente</button>
+<small>Não faça cadastros importantes enquanto estiver sem conexão.</small>
+</main>
+</body>
+</html>

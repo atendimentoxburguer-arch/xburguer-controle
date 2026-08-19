@@ -1,6 +1,118 @@
 (function () {
-    window.XBURGUER_VERSAO = "2.2.0";
+    window.XBURGUER_VERSAO = "2.3.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
+
+    // ========================================================
+    // X-BURGUER PWA 2.3
+    // ========================================================
+    let xburguerInstallPrompt = null;
+
+    function xburguerEmModoAplicativo() {
+        return (
+            window.matchMedia("(display-mode: standalone)").matches ||
+            window.navigator.standalone === true
+        );
+    }
+
+    function xburguerEhIOS() {
+        return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+    }
+
+    function atualizarBotaoInstalarPWA() {
+        const botao = document.getElementById("btn-instalar-pwa");
+        if (!botao) return;
+
+        if (xburguerEmModoAplicativo()) {
+            botao.style.display = "none";
+            return;
+        }
+
+        if (xburguerInstallPrompt || xburguerEhIOS()) {
+            botao.style.display = "inline-flex";
+        } else {
+            botao.style.display = "none";
+        }
+    }
+
+    function criarBotaoInstalarPWA() {
+        if (document.getElementById("btn-instalar-pwa")) return;
+
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.id = "btn-instalar-pwa";
+        botao.className = "btn-instalar-pwa";
+        botao.innerHTML = "📲 <span>Instalar aplicativo</span>";
+        botao.style.display = "none";
+
+        botao.addEventListener("click", async function () {
+            if (xburguerInstallPrompt) {
+                xburguerInstallPrompt.prompt();
+
+                try {
+                    await xburguerInstallPrompt.userChoice;
+                } catch (_) {}
+
+                xburguerInstallPrompt = null;
+                atualizarBotaoInstalarPWA();
+                return;
+            }
+
+            if (xburguerEhIOS()) {
+                alert(
+                    "Para instalar no iPhone/iPad:\n\n" +
+                    "1. Abra este site no Safari.\n" +
+                    "2. Toque no botão Compartilhar.\n" +
+                    "3. Toque em “Adicionar à Tela de Início”.\n" +
+                    "4. Confirme em “Adicionar”."
+                );
+            }
+        });
+
+        if (isLogin) {
+            const caixa = document.querySelector(".caixa-login");
+            const rodape = document.querySelector(".rodape-login");
+
+            if (caixa) {
+                if (rodape) {
+                    caixa.insertBefore(botao, rodape);
+                } else {
+                    caixa.appendChild(botao);
+                }
+            }
+        } else {
+            const topbar = document.querySelector(".topbar");
+
+            if (topbar) {
+                topbar.appendChild(botao);
+            }
+        }
+
+        atualizarBotaoInstalarPWA();
+    }
+
+    window.addEventListener("beforeinstallprompt", function (event) {
+        event.preventDefault();
+        xburguerInstallPrompt = event;
+        atualizarBotaoInstalarPWA();
+    });
+
+    window.addEventListener("appinstalled", function () {
+        xburguerInstallPrompt = null;
+        atualizarBotaoInstalarPWA();
+    });
+
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+            const swUrl = new URL("../service-worker.js", window.location.href);
+            const swScope = new URL("../", window.location.href).pathname;
+
+            navigator.serviceWorker.register(swUrl.href, { scope: swScope })
+                .catch(function (erro) {
+                    console.error("Não foi possível registrar o aplicativo PWA:", erro);
+                });
+        });
+    }
+
 
     // A proteção das páginas agora usa a sessão real do Supabase, não sessionStorage.
     async function protegerPagina() {
@@ -340,6 +452,7 @@
         criarAvisoConectividade();
         criarNavegacaoMobile();
         prepararTabelasResponsivas();
+        criarBotaoInstalarPWA();
 
         // Tenta reenviar ações que ficaram pendentes por falha temporária de conexão.
         if (!isLogin && window.sincronizarHistoricoPendente) {

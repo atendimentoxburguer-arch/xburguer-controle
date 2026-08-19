@@ -2508,3 +2508,53 @@ body.saindo-sistema {
         padding-right: 9px;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 2.3 - APLICATIVO PWA
+   ============================================================ */
+.btn-instalar-pwa {
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid #7a0b0b;
+    border-radius: 9px;
+    background: #fff;
+    color: #7a0b0b;
+    min-height: 40px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-instalar-pwa:hover {
+    background: #fff5f5;
+}
+
+.caixa-login > .btn-instalar-pwa {
+    width: 100%;
+    margin-top: 12px;
+}
+
+@media (max-width: 700px) {
+    .topbar .btn-instalar-pwa {
+        width: 42px;
+        height: 42px;
+        min-height: 42px;
+        flex: 0 0 42px;
+        padding: 0;
+        font-size: 20px;
+    }
+
+    .topbar .btn-instalar-pwa span {
+        display: none;
+    }
+
+    .caixa-login > .btn-instalar-pwa {
+        width: 100%;
+        min-height: 46px;
+        font-size: 14px;
+    }
+}
