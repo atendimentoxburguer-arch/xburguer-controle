@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Faltas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3.2.0">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="app.js"></script>
+    <script src="supabase-config.js?v=3.2.0"></script>
+    <script src="app.js?v=3.2.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -21,30 +21,28 @@
     <div class="layout-sistema">
         
         <!-- MENU LATERAL -->
-        <aside class="sidebar">
+        <aside class="sidebar" aria-label="Menu principal">
             <div class="sidebar-topo">
-                <img src="logo.jfif" alt="Logo" class="logo-sidebar">
+                <img src="logo.jfif" alt="Logo X-Burguer" class="logo-sidebar">
                 <div class="logo-texto">
                     <span class="logo-titulo">X-BURGUER</span>
                     <span class="logo-sub">Sanduicheria e Chopperia</span>
                 </div>
             </div>
 
-            <nav class="sidebar-menu">
-                <a href="dashboard.html" class="menu-item"><span>🏠</span> Dashboard</a>
-                <a href="funcionarios.html" class="menu-item"><span>👥</span> Funcionários</a>
-                <a href="produtos.html" class="menu-item"><span>🍔</span> Produtos</a>
-                <a href="consumos.html" class="menu-item"><span>📋</span> Consumos</a>
-                <a href="faltas.html" class="menu-item ativo">
-                    <span>📅</span> Faltas <span class="ponto-ativo"></span>
-                </a>
-                <a href="relatorios.html" class="menu-item"><span>📊</span> Relatórios</a>
-                <a href="historico.html" class="menu-item"><span>🔄</span> Histórico de Ações</a>
-                <a href="configuracoes.html" class="menu-item"><span>⚙️</span> Configurações</a>
+            <nav class="sidebar-menu" aria-label="Seções do sistema">
+                <a href="dashboard.html" class="menu-item"><span aria-hidden="true">🏠</span> Dashboard</a>
+                <a href="funcionarios.html" class="menu-item"><span aria-hidden="true">👥</span> Funcionários</a>
+                <a href="produtos.html" class="menu-item"><span aria-hidden="true">🍔</span> Produtos</a>
+                <a href="consumos.html" class="menu-item"><span aria-hidden="true">📋</span> Consumos</a>
+                <a href="faltas.html" class="menu-item ativo" aria-current="page"><span aria-hidden="true">📅</span> Faltas <span class="ponto-ativo" aria-hidden="true"></span></a>
+                <a href="relatorios.html" class="menu-item"><span aria-hidden="true">📊</span> Relatórios</a>
+                <a href="historico.html" class="menu-item"><span aria-hidden="true">🔄</span> Histórico de Ações</a>
+                <a href="configuracoes.html" class="menu-item"><span aria-hidden="true">⚙️</span> Configurações</a>
             </nav>
 
             <div class="sidebar-sair">
-                <a href="login.html" class="menu-item"><span>🚪</span> Sair</a>
+                <a href="login.html" class="menu-item"><span aria-hidden="true">🚪</span> Sair</a>
             </div>
         </aside>
 
@@ -53,16 +51,16 @@
             
             <header class="topbar">
                 <div class="topbar-marca">
-                    <img src="logo.jfif" alt="Logo" class="logo-mini">
+                    <img src="logo.jfif" alt="Logo X-Burguer" class="logo-mini">
                     <span class="topbar-titulo">X-BURGUER</span>
                     <span class="topbar-sub">Sanduicheria e Chopperia</span>
                 </div>
-                <div class="topbar-usuario">
+                <div class="topbar-usuario" aria-label="Identificação do sistema">
                     <div class="info-usuario">
-                        <span class="saudacao">Olá, X-Burguer</span>
-                        <span class="cargo">X-Burguer</span>
+                        <span class="saudacao">X-Burguer</span>
+                        <span class="cargo">Sistema de Gestão</span>
                     </div>
-                    <div class="avatar-admin">X</div>
+                    <div class="avatar-admin" aria-hidden="true">X</div>
                 </div>
             </header>
 
@@ -79,7 +77,7 @@
                 <div class="painel-tabela">
                     <!-- BARRA DE FILTRO POR FUNCIONÁRIO -->
                     <div class="barra-pesquisa" style="display: flex; align-items: center; justify-content: space-between;">
-                        <select id="filtro-funcionario-falta" onchange="atualizarTabelaFaltas()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 250px; font-family: 'Nunito', sans-serif; outline: none;">
+                        <select id="filtro-funcionario-falta" aria-label="Filtrar faltas por funcionário" onchange="atualizarTabelaFaltas()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 250px; font-family: 'Nunito', sans-serif; outline: none;">
                             <option value="todos">Todos os funcionários</option>
                         </select>
                         <span id="contador-topo-faltas" style="font-size: 13px; color: #666; font-weight: 700;">Total: 0 registros</span>
@@ -130,24 +128,24 @@
             
             <form onsubmit="salvarFalta(event)">
                 <div class="grupo-input-modal">
-                    <label>Funcionário *</label>
+                    <label for="cad-func-falta">Funcionário *</label>
                     <select id="cad-func-falta" required style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; outline: none; background: white;">
                         <option value="">Selecione...</option>
                     </select>
                 </div>
 
                 <div class="grupo-input-modal">
-                    <label>Data *</label>
+                    <label for="cad-data-falta">Data *</label>
                     <input type="date" id="cad-data-falta" required style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; outline: none; background: white;">
                 </div>
 
                 <div class="grupo-input-modal">
-                    <label>Motivo</label>
+                    <label for="cad-motivo-falta">Motivo</label>
                     <input type="text" id="cad-motivo-falta" placeholder="Ex: Atestado, Pessoal, Falta injustificada...">
                 </div>
 
                 <div class="grupo-input-modal">
-                    <label>Observação (opcional)</label>
+                    <label for="cad-obs-falta">Observação (opcional)</label>
                     <input type="text" id="cad-obs-falta" placeholder="Digite uma observação...">
                 </div>
 
@@ -178,6 +176,6 @@
     </div>
 
     <!-- FALTAS CONECTADAS AO SUPABASE -->
-    <script src="faltas-supabase.js"></script>
+    <script src="faltas-supabase.js?v=3.2.0"></script>
 </body>
 </html>

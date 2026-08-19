@@ -92,7 +92,7 @@
                         <td>${escaparHtml(dh.hora)}</td>
                         <td><strong>${escaparHtml(item.icone || "📝")} ${escaparHtml(item.acao || "Ação")}</strong></td>
                         <td>${escaparHtml(item.detalhes || "—")}</td>
-                        <td>${escaparHtml(item.usuario_nome || "Administrador")}</td>
+                        <td>${escaparHtml(nomeUsuarioParaTela(item.usuario_nome))}</td>
                     </tr>`;
             }).join("");
         }
@@ -183,28 +183,8 @@
     }
 
     function verificarHistoricoAntigo() {
-        if (localStorage.getItem("historico_migracao_supabase_resolvida") === "1") return;
-
-        const antigos = lerHistoricoAntigo();
-        if (!antigos.length) return;
-
-        const status = $("status-historico-banco");
-        if (!status || $("btn-importar-historico-antigo")) return;
-
-        const btn = document.createElement("button");
-        btn.id = "btn-importar-historico-antigo";
-        btn.type = "button";
-        btn.textContent = `Importar ${antigos.length} ação(ões) antigas`;
-        btn.style.marginLeft = "10px";
-        btn.style.border = "none";
-        btn.style.borderRadius = "6px";
-        btn.style.padding = "6px 10px";
-        btn.style.cursor = "pointer";
-        btn.style.background = "#7a0b0b";
-        btn.style.color = "#fff";
-        btn.onclick = importarHistoricoAntigo;
-
-        status.appendChild(btn);
+        // Migração antiga encerrada: não exibe botão de importação no sistema em produção.
+        return;
     }
 
     async function importarHistoricoAntigo() {
@@ -231,7 +211,7 @@
                 user?.user_metadata?.nome ||
                 user?.user_metadata?.full_name ||
                 user?.email ||
-                "Administrador";
+                "X-Burguer";
 
             const payload = antigos.map(item => ({
                 usuario_id: user.id,

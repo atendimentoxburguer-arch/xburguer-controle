@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>X-Burguer | Configurações</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3.2.0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script src="app.js"></script>
+<script src="supabase-config.js?v=3.2.0"></script>
+<script src="app.js?v=3.2.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -18,46 +18,46 @@
 </head>
 <body class="corpo-dashboard">
 <div class="layout-sistema">
-    <aside class="sidebar">
-        <div>
+    <aside class="sidebar" aria-label="Menu principal">
             <div class="sidebar-topo">
-                <img src="logo.jfif" class="logo-sidebar" alt="Logo">
+                <img src="logo.jfif" alt="Logo X-Burguer" class="logo-sidebar">
                 <div class="logo-texto">
                     <span class="logo-titulo">X-BURGUER</span>
                     <span class="logo-sub">Sanduicheria e Chopperia</span>
                 </div>
             </div>
-            <nav class="sidebar-menu">
-                <a href="dashboard.html" class="menu-item"><span>🏠</span> Dashboard</a>
-                <a href="funcionarios.html" class="menu-item"><span>👥</span> Funcionários</a>
-                <a href="produtos.html" class="menu-item"><span>🍔</span> Produtos</a>
-                <a href="consumos.html" class="menu-item"><span>📋</span> Consumos</a>
-                <a href="faltas.html" class="menu-item"><span>📅</span> Faltas</a>
-                <a href="relatorios.html" class="menu-item"><span>📊</span> Relatórios</a>
-                <a href="historico.html" class="menu-item"><span>🔄</span> Histórico de Ações</a>
-                <a href="configuracoes.html" class="menu-item ativo"><span>⚙️</span> Configurações</a>
+
+            <nav class="sidebar-menu" aria-label="Seções do sistema">
+                <a href="dashboard.html" class="menu-item"><span aria-hidden="true">🏠</span> Dashboard</a>
+                <a href="funcionarios.html" class="menu-item"><span aria-hidden="true">👥</span> Funcionários</a>
+                <a href="produtos.html" class="menu-item"><span aria-hidden="true">🍔</span> Produtos</a>
+                <a href="consumos.html" class="menu-item"><span aria-hidden="true">📋</span> Consumos</a>
+                <a href="faltas.html" class="menu-item"><span aria-hidden="true">📅</span> Faltas</a>
+                <a href="relatorios.html" class="menu-item"><span aria-hidden="true">📊</span> Relatórios</a>
+                <a href="historico.html" class="menu-item"><span aria-hidden="true">🔄</span> Histórico de Ações</a>
+                <a href="configuracoes.html" class="menu-item ativo" aria-current="page"><span aria-hidden="true">⚙️</span> Configurações <span class="ponto-ativo" aria-hidden="true"></span></a>
             </nav>
-        </div>
-        <div class="sidebar-sair">
-            <a href="login.html" class="menu-item"><span>🚪</span> Sair</a>
-        </div>
-    </aside>
+
+            <div class="sidebar-sair">
+                <a href="login.html" class="menu-item"><span aria-hidden="true">🚪</span> Sair</a>
+            </div>
+        </aside>
 
     <main class="conteudo-principal">
         <header class="topbar">
-            <div class="topbar-marca">
-                <img src="logo.jfif" class="logo-mini" alt="Logo">
-                <span class="topbar-titulo">X-BURGUER</span>
-                <span class="topbar-sub">Sanduicheria e Chopperia</span>
-            </div>
-            <div class="topbar-usuario">
-                <div class="info-usuario">
-                    <span class="saudacao">Olá, X-Burguer</span>
-                    <span class="cargo">X-Burguer</span>
+                <div class="topbar-marca">
+                    <img src="logo.jfif" alt="Logo X-Burguer" class="logo-mini">
+                    <span class="topbar-titulo">X-BURGUER</span>
+                    <span class="topbar-sub">Sanduicheria e Chopperia</span>
                 </div>
-                <div class="avatar-admin">X</div>
-            </div>
-        </header>
+                <div class="topbar-usuario" aria-label="Identificação do sistema">
+                    <div class="info-usuario">
+                        <span class="saudacao">X-Burguer</span>
+                        <span class="cargo">Sistema de Gestão</span>
+                    </div>
+                    <div class="avatar-admin" aria-hidden="true">X</div>
+                </div>
+            </header>
 
         <div class="dashboard-container">
             <div class="dashboard-cabecalho config-cabecalho">
@@ -154,6 +154,6 @@
     </main>
 </div>
 
-<script src="configuracoes-supabase.js"></script>
+<script src="configuracoes-supabase.js?v=3.2.0"></script>
 </body>
 </html>

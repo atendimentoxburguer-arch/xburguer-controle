@@ -105,34 +105,8 @@
     }
 
     function verificarDadosAntigos() {
-        // Se ainda existir um backup local antigo e a migração nunca tiver sido tratada,
-        // não apagamos nada. Apenas oferecemos importação controlada.
-        if (localStorage.getItem("funcionarios_migracao_supabase_resolvida") === "1") return;
-
-        let antigos = [];
-        try {
-            antigos = JSON.parse(localStorage.getItem("funcionarios_xburguer_backup_pre_supabase") || "[]");
-        } catch (_) {}
-
-        if (!antigos.length) return;
-
-        const status = $("status-funcionarios-banco");
-        if (!status || $("btn-importar-funcionarios-antigos")) return;
-
-        const btn = document.createElement("button");
-        btn.id = "btn-importar-funcionarios-antigos";
-        btn.type = "button";
-        btn.textContent = `Importar ${antigos.length} funcionário(s) do backup antigo`;
-        btn.style.marginLeft = "10px";
-        btn.style.border = "none";
-        btn.style.borderRadius = "6px";
-        btn.style.padding = "6px 10px";
-        btn.style.cursor = "pointer";
-        btn.style.background = "#7a0b0b";
-        btn.style.color = "#fff";
-        btn.onclick = importarFuncionariosAntigos;
-
-        status.appendChild(btn);
+        // Migração antiga encerrada: backups locais permanecem preservados, sem aviso na interface.
+        return;
     }
 
     function criarBackupPreSupabaseSeNecessario() {
@@ -476,11 +450,11 @@
                     <td style="text-align:left;"><span class="${corBadge}">${escaparHtml(f.status)}</span></td>
                     <td>
                         <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
-                            <button onclick='abrirModalEdicao(${idSeguro})' title="Editar"
+                            <button type="button" aria-label="Editar" onclick='abrirModalEdicao(${idSeguro})' title="Editar"
                                 style="border:none;background:none;cursor:pointer;font-size:16px;">✏️</button>
-                            <button onclick='alternarStatus(${idSeguro})' title="Alternar Status"
+                            <button type="button" aria-label="Alternar status" onclick='alternarStatus(${idSeguro})' title="Alternar Status"
                                 style="border:none;background:${corBolinha};width:12px;height:12px;border-radius:50%;cursor:pointer;transition:.2s;"></button>
-                            <button onclick='abrirModalExcluir(${idSeguro})' title="Excluir"
+                            <button type="button" aria-label="Excluir" onclick='abrirModalExcluir(${idSeguro})' title="Excluir"
                                 style="border:none;background:none;cursor:pointer;font-size:16px;">🗑️</button>
                         </div>
                     </td>

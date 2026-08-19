@@ -323,7 +323,7 @@
         historico.push({
             data: agora.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }),
             hora: agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
-            usuario: "Administrador",
+            usuario: "X-Burguer",
             acao,
             icone,
             detalhes
@@ -516,7 +516,7 @@
                     <td style="text-align:left;color:#666;font-size:13px;">${escaparHtml(formatarDataHoraTela(c.data_hora))}</td>
                     <td>
                         <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
-                            <button onclick='abrirModalExcluir(${idSeguro})' title="Excluir"
+                            <button type="button" aria-label="Excluir" onclick='abrirModalExcluir(${idSeguro})' title="Excluir"
                                 style="border:none;background:none;cursor:pointer;font-size:16px;">🗑️</button>
                         </div>
                     </td>
@@ -563,28 +563,8 @@
     }
 
     function verificarDadosAntigos() {
-        if (localStorage.getItem("consumos_migracao_supabase_resolvida") === "1") return;
-        let antigos = [];
-        try {
-            antigos = JSON.parse(localStorage.getItem("consumos_xburguer_backup_pre_supabase") || "[]");
-        } catch (_) {}
-        if (!antigos.length) return;
-
-        const status = $("status-consumos-banco");
-        if (!status || $("btn-importar-consumos-antigos")) return;
-        const btn = document.createElement("button");
-        btn.id = "btn-importar-consumos-antigos";
-        btn.type = "button";
-        btn.textContent = `Importar ${antigos.length} consumo(s) do backup antigo`;
-        btn.style.marginLeft = "10px";
-        btn.style.border = "none";
-        btn.style.borderRadius = "6px";
-        btn.style.padding = "6px 10px";
-        btn.style.cursor = "pointer";
-        btn.style.background = "#7a0b0b";
-        btn.style.color = "#fff";
-        btn.onclick = importarConsumosAntigos;
-        status.appendChild(btn);
+        // Migração antiga encerrada: backups locais permanecem preservados, sem aviso na interface.
+        return;
     }
 
     async function importarConsumosAntigos() {

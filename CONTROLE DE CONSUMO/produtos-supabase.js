@@ -125,34 +125,8 @@
     }
 
     function verificarDadosAntigos() {
-        if (localStorage.getItem("produtos_migracao_supabase_resolvida") === "1") return;
-
-        let antigos = [];
-        try {
-            antigos = JSON.parse(
-                localStorage.getItem("produtos_xburguer_backup_pre_supabase") || "[]"
-            );
-        } catch (_) {}
-
-        if (!antigos.length) return;
-
-        const status = $("status-produtos-banco");
-        if (!status || $("btn-importar-produtos-antigos")) return;
-
-        const btn = document.createElement("button");
-        btn.id = "btn-importar-produtos-antigos";
-        btn.type = "button";
-        btn.textContent = `Importar ${antigos.length} produto(s) do backup antigo`;
-        btn.style.marginLeft = "10px";
-        btn.style.border = "none";
-        btn.style.borderRadius = "6px";
-        btn.style.padding = "6px 10px";
-        btn.style.cursor = "pointer";
-        btn.style.background = "#7a0b0b";
-        btn.style.color = "#fff";
-        btn.onclick = importarProdutosAntigos;
-
-        status.appendChild(btn);
+        // Migração antiga encerrada: backups locais permanecem preservados, sem aviso na interface.
+        return;
     }
 
     async function importarProdutosAntigos() {
@@ -476,11 +450,11 @@
                     <td style="text-align:left;"><span class="${corBadge}">${status}</span></td>
                     <td>
                         <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
-                            <button onclick='abrirModalEdicao(${idSeguro})' title="Editar"
+                            <button type="button" aria-label="Editar" onclick='abrirModalEdicao(${idSeguro})' title="Editar"
                                 style="border:none;background:none;cursor:pointer;font-size:16px;">✏️</button>
-                            <button onclick='alternarStatus(${idSeguro})' title="Alternar Status"
+                            <button type="button" aria-label="Alternar status" onclick='alternarStatus(${idSeguro})' title="Alternar Status"
                                 style="border:none;background:${corBolinha};width:12px;height:12px;border-radius:50%;cursor:pointer;transition:.2s;"></button>
-                            <button onclick='abrirModalExcluir(${idSeguro})' title="Excluir"
+                            <button type="button" aria-label="Excluir" onclick='abrirModalExcluir(${idSeguro})' title="Excluir"
                                 style="border:none;background:none;cursor:pointer;font-size:16px;">🗑️</button>
                         </div>
                     </td>

@@ -1313,16 +1313,20 @@ body.saindo-sistema {
     transform: translate(-50%, 0);
 }
 
-
 /* ============================================================
-   X-BURGUER 2.1 - RESPONSIVIDADE REAL PARA CELULAR E TABLET
+   X-BURGUER 3.2 - LAYOUT CONSOLIDADO / REVISÃO GERAL
+   Uma única camada substitui as correções acumuladas das versões anteriores.
    ============================================================ */
 
 :root {
-    --mobile-header-height: 64px;
+    --x-vermelho: #7a0b0b;
+    --x-vermelho-escuro: #5c0707;
+    --x-fundo: #f4f6f9;
+    --x-borda: #e7e9ed;
+    --x-topbar: 70px;
+    --x-sidebar: 260px;
 }
 
-/* Botões criados pelo app.js para navegação móvel */
 .btn-menu-mobile,
 .btn-fechar-menu-mobile,
 .sidebar-overlay {
@@ -1331,2267 +1335,47 @@ body.saindo-sistema {
 
 .tabela-scroll {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-inline: contain;
-    scrollbar-width: thin;
 }
 
-.tabela-scroll::-webkit-scrollbar {
-    height: 7px;
-}
-
-.tabela-scroll::-webkit-scrollbar-thumb {
-    background: #d6c2c2;
-    border-radius: 99px;
-}
-
-.tabela-scroll .tabela-dados {
-    margin: 0;
-}
-
-/* Tablets e telas menores */
-@media (max-width: 1024px) {
-    html,
-    body {
-        width: 100%;
-        min-height: 100%;
-    }
-
-    body.corpo-dashboard {
-        min-height: 100dvh;
-        height: auto;
-        overflow-x: hidden;
-    }
-
-    .layout-sistema {
-        display: block !important;
-        width: 100%;
-        height: auto !important;
-        min-height: 100dvh;
-        overflow: visible !important;
-    }
-
-    /* Menu vira gaveta lateral */
-    .sidebar {
-        position: fixed !important;
-        inset: 0 auto 0 0;
-        width: min(300px, 84vw) !important;
-        height: 100dvh !important;
-        min-height: 100dvh !important;
-        z-index: 3000;
-        transform: translateX(-105%);
-        transition: transform .26s ease;
-        box-shadow: 14px 0 32px rgba(0,0,0,.22);
-        overflow: hidden;
-    }
-
-    body.menu-mobile-aberto {
-        overflow: hidden !important;
-    }
-
-    body.menu-mobile-aberto .sidebar {
-        transform: translateX(0);
-    }
-
-    .sidebar-topo {
-        min-height: 68px;
-        padding: 14px 16px !important;
-    }
-
-    .sidebar-menu {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 3px !important;
-        padding: 10px 8px 14px !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .sidebar .menu-item {
-        flex: 0 0 auto !important;
-        width: 100%;
-        min-height: 46px;
-        padding: 12px 14px !important;
-        border-radius: 9px;
-        white-space: normal !important;
-    }
-
-    .sidebar-sair {
-        flex: 0 0 auto;
-        padding: 7px 8px;
-    }
-
-    .btn-fechar-menu-mobile {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: auto;
-        width: 38px;
-        height: 38px;
-        flex: 0 0 38px;
-        border: 1px solid rgba(255,255,255,.16);
-        border-radius: 9px;
-        background: rgba(255,255,255,.08);
-        color: #fff;
-        font-size: 22px;
-        cursor: pointer;
-    }
-
-    .sidebar-overlay {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 2900;
-        background: rgba(0,0,0,.45);
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition: .22s ease;
-        backdrop-filter: blur(2px);
-    }
-
-    body.menu-mobile-aberto .sidebar-overlay {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
-
-    .conteudo-principal {
-        width: 100% !important;
-        min-width: 0 !important;
-        min-height: 100dvh;
-        overflow: visible !important;
-    }
-
-    /* Barra superior fica acessível enquanto rola */
-    .topbar {
-        position: sticky;
-        top: 0;
-        z-index: 1200;
-        width: 100%;
-        min-height: var(--mobile-header-height) !important;
-        height: var(--mobile-header-height) !important;
-        padding: 0 16px !important;
-        gap: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,.05);
-    }
-
-    .btn-menu-mobile {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 42px;
-        flex: 0 0 42px;
-        border: 1px solid #eadede;
-        border-radius: 10px;
-        background: #fff;
-        color: #7a0b0b;
-        font-size: 23px;
-        line-height: 1;
-        cursor: pointer;
-    }
-
-    .topbar-marca {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .topbar-usuario {
-        flex: 0 0 auto;
-    }
-
-    .dashboard-container,
-    .relatorios-container {
-        width: 100%;
-        padding: 20px 16px !important;
-    }
-
-    .dashboard-cabecalho,
-    .topo-acoes {
-        gap: 14px;
-        flex-wrap: wrap;
-    }
-
-    .cards-grid,
-    .cards-relatorio-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-    }
-
-    .inferior-grid {
-        grid-template-columns: 1fr !important;
-        gap: 14px !important;
-    }
-
-    .config-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    .abas-relatorio {
-        gap: 12px !important;
-    }
-
-    /* Filtros de relatório cabem em tablet sem estourar */
-    .filtros-box {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        align-items: end !important;
-        gap: 12px !important;
-        padding: 16px !important;
-    }
-
-    .filtro-grupo {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .filtro-grupo input,
-    .filtro-grupo select {
-        width: 100% !important;
-        min-width: 0;
-    }
-
-    .filtros-box .btn-visualizar {
-        width: 100%;
-        min-height: 42px;
-        justify-content: center;
-    }
-
-    /* Tabelas ficam dentro da tela e deslizam horizontalmente */
-    .painel-tabela,
-    .tabela-relatorio-box {
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden !important;
-    }
-
-    .tabela-scroll {
-        max-width: 100%;
-        overflow-x: auto !important;
-    }
-
-    .tabela-dados {
-        min-width: 680px !important;
-    }
-
-    .tabela-dados th,
-    .tabela-dados td {
-        white-space: nowrap;
-    }
-
-    .barra-pesquisa {
-        max-width: 100%;
-    }
-
-    .barra-pesquisa input {
-        max-width: 100% !important;
-    }
-
-    .grafico-simulado {
-        min-width: 0;
-        width: 100%;
-    }
-
-    .painel-bloco {
-        min-width: 0;
-    }
-
-    /* Modais não saem da tela */
-    .modal-fundo {
-        padding: 16px;
-    }
-
-    .modal-caixa {
-        width: min(100%, 520px) !important;
-        max-width: 520px !important;
-        max-height: calc(100dvh - 32px) !important;
-    }
-
-    .grupo-input-modal input,
-    .grupo-input-modal select,
-    .grupo-input-modal textarea {
-        max-width: 100%;
-    }
-}
-
-/* Celulares */
-@media (max-width: 700px) {
-    body {
-        min-height: 100dvh;
-        height: auto;
-    }
-
-    /* Login em coluna */
-    .pagina-login {
-        width: 100%;
-        min-height: 100dvh !important;
-        height: auto !important;
-        flex-direction: column !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-    }
-
-    .lado-esquerdo {
-        flex: none !important;
-        width: 100%;
-        min-height: 31dvh !important;
-        padding: 22px 16px !important;
-    }
-
-    .imagem-logo {
-        width: 118px !important;
-        height: 118px !important;
-        margin-bottom: 10px !important;
-    }
-
-    .texto-sistema {
-        margin: 6px 0;
-        font-size: 14px;
-    }
-
-    .lado-direito {
-        flex: 1 !important;
-        width: 100%;
-        min-height: 69dvh !important;
-        border-radius: 26px 26px 0 0 !important;
-        box-shadow: 0 -8px 24px rgba(0,0,0,.10) !important;
-        align-items: flex-start !important;
-    }
-
-    .caixa-login {
-        width: 100%;
-        max-width: 480px !important;
-        padding: 28px 22px 32px !important;
-        margin: 0 auto;
-    }
-
-    .caixa-login h2 {
-        font-size: 26px;
-    }
-
-    .grupo-input input {
-        min-height: 48px;
-        font-size: 16px !important; /* evita zoom automático no iPhone */
-    }
-
-    .btn-entrar {
-        min-height: 48px;
-    }
-
-    .rodape-login {
-        margin-top: 28px !important;
-    }
-
-    /* Topbar */
-    .topbar {
-        padding: 0 12px !important;
-    }
-
-    .topbar-sub,
-    .info-usuario {
-        display: none !important;
-    }
-
-    .topbar-titulo {
-        font-size: 13px;
-    }
-
-    .logo-mini {
-        width: 30px;
-        height: 30px;
-    }
-
-    .avatar-admin {
-        width: 34px;
-        height: 34px;
-    }
-
-    .dashboard-container,
-    .relatorios-container {
-        padding: 16px 12px 24px !important;
-    }
-
-    .dashboard-cabecalho,
-    .topo-acoes {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        margin-bottom: 16px !important;
-    }
-
-    .dashboard-cabecalho > *,
-    .topo-acoes > * {
-        width: 100%;
-    }
-
-    .dashboard-cabecalho h1,
-    .topo-acoes h1 {
-        font-size: 21px !important;
-        margin-top: 0;
-    }
-
-    .titulo-com-icone {
-        gap: 9px;
-    }
-
-    .btn-novo-funcionario,
-    .btn-atualizar-dashboard,
-    .btn-config-secundario {
-        min-height: 44px;
-    }
-
-    .dashboard-cabecalho > .btn-novo-funcionario {
-        width: 100%;
-    }
-
-    .dashboard-acoes {
-        width: 100%;
-        display: grid !important;
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-
-    .dashboard-acoes .btn-atualizar-dashboard {
-        width: 100%;
-    }
-
-    .cards-grid,
-    .cards-relatorio-grid {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
-    }
-
-    .card-resumo,
-    .card-stat {
-        padding: 15px !important;
-    }
-
-    .card-valor {
-        font-size: 27px !important;
-    }
-
-    .card-stat-value {
-        font-size: 22px !important;
-    }
-
-    .painel-bloco {
-        padding: 14px !important;
-        border-radius: 10px;
-    }
-
-    .painel-cabecalho {
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    /* Últimos registros no Dashboard */
-    .item-registro {
-        display: grid !important;
-        grid-template-columns: 38px minmax(0, 1fr);
-        gap: 8px 10px;
-        align-items: center;
-    }
-
-    .item-registro .avatar-letra {
-        grid-row: 1 / span 2;
-    }
-
-    .item-registro .detalhes-registro {
-        margin-left: 0 !important;
-        min-width: 0;
-    }
-
-    .item-registro .valor-data-registro {
-        grid-column: 2;
-        text-align: left !important;
-        min-width: 0 !important;
-        align-items: flex-start;
-    }
-
-    .nome-registro,
-    .sub-registro {
-        overflow-wrap: anywhere;
-    }
-
-    /* Gráfico compacto */
-    .grafico-simulado {
-        height: 175px !important;
-        padding-left: 32px !important;
-    }
-
-    .eixo-y {
-        width: 28px !important;
-        font-size: 9px !important;
-    }
-
-    .corpo-grafico {
-        gap: 3px !important;
-        padding: 0 2px !important;
-    }
-
-    .coluna-grafico {
-        max-width: none !important;
-    }
-
-    .barra-grafico {
-        width: min(20px, 72%) !important;
-    }
-
-    .valor-barra {
-        font-size: 8px !important;
-    }
-
-    .eixo-x {
-        padding-left: 32px !important;
-        gap: 1px !important;
-    }
-
-    .eixo-x span {
-        font-size: 8px !important;
-    }
-
-    /* Pesquisa/filtros */
-    .barra-pesquisa {
-        padding: 14px !important;
-    }
-
-    .barra-pesquisa[style*="display: flex"],
-    .barra-pesquisa[style*="display:flex"] {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 10px !important;
-    }
-
-    .barra-pesquisa select,
-    .barra-pesquisa input {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-height: 44px;
-        font-size: 16px !important;
-    }
-
-    /* Relatórios */
-    .abas-relatorio {
-        grid-template-columns: 1fr !important;
-    }
-
-    .aba-card {
-        padding: 14px !important;
-    }
-
-    .filtros-box {
-        grid-template-columns: 1fr !important;
-        padding: 14px !important;
-    }
-
-    .filtro-grupo input,
-    .filtro-grupo select {
-        min-height: 44px;
-        font-size: 16px !important;
-    }
-
-    .topo-acoes > div:last-child {
-        width: 100%;
-        display: grid !important;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px !important;
-    }
-
-    .topo-acoes .btn-visualizar,
-    .topo-acoes .btn-imprimir {
-        width: 100%;
-        min-height: 44px;
-        justify-content: center;
-        padding: 9px 10px !important;
-    }
-
-    /* Configurações */
-    .config-status-geral {
-        width: 100%;
-        display: grid !important;
-        grid-template-columns: 1fr;
-        align-items: stretch !important;
-    }
-
-    .config-status-item,
-    .config-info-menor > div {
-        gap: 8px;
-    }
-
-    /* Modais como "bottom sheet" no celular */
-    .modal-fundo {
-        padding: 0 !important;
-        align-items: flex-end !important;
-    }
-
-    .modal-caixa {
-        width: 100% !important;
-        max-width: none !important;
-        max-height: 92dvh !important;
-        margin: 0 !important;
-        border-radius: 20px 20px 0 0 !important;
-        padding: 20px 18px calc(20px + env(safe-area-inset-bottom)) !important;
-    }
-
-    .grupo-input-modal input,
-    .grupo-input-modal select,
-    .grupo-input-modal textarea {
-        width: 100% !important;
-        min-height: 44px;
-        font-size: 16px !important;
-    }
-
-    .modal-botoes {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px !important;
-    }
-
-    .modal-botoes button {
-        width: 100%;
-        min-height: 44px;
-        padding: 10px 8px !important;
-    }
-
-    .tabela-rodape {
-        padding: 12px 14px !important;
-    }
-
-    .tabela-dados {
-        min-width: 650px !important;
-    }
-
-    .tabela-dados th {
-        padding: 12px 14px !important;
-    }
-
-    .tabela-dados td {
-        padding: 16px 14px !important;
-    }
-
-    .aviso-conectividade {
-        bottom: calc(12px + env(safe-area-inset-bottom)) !important;
-        width: calc(100% - 24px) !important;
-    }
-}
-
-/* Celulares muito estreitos */
-@media (max-width: 420px) {
-    .topbar-titulo {
-        display: none !important;
-    }
-
-    .topbar-marca {
-        gap: 6px;
-    }
-
-    .dashboard-container,
-    .relatorios-container {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-    }
-
-    .card-resumo,
-    .painel-bloco,
-    .painel-tabela,
-    .tabela-relatorio-box,
-    .config-card {
-        border-radius: 9px !important;
-    }
-
-    .modal-caixa {
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-    }
-
-    .modal-botoes {
-        grid-template-columns: 1fr !important;
-    }
-
-    .topo-acoes > div:last-child {
-        grid-template-columns: 1fr !important;
-    }
-
-    .config-status-item,
-    .config-info-menor > div {
-        align-items: flex-start !important;
-        flex-direction: column !important;
-    }
-
-    .config-status-item strong,
-    .config-info-menor strong {
-        text-align: left !important;
-    }
-}
-
-/* Tablet em paisagem: usa duas colunas sem apertar demais */
-@media (min-width: 701px) and (max-width: 1024px) {
-    .dashboard-cabecalho > .btn-novo-funcionario {
-        flex: 0 0 auto;
-    }
-
-    .config-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-
-    .modal-caixa {
-        width: min(560px, calc(100vw - 48px)) !important;
-    }
-}
-
-
-/* ============================================================
-   X-BURGUER 2.2 - CORREÇÃO DE RESPONSIVIDADE
-   - impede rolagem da página inteira "sem fim"
-   - mantém o sistema preso à altura da tela
-   - conteúdo interno é que rola
-   - tabelas viram cartões no celular
-   - impede informações saindo dos blocos
-   ============================================================ */
-
-@media (max-width: 1024px) {
-    html {
-        height: 100%;
-        overflow: hidden !important;
-    }
-
-    body.corpo-dashboard {
-        width: 100%;
-        height: 100dvh !important;
-        min-height: 0 !important;
-        overflow: hidden !important;
-        background: #f4f6f9;
-    }
-
-    .layout-sistema {
-        width: 100% !important;
-        height: 100dvh !important;
-        min-height: 0 !important;
-        overflow: hidden !important;
-        display: block !important;
-    }
-
-    .conteudo-principal {
-        width: 100% !important;
-        height: 100dvh !important;
-        min-height: 0 !important;
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-y: contain;
-        position: relative;
-    }
-
-    .topbar {
-        position: sticky !important;
-        top: 0;
-        z-index: 1200;
-        flex: 0 0 auto;
-    }
-
-    .dashboard-container,
-    .relatorios-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        overflow-x: hidden !important;
-        padding-bottom: 28px !important;
-    }
-
-    .dashboard-container > *,
-    .relatorios-container > *,
-    .cards-grid > *,
-    .cards-relatorio-grid > *,
-    .inferior-grid > *,
-    .config-grid > * {
-        min-width: 0 !important;
-        max-width: 100% !important;
-    }
-
-    .card-resumo,
-    .card-stat,
-    .painel-bloco,
-    .painel-tabela,
-    .tabela-relatorio-box,
-    .config-card,
-    .aba-card,
-    .filtros-box {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        overflow: hidden;
-    }
-
-    .painel-cabecalho,
-    .dashboard-cabecalho,
-    .topo-acoes,
-    .config-cabecalho {
-        max-width: 100% !important;
-    }
-
-    .painel-cabecalho > *,
-    .dashboard-cabecalho > *,
-    .topo-acoes > *,
-    .config-cabecalho > * {
-        min-width: 0;
-    }
-
-    .painel-cabecalho h3,
-    .dashboard-cabecalho h1,
-    .topo-acoes h1,
-    .config-cabecalho h1,
-    .card-titulo,
-    .card-rodape,
-    .config-texto,
-    .config-aviso,
-    .config-aviso-suave {
-        overflow-wrap: anywhere;
-    }
-
-    .sidebar {
-        height: 100dvh !important;
-        max-height: 100dvh !important;
-        min-height: 0 !important;
-    }
-
-    .sidebar-menu {
-        min-height: 0 !important;
-    }
-
-    .modal-fundo {
-        position: fixed !important;
-        inset: 0 !important;
-        width: 100vw !important;
-        height: 100dvh !important;
-        max-height: 100dvh !important;
-        overflow: hidden !important;
-    }
-
-    .modal-caixa {
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-        overscroll-behavior: contain;
-    }
-}
-
-/* Celular: o corpo NÃO rola. Apenas a área branca do login rola, se necessário. */
-@media (max-width: 700px) {
-    html,
-    body:not(.corpo-dashboard) {
-        width: 100%;
-        height: 100dvh !important;
-        min-height: 0 !important;
-        overflow: hidden !important;
-    }
-
-    .pagina-login {
-        width: 100% !important;
-        height: 100dvh !important;
-        min-height: 0 !important;
-        max-height: 100dvh !important;
-        overflow: hidden !important;
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        grid-template-rows: minmax(190px, 32dvh) minmax(0, 1fr) !important;
-    }
-
-    .lado-esquerdo {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 0 !important;
-        overflow: hidden !important;
-        padding: 16px !important;
-    }
-
-    .conteudo-esquerda {
-        max-height: 100%;
-        justify-content: center;
-    }
-
-    .imagem-logo {
-        width: clamp(92px, 26vw, 118px) !important;
-        height: clamp(92px, 26vw, 118px) !important;
-        margin-bottom: 7px !important;
-    }
-
-    .texto-sistema {
-        margin: 2px 0 !important;
-        font-size: 13px !important;
-    }
-
-    .lado-direito {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 0 !important;
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
-        align-items: flex-start !important;
-        justify-content: center !important;
-        border-radius: 24px 24px 0 0 !important;
-    }
-
-    .caixa-login {
-        width: 100% !important;
-        max-width: 480px !important;
-        min-height: 0 !important;
-        margin: 0 auto !important;
-        padding: 24px 20px 26px !important;
-    }
-
-    /* Cabeçalhos e botões nunca escapam do bloco */
-    .dashboard-cabecalho,
-    .topo-acoes,
-    .painel-cabecalho,
-    .config-cabecalho {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .dashboard-cabecalho > .btn-novo-funcionario,
-    .dashboard-cabecalho > button,
-    .config-cabecalho button {
-        width: 100% !important;
-    }
-
-    .titulo-com-icone {
-        min-width: 0;
-    }
-
-    /* Status de banco dentro do painel, com espaço nas bordas */
-    .painel-tabela > [id^="status-"] {
-        margin: 0 !important;
-        padding: 0 14px 12px !important;
-        overflow-wrap: anywhere;
-    }
-
-    /* Barra de pesquisa/filtro sempre dentro do painel */
-    .barra-pesquisa {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 12px !important;
-        overflow: hidden !important;
-    }
-
-    .barra-pesquisa input,
-    .barra-pesquisa select {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    /* ===== TABELAS COMO CARTÕES NO CELULAR ===== */
-    .tabela-scroll,
-    .painel-tabela > div[style*="overflow-x"],
-    .tabela-relatorio-box > div[style*="overflow-x"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: visible !important;
-    }
-
-    .tabela-dados {
-        display: block !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        border-collapse: separate !important;
-        background: transparent !important;
-    }
-
-    .tabela-dados thead,
-    .tabela-dados .mobile-header-row {
-        display: none !important;
-    }
-
-    .tabela-dados tbody {
-        display: grid !important;
-        width: 100% !important;
-        gap: 10px;
-        padding: 10px 12px 4px;
-    }
-
-    .tabela-dados tbody tr {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        background: #fff;
-        border: 1px solid #eee;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 1px 4px rgba(0,0,0,.03);
-    }
-
-    .tabela-dados tbody td {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        min-height: 0 !important;
-        padding: 9px 12px !important;
-        text-align: left !important;
-        white-space: normal !important;
-        overflow-wrap: anywhere !important;
-        word-break: break-word;
-        border-bottom: 1px solid #f2f2f2 !important;
-        line-height: 1.35;
-    }
-
-    .tabela-dados tbody td:last-child {
-        border-bottom: 0 !important;
-    }
-
-    .tabela-dados tbody td::before {
-        content: attr(data-label);
-        display: block;
-        margin-bottom: 3px;
-        color: #8b8b8b;
-        font-size: 9px;
-        line-height: 1.2;
-        font-weight: 900;
-        letter-spacing: .35px;
-        text-transform: uppercase;
-    }
-
-    .tabela-dados tbody td[data-label=""]::before,
-    .tabela-dados tbody td.mobile-cell-full::before {
-        display: none;
-    }
-
-    .tabela-dados tbody td.mobile-cell-full {
-        text-align: center !important;
-        padding: 18px 12px !important;
-    }
-
-    /* Avatares dentro das tabelas ocupavam espaço e empurravam o texto */
-    .tabela-dados tbody td .avatar-letra {
-        display: none !important;
-    }
-
-    .tabela-dados tbody td[style*="display:flex"],
-    .tabela-dados tbody td[style*="display: flex"] {
-        display: block !important;
-        padding-left: 12px !important;
-    }
-
-    .tabela-dados tbody td > div {
-        max-width: 100%;
-    }
-
-    .tabela-dados tbody td .badge-ativo,
-    .tabela-dados tbody td .badge-inativo {
-        display: inline-flex;
-    }
-
-    .tabela-dados tbody td .coluna-acoes,
-    .tabela-dados tbody td:last-child > div {
-        justify-content: flex-start !important;
-    }
-
-    .tabela-rodape {
-        width: 100%;
-        padding: 11px 12px !important;
-    }
-
-    /* Relatórios: tabela dinâmica também vira cartão */
-    #tabela-relatorio-conteudo tbody {
-        padding-top: 8px;
-    }
-
-    /* Cards e painéis */
-    .cards-grid,
-    .cards-relatorio-grid,
-    .inferior-grid,
-    .config-grid {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .card-resumo,
-    .card-stat,
-    .painel-bloco,
-    .config-card {
-        overflow: hidden !important;
-    }
-
-    .card-valor,
-    .card-stat-value {
-        max-width: 100%;
-        overflow-wrap: anywhere;
-    }
-
-    /* Últimos consumos não ultrapassam o bloco */
-    .item-registro,
-    .detalhes-registro,
-    .valor-data-registro {
-        min-width: 0 !important;
-        max-width: 100% !important;
-    }
-
-    .nome-registro,
-    .sub-registro,
-    .data-reg {
-        white-space: normal !important;
-        overflow-wrap: anywhere;
-    }
-
-    /* Gráfico fica inteiramente dentro do painel */
-    .grafico-simulado,
-    .eixo-x {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .corpo-grafico {
-        overflow: hidden !important;
-    }
-
-    /* Configurações */
-    .config-status-item,
-    .config-info-menor > div {
-        max-width: 100%;
-    }
-
-    .config-status-item strong,
-    .config-info-menor strong,
-    .config-status-linha {
-        max-width: 100%;
-        overflow-wrap: anywhere;
-    }
-}
-
-/* Aparelhos muito estreitos */
-@media (max-width: 420px) {
-    .pagina-login {
-        grid-template-rows: minmax(165px, 28dvh) minmax(0, 1fr) !important;
-    }
-
-    .imagem-logo {
-        width: 86px !important;
-        height: 86px !important;
-    }
-
-    .caixa-login {
-        padding: 20px 16px 24px !important;
-    }
-
-    .caixa-login h2 {
-        font-size: 23px !important;
-    }
-
-    .subtitulo {
-        margin-bottom: 18px !important;
-    }
-
-    .grupo-input {
-        margin-bottom: 14px !important;
-    }
-
-    .opcoes-login {
-        margin-bottom: 18px !important;
-    }
-
-    .dashboard-container,
-    .relatorios-container {
-        padding: 12px 9px 20px !important;
-    }
-
-    .painel-bloco {
-        padding: 12px !important;
-    }
-
-    .tabela-dados tbody {
-        padding-left: 9px;
-        padding-right: 9px;
-    }
-}
-
-
-/* ============================================================
-   X-BURGUER 2.3 - APLICATIVO PWA
-   ============================================================ */
-.btn-instalar-pwa {
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    border: 1px solid #7a0b0b;
-    border-radius: 9px;
-    background: #fff;
-    color: #7a0b0b;
-    min-height: 40px;
-    padding: 9px 14px;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.btn-instalar-pwa:hover {
-    background: #fff5f5;
-}
-
-.caixa-login > .btn-instalar-pwa {
-    width: 100%;
-    margin-top: 12px;
-}
-
-@media (max-width: 700px) {
-    .topbar .btn-instalar-pwa {
-        width: 42px;
-        height: 42px;
-        min-height: 42px;
-        flex: 0 0 42px;
-        padding: 0;
-        font-size: 20px;
-    }
-
-    .topbar .btn-instalar-pwa span {
-        display: none;
-    }
-
-    .caixa-login > .btn-instalar-pwa {
-        width: 100%;
-        min-height: 46px;
-        font-size: 14px;
-    }
-}
-
-
-/* ============================================================
-   X-BURGUER 2.4 - RESPONSIVIDADE PREMIUM
-   Referência: layout móvel enviado pelo usuário
-   ============================================================ */
-
-@media (max-width: 1024px) {
-    * { min-width: 0; }
-
-    .conteudo-principal { background: #f5f6f8; }
-
-    .sidebar {
-        width: min(310px, 82vw) !important;
-        background: #8f0d0d !important;
-        box-shadow: 18px 0 40px rgba(0,0,0,.25) !important;
-    }
-
-    .sidebar-topo {
-        min-height: 78px !important;
-        padding: 16px 18px !important;
-        gap: 12px !important;
-    }
-
-    .logo-sidebar {
-        width: 48px !important;
-        height: 48px !important;
-        border: 2px solid rgba(255,255,255,.9);
-    }
-
-    .logo-titulo { font-size: 16px !important; }
-    .logo-sub { font-size: 11px !important; }
-
-    .sidebar-menu {
-        padding: 12px 10px !important;
-        gap: 5px !important;
-    }
-
-    .sidebar .menu-item {
-        min-height: 50px !important;
-        padding: 13px 16px !important;
-        border-radius: 10px !important;
-        font-size: 15px !important;
-        gap: 12px !important;
-    }
-
-    .sidebar .menu-item.ativo {
-        background: rgba(255,255,255,.16) !important;
-    }
-
-    .sidebar-sair { padding: 10px !important; }
-
-    .topbar {
-        background: rgba(255,255,255,.98) !important;
-        border-bottom: 1px solid #e8e8ea !important;
-    }
-
-    .dashboard-container,
-    .relatorios-container {
-        max-width: 1180px !important;
-        margin: 0 auto !important;
-    }
-
-    .card-resumo,
-    .card-stat,
-    .painel-bloco,
-    .painel-tabela,
-    .tabela-relatorio-box,
-    .config-card,
-    .aba-card,
-    .filtros-box {
-        box-shadow: 0 2px 7px rgba(20,25,35,.08) !important;
-        border: 1px solid #ebedf0 !important;
-    }
-
-    .painel-tabela,
-    .tabela-relatorio-box {
-        overflow: hidden !important;
-    }
-
-    .tabela-scroll,
-    .painel-tabela > div[style*="overflow-x"],
-    .tabela-relatorio-box > div[style*="overflow-x"] {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-    }
-}
-
-@media (max-width: 700px) {
-    :root { --mobile-header-height: 58px; }
-
-    body.corpo-dashboard { background: #f4f5f7 !important; }
-
-    .topbar {
-        height: calc(var(--mobile-header-height) + env(safe-area-inset-top)) !important;
-        min-height: calc(var(--mobile-header-height) + env(safe-area-inset-top)) !important;
-        padding: env(safe-area-inset-top) 14px 0 !important;
-        justify-content: space-between !important;
-        gap: 10px !important;
-    }
-
-    .topbar-marca { display: none !important; }
-
-    .btn-menu-mobile {
-        width: 38px !important;
-        height: 38px !important;
-        flex-basis: 38px !important;
-        border: 0 !important;
-        border-radius: 8px !important;
-        background: transparent !important;
-        color: #20252b !important;
-        font-size: 22px !important;
-    }
-
-    .topbar-usuario { margin-left: auto !important; }
-
-    .avatar-admin {
-        width: 38px !important;
-        height: 38px !important;
-        font-size: 15px !important;
-        background: #8f0d0d !important;
-    }
-
-    .topbar .btn-instalar-pwa { display: none !important; }
-
-    .dashboard-container,
-    .relatorios-container {
-        width: 100% !important;
-        padding: 18px 14px 24px !important;
-        overflow-x: hidden !important;
-    }
-
-    .dashboard-cabecalho,
-    .topo-acoes {
-        width: 100% !important;
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        flex-wrap: wrap !important;
-        gap: 10px 12px !important;
-        margin-bottom: 18px !important;
-    }
-
-    .dashboard-cabecalho h1,
-    .topo-acoes h1 {
-        font-size: clamp(22px, 6.4vw, 28px) !important;
-        line-height: 1.15 !important;
-        margin: 0 !important;
-    }
-
-    .titulo-com-icone {
-        width: auto !important;
-        display: flex !important;
-        align-items: center !important;
-        flex: 1 1 auto !important;
-        gap: 7px !important;
-    }
-
-    .icone-secao { font-size: 24px !important; }
-
-    .dashboard-cabecalho > .btn-novo-funcionario,
-    .dashboard-cabecalho > button,
-    .btn-novo-funcionario {
-        width: auto !important;
-        flex: 0 0 auto !important;
-        min-height: 42px !important;
-        padding: 10px 13px !important;
-        font-size: 13px !important;
-        border-radius: 9px !important;
-        white-space: nowrap !important;
-    }
-
-    .cards-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 12px !important;
-        margin-bottom: 16px !important;
-    }
-
-    .card-resumo {
-        min-height: 138px !important;
-        padding: 16px 14px !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-    }
-
-    .card-topo {
-        align-items: center !important;
-        gap: 9px !important;
-        margin-bottom: 12px !important;
-    }
-
-    .icone-caixa {
-        width: 38px !important;
-        height: 38px !important;
-        flex: 0 0 38px !important;
-        font-size: 18px !important;
-        border-radius: 10px !important;
-    }
-
-    .card-titulo {
-        font-size: 11px !important;
-        line-height: 1.28 !important;
-        letter-spacing: .1px;
-        overflow-wrap: normal !important;
-        word-break: normal !important;
-    }
-
-    .card-valor {
-        font-size: 30px !important;
-        line-height: 1 !important;
-        margin: 4px 0 8px !important;
-    }
-
-    .card-rodape {
-        font-size: 11px !important;
-        line-height: 1.3 !important;
-    }
-
-    .inferior-grid {
-        grid-template-columns: 1fr !important;
-        gap: 14px !important;
-    }
-
-    .painel-bloco {
-        padding: 18px !important;
-        border-radius: 12px !important;
-    }
-
-    .painel-cabecalho {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        flex-wrap: nowrap !important;
-        gap: 10px !important;
-        margin-bottom: 14px !important;
-    }
-
-    .painel-cabecalho h3 {
-        font-size: 16px !important;
-        line-height: 1.25 !important;
-    }
-
-    .link-ver-todos {
-        flex: 0 0 auto !important;
-        font-size: 11px !important;
-    }
-
-    .lista-registros { min-height: 130px !important; }
-
-    .grafico-simulado {
-        width: 100% !important;
-        height: 190px !important;
-        padding-left: 30px !important;
-    }
-
-    .eixo-x {
-        padding-left: 30px !important;
-    }
-
-    /* TABELAS PROFISSIONAIS COM ROLAGEM APENAS DENTRO DO BLOCO */
-    .tabela-scroll,
-    .painel-tabela > div[style*="overflow-x"],
-    .tabela-relatorio-box > div[style*="overflow-x"] {
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-    }
-
-    .tabela-dados {
-        display: table !important;
-        width: 100% !important;
-        min-width: 650px !important;
-        max-width: none !important;
-        border-collapse: collapse !important;
-        background: #fff !important;
-    }
-
-    .tabela-dados thead { display: table-header-group !important; }
-    .tabela-dados .mobile-header-row { display: table-row !important; }
-
-    .tabela-dados tbody {
-        display: table-row-group !important;
-        width: auto !important;
-        padding: 0 !important;
-    }
-
-    .tabela-dados tbody tr {
-        display: table-row !important;
-        width: auto !important;
-        margin: 0 !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        background: #fff !important;
-    }
-
-    .tabela-dados th,
-    .tabela-dados tbody td {
-        display: table-cell !important;
-        width: auto !important;
-        max-width: none !important;
-        min-width: 0 !important;
-        padding: 13px 14px !important;
-        text-align: left !important;
-        white-space: nowrap !important;
-        overflow-wrap: normal !important;
-        word-break: normal !important;
-        border-bottom: 1px solid #eef0f2 !important;
-        line-height: 1.35 !important;
-    }
-
-    .tabela-dados th {
-        background: #f8f9fb !important;
-        font-size: 11px !important;
-        color: #626872 !important;
-        font-weight: 800 !important;
-    }
-
-    .tabela-dados tbody td { font-size: 13px !important; }
-
-    .tabela-dados tbody td::before {
-        display: none !important;
-        content: none !important;
-    }
-
-    .tabela-dados tbody td .avatar-letra { display: inline-flex !important; }
-
-    .tabela-dados tbody td[style*="display:flex"],
-    .tabela-dados tbody td[style*="display: flex"] {
-        display: flex !important;
-        padding-left: 14px !important;
-    }
-
-    .tabela-dados tbody td.mobile-cell-full {
-        display: table-cell !important;
-        text-align: center !important;
-        padding: 20px 14px !important;
-    }
-
-    .painel-tabela {
-        border-radius: 12px !important;
-        overflow: hidden !important;
-    }
-
-    .barra-pesquisa {
-        padding: 14px !important;
-        background: #fff !important;
-    }
-
-    .barra-pesquisa input,
-    .barra-pesquisa select {
-        min-height: 44px !important;
-        border-radius: 9px !important;
-        font-size: 16px !important;
-    }
-
-    .tabela-rodape {
-        background: #fff !important;
-        padding: 12px 14px !important;
-    }
-
-    .abas-relatorio {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
-        margin-bottom: 14px !important;
-    }
-
-    .aba-card {
-        padding: 14px 16px !important;
-        border-radius: 10px !important;
-    }
-
-    .aba-titulo { font-size: 14px !important; }
-    .aba-desc { font-size: 11px !important; }
-
-    .filtros-box {
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 10px !important;
-        align-items: end !important;
-        padding: 14px !important;
-        margin-bottom: 16px !important;
-        overflow: visible !important;
-    }
-
-    .filtro-grupo {
-        min-width: 0 !important;
-        width: 100% !important;
-    }
-
-    .filtro-grupo label {
-        font-size: 10px !important;
-        white-space: nowrap;
-    }
-
-    .filtro-grupo input,
-    .filtro-grupo select,
-    #grupo-filtro-func select {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        height: 42px !important;
-        min-height: 42px !important;
-        padding: 7px 7px !important;
-        font-size: 12px !important;
-        border-radius: 8px !important;
-    }
-
-    .filtros-box .btn-visualizar {
-        grid-column: 1 / span 1 !important;
-        width: 100% !important;
-        min-height: 42px !important;
-        padding: 9px 10px !important;
-        justify-content: center !important;
-        font-size: 12px !important;
-        border-radius: 8px !important;
-    }
-
-    .cards-relatorio-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 12px !important;
-        margin-bottom: 16px !important;
-    }
-
-    .card-stat {
-        min-height: 105px !important;
-        padding: 16px 14px !important;
-        border-radius: 11px !important;
-    }
-
-    .card-stat-title {
-        font-size: 10px !important;
-        line-height: 1.2 !important;
-        margin-bottom: 8px !important;
-    }
-
-    .card-stat-value {
-        font-size: 24px !important;
-        line-height: 1.05 !important;
-        overflow-wrap: normal !important;
-    }
-
-    .tabela-cabecalho-bloco { padding: 15px 14px !important; }
-
-    .tabela-cabecalho-bloco h3 {
-        font-size: 16px !important;
-        line-height: 1.25 !important;
-    }
-
-    .modal-caixa {
-        border-radius: 18px 18px 0 0 !important;
-        box-shadow: 0 -12px 40px rgba(0,0,0,.20) !important;
-    }
-
-    .grupo-input-modal input,
-    .grupo-input-modal select,
-    .grupo-input-modal textarea {
-        border-radius: 9px !important;
-    }
-}
-
-@media (max-width: 390px) {
-    .dashboard-container,
-    .relatorios-container {
-        padding-left: 11px !important;
-        padding-right: 11px !important;
-    }
-
-    .cards-grid,
-    .cards-relatorio-grid { gap: 9px !important; }
-
-    .card-resumo {
-        min-height: 130px !important;
-        padding: 13px 11px !important;
-    }
-
-    .icone-caixa {
-        width: 34px !important;
-        height: 34px !important;
-        flex-basis: 34px !important;
-        font-size: 16px !important;
-    }
-
-    .card-titulo { font-size: 10px !important; }
-    .card-valor { font-size: 27px !important; }
-
-    .dashboard-cabecalho h1,
-    .topo-acoes h1 {
-        font-size: 22px !important;
-    }
-
-    .dashboard-cabecalho > .btn-novo-funcionario,
-    .dashboard-cabecalho > button,
-    .btn-novo-funcionario {
-        padding: 9px 10px !important;
-        font-size: 12px !important;
-    }
-
-    .filtros-box {
-        gap: 7px !important;
-        padding: 11px !important;
-    }
-
-    .filtro-grupo input,
-    .filtro-grupo select,
-    #grupo-filtro-func select {
-        font-size: 11px !important;
-        padding: 6px 5px !important;
-    }
-
-    .tabela-dados { min-width: 610px !important; }
-}
-
-@media (max-width: 340px) {
-    .filtros-box {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-
-    #grupo-filtro-func { grid-column: 1 / -1 !important; }
-    .filtros-box .btn-visualizar { grid-column: 1 / -1 !important; }
-}
-
-@media (min-width: 701px) and (max-width: 1024px) {
-    .dashboard-container,
-    .relatorios-container {
-        padding: 24px 22px 30px !important;
-    }
-
-    .cards-grid,
-    .cards-relatorio-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-
-    .inferior-grid {
-        grid-template-columns: 1fr 1fr !important;
-    }
-
-    .filtros-box {
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    }
-
-    .config-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-}
-
-
-/* Ajuste final 2.4: mantém a primeira célula das tabelas no fluxo correto */
-@media (max-width: 700px) {
-    .tabela-dados tbody td[style*="display:flex"],
-    .tabela-dados tbody td[style*="display: flex"] {
-        display: table-cell !important;
-        padding-left: 14px !important;
-    }
-
-    .tabela-dados tbody td:first-child .avatar-letra {
-        display: inline-flex !important;
-        vertical-align: middle;
-        margin-right: 8px;
-    }
-
-    .tabela-dados tbody td:first-child > span {
-        vertical-align: middle;
-    }
-}
-
-
-/* ============================================================
-   X-BURGUER 2.5 - MOBILE SEM CORTES
-   Corrige:
-   - colunas pela metade
-   - textos desaparecendo na esquerda/direita
-   - linhas/tabelas maiores que o bloco
-   - filtros de relatório sobrepostos
-   - botões e títulos escapando do card
-   ============================================================ */
-
-@media (max-width: 700px) {
-
-    /* Nunca permite a página ficar mais larga que a tela */
-    html,
-    body,
-    .layout-sistema,
-    .conteudo-principal,
-    .dashboard-container,
-    .relatorios-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: hidden !important;
-    }
-
-    .dashboard-container,
-    .relatorios-container {
-        padding-left: 12px !important;
-        padding-right: 12px !important;
-    }
-
-    /* Cabeçalho da página */
-    .dashboard-cabecalho,
-    .topo-acoes {
-        display: grid !important;
-        grid-template-columns: minmax(0, 1fr) auto !important;
-        align-items: center !important;
-        gap: 10px !important;
-    }
-
-    .dashboard-cabecalho > *,
-    .topo-acoes > * {
-        min-width: 0 !important;
-    }
-
-    .dashboard-cabecalho h1,
-    .topo-acoes h1 {
-        max-width: 100% !important;
-        overflow-wrap: anywhere !important;
-    }
-
-    .dashboard-cabecalho > .btn-novo-funcionario,
-    .dashboard-cabecalho > button,
-    .btn-novo-funcionario {
-        width: auto !important;
-        max-width: 170px !important;
-        white-space: normal !important;
-        text-align: center !important;
-        line-height: 1.2 !important;
-    }
-
-    /* Painéis sempre fechados dentro da largura visível */
-    .painel-tabela,
-    .tabela-relatorio-box,
-    .painel-bloco,
-    .filtros-box,
-    .config-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        overflow: hidden !important;
-    }
-
-    /* Remove o modelo antigo que criava uma tabela de 610/650px */
-    .tabela-scroll {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: visible !important;
-        padding: 0 !important;
-    }
-
-    .tabela-dados {
-        display: block !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        table-layout: auto !important;
-        border-collapse: separate !important;
-        border-spacing: 0 !important;
-        background: #fff !important;
-    }
-
-    /* No celular, o cabeçalho tradicional some.
-       Cada informação recebe seu próprio rótulo dentro da linha. */
-    .tabela-dados thead,
-    .tabela-dados .mobile-header-row {
-        display: none !important;
-    }
-
-    .tabela-dados tbody {
-        display: block !important;
-        width: 100% !important;
-        padding: 0 !important;
-    }
-
-    .tabela-dados tbody tr {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 11px 12px !important;
-        gap: 9px 12px !important;
-        background: #fff !important;
-        border: 0 !important;
-        border-bottom: 1px solid #e9ebee !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        overflow: hidden !important;
-    }
-
-    .tabela-dados tbody tr:last-child {
-        border-bottom: 0 !important;
-    }
-
-    .tabela-dados tbody td {
-        display: block !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-        border: 0 !important;
-        text-align: left !important;
-        white-space: normal !important;
-        overflow: visible !important;
-        overflow-wrap: anywhere !important;
-        word-break: normal !important;
-        line-height: 1.35 !important;
-        font-size: 13px !important;
-    }
-
-    .tabela-dados tbody td::before {
-        content: attr(data-label) !important;
-        display: block !important;
-        margin-bottom: 3px !important;
-        color: #7a7f87 !important;
-        font-size: 9px !important;
-        line-height: 1.15 !important;
-        font-weight: 800 !important;
-        letter-spacing: .25px !important;
-        text-transform: uppercase !important;
-    }
-
-    .tabela-dados tbody td[data-label=""]::before,
-    .tabela-dados tbody td.mobile-cell-full::before {
-        display: none !important;
-        content: none !important;
-    }
-
-    /* Primeira informação de cada registro ganha mais espaço.
-       Isso preserva nome de funcionário/produto sem cortar. */
-    .tabela-dados tbody td:first-child {
-        grid-column: 1 / -1 !important;
-    }
-
-    /* Célula vazia */
-    .tabela-dados tbody td.mobile-cell-full,
-    .tabela-dados tbody td[colspan] {
-        grid-column: 1 / -1 !important;
-        text-align: center !important;
-        padding: 12px 4px !important;
-    }
-
-    /* Avatar e nome cabem na mesma linha sem empurrar o restante */
-    .tabela-dados tbody td:first-child .avatar-letra {
-        display: inline-flex !important;
-        vertical-align: middle !important;
-        margin-right: 8px !important;
-        flex: 0 0 auto !important;
-    }
-
-    .tabela-dados tbody td:first-child > span {
-        vertical-align: middle !important;
-    }
-
-    /* Corrige estilos inline que forçavam display:flex no TD */
-    .tabela-dados tbody td[style*="display:flex"],
-    .tabela-dados tbody td[style*="display: flex"] {
-        display: block !important;
-        padding-left: 0 !important;
-    }
-
-    .tabela-dados tbody td[style*="display:flex"] .avatar-letra,
-    .tabela-dados tbody td[style*="display: flex"] .avatar-letra {
-        display: inline-flex !important;
-    }
-
-    /* Conteúdo de ações não pode sair da linha */
-    .tabela-dados tbody td:last-child {
-        min-width: 0 !important;
-    }
-
-    .tabela-dados tbody td:last-child > div,
-    .tabela-dados .coluna-acoes {
-        max-width: 100% !important;
-        justify-content: flex-start !important;
-        flex-wrap: wrap !important;
-    }
-
-    /* Status fica compacto */
-    .badge-ativo,
-    .badge-inativo {
-        max-width: 100% !important;
-        white-space: nowrap !important;
-    }
-
-    /* Pesquisa e status do banco */
-    .barra-pesquisa {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 12px !important;
-        overflow: hidden !important;
-    }
-
-    .barra-pesquisa input,
-    .barra-pesquisa select {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    .painel-tabela > [id^="status-"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 8px 12px 10px !important;
-        overflow-wrap: anywhere !important;
-    }
-
-    .painel-tabela > [id^="status-"] button {
-        max-width: 100% !important;
-        white-space: normal !important;
-        line-height: 1.25 !important;
-    }
-
-    /* ========================================================
-       RELATÓRIOS
-       ======================================================== */
-
-    /* Título + ações: título/status em cima, botões abaixo em 2 colunas */
-    .relatorios-container .topo-acoes {
-        grid-template-columns: 1fr !important;
-        align-items: stretch !important;
-    }
-
-    .relatorios-container .topo-acoes > div:last-child {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        width: 100% !important;
-        gap: 8px !important;
-    }
-
-    .relatorios-container .topo-acoes .btn-visualizar,
-    .relatorios-container .topo-acoes .btn-imprimir {
-        width: 100% !important;
-        max-width: none !important;
-        min-width: 0 !important;
-        min-height: 44px !important;
-        justify-content: center !important;
-        padding: 9px 8px !important;
-        white-space: normal !important;
-        line-height: 1.2 !important;
-    }
-
-    /* Abas nunca ultrapassam a borda */
-    .abas-relatorio {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .aba-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    .aba-titulo,
-    .aba-desc {
-        max-width: 100% !important;
-        overflow-wrap: anywhere !important;
-    }
-
-    /* Datas lado a lado, funcionário ocupando a largura toda.
-       Evita o campo Funcionário invadir Data fim. */
-    .filtros-box {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 12px 10px !important;
-        padding: 14px !important;
-        align-items: end !important;
-        overflow: hidden !important;
-    }
-
-    .filtro-grupo {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-    }
-
-    .filtro-grupo label {
-        display: block !important;
-        width: 100% !important;
-        margin-bottom: 6px !important;
-        font-size: 11px !important;
-        white-space: normal !important;
-    }
-
-    .filtro-grupo input,
-    .filtro-grupo select,
-    #grupo-filtro-func select {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        height: 44px !important;
-        min-height: 44px !important;
-        padding: 8px 9px !important;
-        font-size: 13px !important;
-    }
-
-    #grupo-filtro-func {
-        grid-column: 1 / -1 !important;
-    }
-
-    #grupo-filtro-func select {
-        min-width: 0 !important;
-    }
-
-    .filtros-box > .btn-visualizar {
-        grid-column: 1 / -1 !important;
-        width: 100% !important;
-        min-height: 44px !important;
-        justify-content: center !important;
-        margin: 0 !important;
-    }
-
-    /* Indicadores seguem 2x2, mas valores grandes não vazam */
-    .cards-relatorio-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 10px !important;
-    }
-
-    .card-stat {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-
-    .card-stat-title,
-    .card-stat-value {
-        max-width: 100% !important;
-        overflow-wrap: anywhere !important;
-    }
-
-    /* Modais */
-    .modal-caixa,
-    .modal-caixa form,
-    .grupo-input-modal {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    .grupo-input-modal input,
-    .grupo-input-modal select,
-    .grupo-input-modal textarea {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-    }
-}
-
-/* Celulares estreitos: preserva legibilidade sem quebrar o layout */
-@media (max-width: 370px) {
-    .dashboard-container,
-    .relatorios-container {
-        padding-left: 9px !important;
-        padding-right: 9px !important;
-    }
-
-    .dashboard-cabecalho,
-    .topo-acoes {
-        grid-template-columns: 1fr !important;
-    }
-
-    .dashboard-cabecalho > .btn-novo-funcionario,
-    .dashboard-cabecalho > button,
-    .btn-novo-funcionario {
-        width: 100% !important;
-        max-width: none !important;
-    }
-
-    .cards-grid,
-    .cards-relatorio-grid {
-        gap: 8px !important;
-    }
-
-    .filtros-box {
-        grid-template-columns: 1fr !important;
-    }
-
-    #grupo-filtro-func,
-    .filtros-box > .btn-visualizar {
-        grid-column: 1 !important;
-    }
-}
-
-
-/* ============================================================
-   X-BURGUER 2.6 - ENQUADRAMENTO DESKTOP PADRONIZADO
-   Objetivos:
-   - sidebar sempre com a mesma largura em todas as páginas
-   - bloco da logo sempre com a mesma altura
-   - topbar sempre com a mesma altura
-   - conteúdo central com largura/padding consistentes
-   - painéis, tabelas e cabeçalhos sem alterar o enquadramento
-   - não interfere no layout de celular/tablet
-   ============================================================ */
-
+/* ---------- desktop ---------- */
 @media (min-width: 1025px) {
     html,
     body.corpo-dashboard {
         width: 100%;
         height: 100%;
+        margin: 0;
+        padding: 0;
         overflow: hidden;
-    }
-
-    body.corpo-dashboard {
-        background: #f4f6f9;
+        background: var(--x-vermelho);
     }
 
     .layout-sistema {
+        width: 100vw !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
         display: flex !important;
-        width: 100% !important;
-        height: 100vh !important;
-        min-height: 100vh !important;
         overflow: hidden !important;
     }
 
-    /* SIDEBAR: nunca encolhe por causa do conteúdo da página */
     .sidebar {
-        flex: 0 0 260px !important;
-        width: 260px !important;
-        min-width: 260px !important;
-        max-width: 260px !important;
+        position: relative !important;
+        flex: 0 0 var(--x-sidebar) !important;
+        width: var(--x-sidebar) !important;
+        min-width: var(--x-sidebar) !important;
+        max-width: var(--x-sidebar) !important;
         height: 100vh !important;
-        min-height: 100vh !important;
-        box-sizing: border-box !important;
+        margin: 0 !important;
+        background: var(--x-vermelho) !important;
         overflow: hidden !important;
-        background: #7a0b0b !important;
     }
 
-    /* O "quadrado" superior da logo fica idêntico em todas as páginas */
     .sidebar-topo {
         flex: 0 0 82px !important;
         width: 100% !important;
@@ -3599,7 +1383,6 @@ body.saindo-sistema {
         min-height: 82px !important;
         max-height: 82px !important;
         padding: 16px 18px !important;
-        box-sizing: border-box !important;
         display: flex !important;
         align-items: center !important;
         gap: 12px !important;
@@ -3611,48 +1394,22 @@ body.saindo-sistema {
         flex: 0 0 46px !important;
         width: 46px !important;
         height: 46px !important;
-        min-width: 46px !important;
-        min-height: 46px !important;
-        max-width: 46px !important;
-        max-height: 46px !important;
         object-fit: cover !important;
         border-radius: 50% !important;
-        box-sizing: border-box !important;
     }
 
     .logo-texto {
-        flex: 1 1 auto !important;
-        width: auto !important;
         min-width: 0 !important;
-        max-width: calc(100% - 58px) !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        line-height: 1.15 !important;
         overflow: hidden !important;
     }
 
-    .logo-titulo {
-        display: block !important;
-        width: 100% !important;
-        font-size: 15px !important;
-        line-height: 18px !important;
-        font-weight: 900 !important;
-        letter-spacing: .4px !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-
+    .logo-titulo,
     .logo-sub {
         display: block !important;
         width: 100% !important;
-        margin-top: 3px !important;
-        font-size: 10px !important;
-        line-height: 13px !important;
-        white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        white-space: nowrap !important;
     }
 
     .sidebar-menu {
@@ -3668,7 +1425,6 @@ body.saindo-sistema {
         width: 100% !important;
         min-height: 44px !important;
         padding: 11px 20px !important;
-        box-sizing: border-box !important;
     }
 
     .sidebar-sair {
@@ -3676,41 +1432,49 @@ body.saindo-sistema {
         width: 100% !important;
     }
 
-    /* CONTEÚDO: não consegue empurrar/encolher a sidebar */
     .conteudo-principal {
+        position: relative !important;
         flex: 1 1 auto !important;
-        min-width: 0 !important;
         width: auto !important;
+        min-width: 0 !important;
         height: 100vh !important;
+        margin: 0 !important;
         overflow-x: hidden !important;
-        overflow-y: auto !important;
-        background: #f4f6f9 !important;
+        overflow-y: scroll !important; /* sempre reserva a mesma largura */
+        background: var(--x-fundo) !important;
     }
 
-    /* Barra superior idêntica em todas as páginas */
     .topbar {
         position: sticky !important;
         top: 0 !important;
-        z-index: 100 !important;
-        flex: 0 0 70px !important;
+        z-index: 1200 !important;
         width: 100% !important;
-        height: 70px !important;
-        min-height: 70px !important;
-        max-height: 70px !important;
+        height: var(--x-topbar) !important;
+        min-height: var(--x-topbar) !important;
+        max-height: var(--x-topbar) !important;
         padding: 0 30px !important;
-        box-sizing: border-box !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        gap: 24px !important;
         background: #fff !important;
-        border-bottom: 1px solid #e5e7eb !important;
-    }
-
-    .topbar-marca,
-    .topbar-usuario {
-        min-width: 0 !important;
+        border-bottom: 1px solid var(--x-borda) !important;
+        box-shadow: 0 1px 0 rgba(0,0,0,.02) !important;
     }
 
     .topbar-marca {
-        flex: 1 1 auto !important;
+        min-width: 0 !important;
         overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .logo-mini {
+        flex: 0 0 34px !important;
+        width: 34px !important;
+        height: 34px !important;
+        object-fit: cover !important;
     }
 
     .topbar-titulo,
@@ -3719,10 +1483,36 @@ body.saindo-sistema {
     }
 
     .topbar-usuario {
-        flex: 0 0 auto !important;
+        justify-self: end !important;
+        margin-left: auto !important;
+        width: auto !important;
+        min-width: 180px !important;
+        max-width: 260px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 12px !important;
     }
 
-    /* Todas as páginas internas começam e terminam no mesmo alinhamento */
+    .info-usuario {
+        min-width: 0 !important;
+        text-align: right !important;
+    }
+
+    .saudacao,
+    .cargo {
+        display: block !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    .avatar-admin {
+        flex: 0 0 38px !important;
+        width: 38px !important;
+        height: 38px !important;
+    }
+
     .dashboard-container,
     .relatorios-container {
         width: 100% !important;
@@ -3730,28 +1520,18 @@ body.saindo-sistema {
         min-width: 0 !important;
         margin: 0 auto !important;
         padding: 28px 32px 36px !important;
-        box-sizing: border-box !important;
     }
 
     .dashboard-cabecalho,
     .topo-acoes,
     .config-cabecalho {
         width: 100% !important;
-        min-height: 42px !important;
+        min-width: 0 !important;
         margin-top: 0 !important;
         margin-bottom: 22px !important;
-        box-sizing: border-box !important;
         align-items: center !important;
     }
 
-    .dashboard-cabecalho h1,
-    .topo-acoes h1,
-    .config-cabecalho h1 {
-        margin: 0 !important;
-        line-height: 1.2 !important;
-    }
-
-    /* Cards e blocos seguem a mesma linguagem visual */
     .cards-grid,
     .cards-relatorio-grid,
     .inferior-grid,
@@ -3759,7 +1539,6 @@ body.saindo-sistema {
     .abas-relatorio {
         width: 100% !important;
         min-width: 0 !important;
-        box-sizing: border-box !important;
     }
 
     .card-resumo,
@@ -3772,37 +1551,19 @@ body.saindo-sistema {
     .filtros-box {
         min-width: 0 !important;
         max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Dashboard: cards com alturas consistentes */
-    .cards-grid {
-        align-items: stretch !important;
     }
 
     .card-resumo {
-        height: 100% !important;
         min-height: 150px !important;
+        height: 100% !important;
         display: flex !important;
         flex-direction: column !important;
     }
 
-    .card-rodape {
-        margin-top: auto !important;
-    }
+    .card-rodape { margin-top: auto !important; }
 
-    .inferior-grid {
-        align-items: stretch !important;
-    }
-
-    .painel-bloco {
-        height: 100% !important;
-    }
-
-    /* Tabelas ficam contidas no painel e nunca alteram a largura geral */
     .painel-tabela,
     .tabela-relatorio-box {
-        width: 100% !important;
         overflow: hidden !important;
     }
 
@@ -3818,41 +1579,15 @@ body.saindo-sistema {
     .tabela-dados {
         width: 100% !important;
         max-width: 100% !important;
-        box-sizing: border-box !important;
     }
 
-    .tabela-dados th,
-    .tabela-dados td {
-        box-sizing: border-box !important;
-    }
-
-    /* Campos de busca/filtros não estouram seus painéis */
-    .barra-pesquisa,
-    .filtros-box {
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    .barra-pesquisa input,
-    .barra-pesquisa select,
-    .filtro-grupo input,
-    .filtro-grupo select {
-        box-sizing: border-box !important;
-    }
-
-    /* Modais centralizados de forma consistente no desktop */
-    .modal-fundo {
-        padding: 24px !important;
-    }
-
+    .modal-fundo { padding: 24px !important; }
     .modal-caixa {
         width: min(520px, calc(100vw - 48px)) !important;
         max-width: 520px !important;
-        box-sizing: border-box !important;
     }
 }
 
-/* Notebooks menores ainda usam o mesmo cabeçalho, apenas com menos padding */
 @media (min-width: 1025px) and (max-width: 1199px) {
     .dashboard-container,
     .relatorios-container {
@@ -3865,412 +1600,591 @@ body.saindo-sistema {
         padding-right: 24px !important;
     }
 
-    .cards-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-
-    .inferior-grid {
-        grid-template-columns: 1fr !important;
-    }
+    .cards-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+    .inferior-grid { grid-template-columns: 1fr !important; }
 }
 
-
-/* ============================================================
-   X-BURGUER 2.7 - TOPO FIXO SEM PULOS (DESKTOP)
-   Corrige o bloco superior branco que mudava de tamanho
-   ao trocar de seção.
-   Motivos corrigidos:
-   - variação da barra de rolagem entre páginas
-   - topbar em flex sem colunas fixas
-   - botão PWA alterando a largura útil
-   ============================================================ */
-
-@media (min-width: 1025px) {
+/* ---------- tablet / menu gaveta ---------- */
+@media (max-width: 1024px) {
     html,
     body.corpo-dashboard {
-        scrollbar-gutter: auto !important;
+        width: 100%;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
     }
 
-    /* A área principal sempre reserva o espaço da barra de rolagem */
-    .conteudo-principal {
-        overflow-y: scroll !important;
+    body.menu-mobile-aberto { overflow: hidden !important; }
+
+    .layout-sistema {
+        display: block !important;
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .sidebar {
+        position: fixed !important;
+        inset: 0 auto 0 0 !important;
+        z-index: 3000 !important;
+        width: min(300px, 84vw) !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        transform: translateX(-105%) !important;
+        transition: transform .24s ease !important;
+        box-shadow: 14px 0 32px rgba(0,0,0,.22) !important;
+        overflow: hidden !important;
+    }
+
+    body.menu-mobile-aberto .sidebar { transform: translateX(0) !important; }
+
+    .sidebar-topo {
+        flex: 0 0 72px !important;
+        min-height: 72px !important;
+        padding: 13px 15px !important;
+    }
+
+    .sidebar-menu {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 3px !important;
+        padding: 10px 8px 14px !important;
+        overflow-y: auto !important;
         overflow-x: hidden !important;
-        scrollbar-gutter: stable !important;
+        -webkit-overflow-scrolling: touch;
     }
 
-    /* Topbar com colunas fixas:
-       1) marca
-       2) usuário
-       3) ações / instalar app
-       Assim nada "pula" quando troca de página */
-    .topbar {
-        display: grid !important;
-        grid-template-columns: minmax(320px, 1fr) 240px 210px !important;
+    .sidebar .menu-item {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        min-height: 46px !important;
+        padding: 12px 14px !important;
+        border-radius: 9px !important;
+        white-space: normal !important;
+    }
+
+    .sidebar-sair { flex: 0 0 auto !important; padding: 7px 8px !important; }
+
+    .btn-menu-mobile,
+    .btn-fechar-menu-mobile {
+        display: inline-flex !important;
         align-items: center !important;
-        column-gap: 18px !important;
-        row-gap: 0 !important;
-        justify-content: stretch !important;
+        justify-content: center !important;
+        border-radius: 9px !important;
+        cursor: pointer !important;
     }
 
-    .topbar > * {
+    .btn-menu-mobile {
+        width: 42px !important;
+        height: 42px !important;
+        flex: 0 0 42px !important;
+        border: 1px solid #eadede !important;
+        background: #fff !important;
+        color: var(--x-vermelho) !important;
+        font-size: 22px !important;
+    }
+
+    .btn-fechar-menu-mobile {
+        width: 38px !important;
+        height: 38px !important;
+        flex: 0 0 38px !important;
+        margin-left: auto !important;
+        border: 1px solid rgba(255,255,255,.16) !important;
+        background: rgba(255,255,255,.08) !important;
+        color: #fff !important;
+        font-size: 22px !important;
+    }
+
+    .sidebar-overlay {
+        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 2900 !important;
+        background: rgba(0,0,0,.45) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transition: .2s ease !important;
+        backdrop-filter: blur(2px);
+    }
+
+    body.menu-mobile-aberto .sidebar-overlay {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+    .conteudo-principal {
+        width: 100% !important;
+        height: 100dvh !important;
         min-width: 0 !important;
+        min-height: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .topbar {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1200 !important;
+        width: 100% !important;
+        height: 64px !important;
+        min-height: 64px !important;
+        padding: 0 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        background: #fff !important;
     }
 
     .topbar-marca {
-        grid-column: 1 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 14px !important;
+        flex: 1 1 auto !important;
         min-width: 0 !important;
         overflow: hidden !important;
-    }
-
-    .topbar-logo {
-        flex: 0 0 38px !important;
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
-        min-height: 38px !important;
-        max-width: 38px !important;
-        max-height: 38px !important;
-        object-fit: cover !important;
-        border-radius: 50% !important;
-    }
-
-    .topbar-textos {
-        min-width: 0 !important;
-        overflow: hidden !important;
-    }
-
-    .topbar-titulo,
-    .topbar-sub {
-        display: block !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
     }
 
     .topbar-usuario {
-        grid-column: 2 !important;
-        justify-self: center !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 10px !important;
-        width: 240px !important;
-        min-width: 240px !important;
-        max-width: 240px !important;
-        overflow: hidden !important;
-        text-align: center !important;
+        flex: 0 0 auto !important;
+        margin-left: auto !important;
     }
 
-    .usuario-info {
-        min-width: 0 !important;
-        overflow: hidden !important;
-    }
-
-    .usuario-info strong,
-    .usuario-info span {
-        display: block !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-    }
-
-    .topbar .btn-instalar-pwa {
-        grid-column: 3 !important;
-        justify-self: end !important;
-        align-self: center !important;
-        width: 210px !important;
-        min-width: 210px !important;
-        max-width: 210px !important;
-        min-height: 44px !important;
-        padding: 10px 14px !important;
-        white-space: nowrap !important;
-    }
-
-    /* Se o botão estiver oculto, as colunas 1 e 2 continuam fixas
-       e a terceira fica apenas vazia — evitando pulo visual. */
-    .topbar .btn-instalar-pwa[style*="display: none"] {
-        display: inline-flex !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-    }
-
-    /* Garantia extra: mesma altura para todo o bloco */
-    .topbar,
-    .topbar-marca,
-    .topbar-usuario {
-        min-height: 70px !important;
-        max-height: 70px !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Em telas um pouco menores, reduzimos apenas as larguras,
-       sem quebrar a estrutura */
     .dashboard-container,
     .relatorios-container {
-        padding-top: 28px !important;
-    }
-}
-
-@media (min-width: 1025px) and (max-width: 1320px) {
-    .topbar {
-        grid-template-columns: minmax(260px, 1fr) 220px 190px !important;
-        column-gap: 14px !important;
-        padding-left: 24px !important;
-        padding-right: 24px !important;
-    }
-
-    .topbar-usuario {
-        width: 220px !important;
-        min-width: 220px !important;
-        max-width: 220px !important;
-    }
-
-    .topbar .btn-instalar-pwa {
-        width: 190px !important;
-        min-width: 190px !important;
-        max-width: 190px !important;
-        font-size: 12px !important;
-    }
-}
-
-
-/* ============================================================
-   X-BURGUER 2.8 - SEM BARRA BRANCA + TRANSIÇÃO SUAVE
-   ============================================================ */
-
-@media (min-width: 1025px) {
-    /* A faixa branca da esquerda vinha do "both-edges".
-       O espaço da barra de rolagem agora fica somente onde deve:
-       dentro da área de conteúdo, no lado direito. */
-    html,
-    body.corpo-dashboard {
-        scrollbar-gutter: auto !important;
-    }
-
-    .conteudo-principal {
-        overflow-y: scroll !important;
-        scrollbar-gutter: stable !important;
-    }
-
-    /* Sidebar encostada corretamente na borda esquerda */
-    .layout-sistema {
-        margin-left: 0 !important;
-        padding-left: 0 !important;
-    }
-
-    .sidebar {
-        margin-left: 0 !important;
-        left: 0 !important;
-    }
-}
-
-/* Animação leve apenas no conteúdo da seção.
-   Sidebar e topbar ficam paradas, evitando sensação de "pulo". */
-body.corpo-dashboard .dashboard-container,
-body.corpo-dashboard .relatorios-container {
-    animation: xburguerEntradaSecao .20s cubic-bezier(.2,.7,.3,1) both;
-    transform-origin: top center;
-}
-
-body.corpo-dashboard.trocando-secao .dashboard-container,
-body.corpo-dashboard.trocando-secao .relatorios-container {
-    opacity: 0 !important;
-    transform: translateY(4px) !important;
-    transition:
-        opacity .12s ease,
-        transform .12s ease !important;
-}
-
-@keyframes xburguerEntradaSecao {
-    from {
-        opacity: 0;
-        transform: translateY(5px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Respeita quem prefere menos movimento */
-@media (prefers-reduced-motion: reduce) {
-    body.corpo-dashboard .dashboard-container,
-    body.corpo-dashboard .relatorios-container {
-        animation: none !important;
-    }
-
-    body.corpo-dashboard.trocando-secao .dashboard-container,
-    body.corpo-dashboard.trocando-secao .relatorios-container {
-        transition: none !important;
-        transform: none !important;
-    }
-}
-
-
-/* ============================================================
-   X-BURGUER 2.9 - CORREÇÃO DEFINITIVA DA FAIXA ESQUERDA
-   ============================================================ */
-
-@media (min-width: 1025px) {
-    /* A página raiz não cria mais gutter/margem lateral.
-       A única rolagem vertical fica dentro do conteúdo principal. */
-    html,
-    body.corpo-dashboard {
-        margin: 0 !important;
-        padding: 0 !important;
         width: 100% !important;
-        height: 100% !important;
-        max-width: none !important;
-        overflow: hidden !important;
-        scrollbar-gutter: auto !important;
-        background: #7a0b0b !important;
-    }
-
-    /* O sistema ocupa literalmente todo o viewport.
-       Isso impede qualquer espaço branco antes da sidebar. */
-    .layout-sistema {
-        position: fixed !important;
-        inset: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        transform: none !important;
-        overflow: hidden !important;
-    }
-
-    .sidebar {
-        position: relative !important;
-        left: auto !important;
-        top: auto !important;
-        margin: 0 !important;
-        padding-left: 0 !important;
-        transform: none !important;
-        flex: 0 0 260px !important;
-        width: 260px !important;
-        min-width: 260px !important;
-        max-width: 260px !important;
-    }
-
-    /* Reserva estável apenas para a barra de rolagem do CONTEÚDO,
-       no lado direito. */
-    .conteudo-principal {
-        position: relative !important;
-        flex: 1 1 auto !important;
-        width: auto !important;
+        max-width: 100% !important;
         min-width: 0 !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        padding: 20px 16px 28px !important;
         overflow-x: hidden !important;
-        overflow-y: scroll !important;
-        scrollbar-gutter: stable !important;
-        background: #f4f6f9 !important;
     }
 
-    /* Topo permanece travado e sem deslocamento */
-    .topbar {
-        margin: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
+    .cards-grid,
+    .cards-relatorio-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+        gap: 14px !important;
+    }
+
+    .inferior-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+    .config-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+
+    .painel-tabela,
+    .tabela-relatorio-box,
+    .painel-bloco,
+    .config-card,
+    .filtros-box,
+    .aba-card {
         width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
     }
-}
 
+    .tabela-scroll,
+    .painel-tabela > div[style*="overflow-x"],
+    .tabela-relatorio-box > div[style*="overflow-x"] {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+    }
 
-/* ============================================================
-   X-BURGUER 3.0 - ROLAGEM DE MODAL NO TABLET
-   Corrige o modal "Novo Consumo" e os demais modais longos.
-   Em tablets, a rolagem passa a acontecer no fundo do modal,
-   evitando travamento de scroll por toque em navegadores móveis.
-   ============================================================ */
+    .tabela-dados { min-width: 680px !important; }
 
-@media (min-width: 600px) and (max-width: 1024px) {
     .modal-fundo {
         position: fixed !important;
         inset: 0 !important;
         width: 100vw !important;
         height: 100dvh !important;
         max-height: 100dvh !important;
-
         display: flex !important;
         align-items: flex-start !important;
         justify-content: center !important;
-
         overflow-x: hidden !important;
         overflow-y: auto !important;
-
         -webkit-overflow-scrolling: touch !important;
-        overscroll-behavior-y: auto !important;
         touch-action: pan-y !important;
-
-        padding:
-            max(16px, env(safe-area-inset-top))
-            16px
-            max(20px, env(safe-area-inset-bottom)) !important;
+        padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)) !important;
     }
 
     .modal-caixa {
         flex: 0 0 auto !important;
-
         width: min(560px, calc(100vw - 32px)) !important;
         max-width: 560px !important;
-
         height: auto !important;
         min-height: 0 !important;
         max-height: none !important;
-
         margin: 0 auto !important;
-
         overflow: visible !important;
-        overscroll-behavior: auto !important;
         touch-action: pan-y !important;
-
-        box-sizing: border-box !important;
-        border-radius: 14px !important;
     }
 
     .modal-caixa form {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-
         height: auto !important;
         max-height: none !important;
-
         overflow: visible !important;
-        touch-action: pan-y !important;
-    }
-
-    .modal-topo,
-    .grupo-input-modal,
-    .modal-botoes {
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Dá uma folga extra no fim para os botões Salvar/Cancelar
-       não ficarem colados à borda inferior do tablet. */
-    .modal-botoes {
-        margin-bottom: 4px !important;
     }
 }
 
-/* Tablet em modo paisagem: aproveita mais a altura disponível,
-   mantendo a mesma rolagem por toque. */
-@media (min-width: 600px) and (max-width: 1024px) and (orientation: landscape) {
+/* ---------- celular ---------- */
+@media (max-width: 700px) {
+    html,
+    body:not(.corpo-dashboard) {
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .pagina-login {
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: minmax(190px, 31dvh) minmax(0,1fr) !important;
+        overflow: hidden !important;
+    }
+
+    .lado-esquerdo {
+        width: 100% !important;
+        min-height: 0 !important;
+        padding: 16px !important;
+        overflow: hidden !important;
+    }
+
+    .imagem-logo {
+        width: clamp(90px, 25vw, 115px) !important;
+        height: clamp(90px, 25vw, 115px) !important;
+        margin-bottom: 7px !important;
+    }
+
+    .texto-sistema { margin: 2px 0 !important; font-size: 13px !important; }
+
+    .lado-direito {
+        width: 100% !important;
+        min-height: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        align-items: flex-start !important;
+        border-radius: 24px 24px 0 0 !important;
+    }
+
+    .caixa-login {
+        width: 100% !important;
+        max-width: 480px !important;
+        margin: 0 auto !important;
+        padding: 24px 20px 28px !important;
+    }
+
+    .grupo-input input { min-height: 48px !important; font-size: 16px !important; }
+    .btn-entrar { min-height: 48px !important; }
+
+    .topbar {
+        height: calc(58px + env(safe-area-inset-top)) !important;
+        min-height: calc(58px + env(safe-area-inset-top)) !important;
+        padding: env(safe-area-inset-top) 12px 0 !important;
+        justify-content: space-between !important;
+    }
+
+    .topbar-marca { display: none !important; }
+    .info-usuario { display: none !important; }
+
+    .btn-menu-mobile {
+        width: 40px !important;
+        height: 40px !important;
+        flex-basis: 40px !important;
+        border: 0 !important;
+        background: transparent !important;
+        color: #20252b !important;
+    }
+
+    .avatar-admin {
+        width: 38px !important;
+        height: 38px !important;
+        background: var(--x-vermelho) !important;
+    }
+
+    .dashboard-container,
+    .relatorios-container {
+        padding: 18px 12px 24px !important;
+    }
+
+    .dashboard-cabecalho,
+    .topo-acoes {
+        display: grid !important;
+        grid-template-columns: minmax(0,1fr) auto !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .dashboard-cabecalho h1,
+    .topo-acoes h1 {
+        margin: 0 !important;
+        font-size: clamp(22px, 6.4vw, 28px) !important;
+        line-height: 1.15 !important;
+    }
+
+    .dashboard-cabecalho > .btn-novo-funcionario,
+    .dashboard-cabecalho > button,
+    .btn-novo-funcionario {
+        width: auto !important;
+        max-width: 170px !important;
+        min-height: 42px !important;
+        padding: 10px 12px !important;
+        white-space: normal !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+        gap: 10px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .card-resumo {
+        min-height: 132px !important;
+        padding: 14px 12px !important;
+        overflow: hidden !important;
+    }
+
+    .card-topo { gap: 8px !important; margin-bottom: 10px !important; }
+    .icone-caixa { width: 36px !important; height: 36px !important; flex: 0 0 36px !important; }
+    .card-titulo { font-size: 10px !important; line-height: 1.25 !important; }
+    .card-valor { font-size: 28px !important; line-height: 1 !important; }
+    .card-rodape { font-size: 10px !important; line-height: 1.25 !important; }
+
+    .painel-bloco { padding: 15px !important; }
+    .painel-cabecalho { gap: 9px !important; flex-wrap: nowrap !important; }
+    .painel-cabecalho h3 { font-size: 16px !important; }
+    .link-ver-todos { flex: 0 0 auto !important; font-size: 11px !important; }
+
+    /* tabelas viram registros enquadrados, sem corte lateral */
+    .tabela-scroll,
+    .painel-tabela > div[style*="overflow-x"],
+    .tabela-relatorio-box > div[style*="overflow-x"] {
+        overflow: visible !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .tabela-dados {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        background: #fff !important;
+    }
+
+    .tabela-dados thead,
+    .tabela-dados .mobile-header-row { display: none !important; }
+
+    .tabela-dados tbody {
+        display: block !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .tabela-dados tbody tr {
+        display: grid !important;
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 11px 12px !important;
+        gap: 9px 12px !important;
+        border-bottom: 1px solid #e9ebee !important;
+        background: #fff !important;
+        overflow: hidden !important;
+    }
+
+    .tabela-dados tbody td {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        border: 0 !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        text-align: left !important;
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+    }
+
+    .tabela-dados tbody td::before {
+        content: attr(data-label) !important;
+        display: block !important;
+        margin-bottom: 3px !important;
+        color: #7a7f87 !important;
+        font-size: 9px !important;
+        line-height: 1.15 !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: .25px !important;
+    }
+
+    .tabela-dados tbody td[data-label=""]::before,
+    .tabela-dados tbody td.mobile-cell-full::before { display: none !important; content: none !important; }
+
+    .tabela-dados tbody td:first-child { grid-column: 1 / -1 !important; }
+    .tabela-dados tbody td[colspan],
+    .tabela-dados tbody td.mobile-cell-full { grid-column: 1 / -1 !important; text-align: center !important; padding: 12px 4px !important; }
+
+    .tabela-dados tbody td[style*="display:flex"],
+    .tabela-dados tbody td[style*="display: flex"] { display: block !important; padding-left: 0 !important; }
+
+    .tabela-dados tbody td:first-child .avatar-letra {
+        display: inline-flex !important;
+        vertical-align: middle !important;
+        margin-right: 8px !important;
+    }
+
+    .tabela-dados tbody td:last-child > div,
+    .tabela-dados .coluna-acoes { justify-content: flex-start !important; flex-wrap: wrap !important; }
+
+    .barra-pesquisa {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 12px !important;
+        overflow: hidden !important;
+    }
+
+    .barra-pesquisa input,
+    .barra-pesquisa select {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 44px !important;
+        font-size: 16px !important;
+    }
+
+    .painel-tabela > [id^="status-"] {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 8px 12px 10px !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    .abas-relatorio { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .aba-card { width: 100% !important; padding: 14px 16px !important; }
+
+    .relatorios-container .topo-acoes { grid-template-columns: 1fr !important; align-items: stretch !important; }
+    .relatorios-container .topo-acoes > div:last-child {
+        display: grid !important;
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+        width: 100% !important;
+        gap: 8px !important;
+    }
+
+    .relatorios-container .topo-acoes .btn-visualizar,
+    .relatorios-container .topo-acoes .btn-imprimir {
+        width: 100% !important;
+        min-height: 44px !important;
+        justify-content: center !important;
+    }
+
+    .filtros-box {
+        display: grid !important;
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+        gap: 12px 10px !important;
+        padding: 14px !important;
+        align-items: end !important;
+        overflow: hidden !important;
+    }
+
+    .filtro-grupo { width: 100% !important; min-width: 0 !important; }
+    .filtro-grupo label { display: block !important; margin-bottom: 6px !important; white-space: normal !important; }
+    .filtro-grupo input,
+    .filtro-grupo select,
+    #grupo-filtro-func select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        min-height: 44px !important;
+        font-size: 13px !important;
+    }
+
+    #grupo-filtro-func { grid-column: 1 / -1 !important; }
+    .filtros-box > .btn-visualizar { grid-column: 1 / -1 !important; width: 100% !important; min-height: 44px !important; justify-content: center !important; }
+
+    .cards-relatorio-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 10px !important; }
+    .card-stat { min-width: 0 !important; overflow: hidden !important; }
+    .card-stat-title,
+    .card-stat-value { max-width: 100% !important; overflow-wrap: anywhere !important; }
+
+    .config-grid { grid-template-columns: 1fr !important; }
+
+    /* modal mobile: rolagem no próprio painel */
     .modal-fundo {
-        padding-top: 12px !important;
-        padding-bottom: 16px !important;
+        padding: 0 !important;
+        align-items: flex-end !important;
+        overflow: hidden !important;
     }
 
     .modal-caixa {
-        width: min(600px, calc(100vw - 40px)) !important;
-        max-width: 600px !important;
+        width: 100% !important;
+        max-width: none !important;
+        max-height: 92dvh !important;
+        margin: 0 !important;
+        padding: 20px 18px calc(20px + env(safe-area-inset-bottom)) !important;
+        border-radius: 20px 20px 0 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
     }
+
+    .grupo-input-modal input,
+    .grupo-input-modal select,
+    .grupo-input-modal textarea { width: 100% !important; max-width: 100% !important; min-height: 44px !important; font-size: 16px !important; }
+
+    .modal-botoes { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+    .modal-botoes button { width: 100% !important; min-height: 44px !important; }
+}
+
+@media (max-width: 370px) {
+    .dashboard-container,
+    .relatorios-container { padding-left: 9px !important; padding-right: 9px !important; }
+
+    .dashboard-cabecalho,
+    .topo-acoes { grid-template-columns: 1fr !important; }
+
+    .dashboard-cabecalho > .btn-novo-funcionario,
+    .dashboard-cabecalho > button,
+    .btn-novo-funcionario { width: 100% !important; max-width: none !important; }
+
+    .filtros-box { grid-template-columns: 1fr !important; }
+    #grupo-filtro-func,
+    .filtros-box > .btn-visualizar { grid-column: 1 !important; }
+
+    .modal-botoes { grid-template-columns: 1fr !important; }
+}
+
+/* ---------- transição leve entre seções ---------- */
+body.corpo-dashboard .dashboard-container,
+body.corpo-dashboard .relatorios-container {
+    animation: xburguerEntradaSecao .18s cubic-bezier(.2,.7,.3,1) both;
+    transform-origin: top center;
+}
+
+body.corpo-dashboard.trocando-secao .dashboard-container,
+body.corpo-dashboard.trocando-secao .relatorios-container {
+    opacity: 0 !important;
+    transform: translateY(3px) !important;
+    transition: opacity .10s ease, transform .10s ease !important;
+}
+
+@keyframes xburguerEntradaSecao {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.corpo-dashboard .dashboard-container,
+    body.corpo-dashboard .relatorios-container { animation: none !important; }
+    body.corpo-dashboard.trocando-secao .dashboard-container,
+    body.corpo-dashboard.trocando-secao .relatorios-container { transition: none !important; transform: none !important; }
 }

@@ -62,28 +62,15 @@
 
     function atualizarUsuarioTopo(session) {
         const user = session?.user;
-        if (!user) return;
-
-        const nomeCompleto =
-            user.user_metadata?.nome ||
-            user.user_metadata?.full_name ||
-            user.email?.split("@")[0] ||
-            "Administrador";
-
-        const nome = nomeCompleto
-            .split(/[._-]/)
-            .filter(Boolean)
-            .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-            .join(" ");
-
         const saudacao = document.querySelector(".saudacao");
+        const cargo = document.querySelector(".cargo");
         const avatar = document.querySelector(".avatar-admin");
 
-        if (saudacao) saudacao.textContent = `Olá, ${nome}`;
-        if (avatar) avatar.textContent = nome.charAt(0).toUpperCase() || "A";
+        if (saudacao) saudacao.textContent = "X-Burguer";
+        if (cargo) cargo.textContent = "Sistema de Gestão";
+        if (avatar) avatar.textContent = "X";
 
-        definirTexto("config-usuario", user.email || nome);
-        definirTexto("config-sessao", "Autenticada");
+        return user;
     }
 
     function contarPendenciasLocais() {

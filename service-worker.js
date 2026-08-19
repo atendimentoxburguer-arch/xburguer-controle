@@ -1,4 +1,4 @@
-const CACHE_NAME = "xburguer-pwa-v3.1.0";
+const CACHE_NAME = "xburguer-pwa-v3.2.0";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -53,37 +53,36 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
     const request = event.request;
-
     if (request.method !== "GET") return;
 
     const url = new URL(request.url);
 
-    // Supabase/CDNs continuam fora do cache do app.
+    // Supabase, Google Fonts, jsDelivr e qualquer outro domínio ficam fora do cache local.
     if (url.origin !== self.location.origin) return;
 
-    // Network-first: publica uma correção e o aparelho recebe a versão nova,
-    // usando cache apenas quando a internet falhar.
-    event.respondWith(
-        fetch(request)
-            .then(response => {
-                if (response && response.ok) {
-                    const clone = response.clone();
-                    caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
-                }
-                return response;
-            })
-            .catch(async () => {
-                const cached = await caches.match(request);
-                if (cached) return cached;
+    event.respondWith((async () => {
+        try {
+            // Para arquivos do próprio sistema, força revalidação de rede.
+            const networkRequest = new Request(request, { cache: "no-store" });
+            const response = await fetch(networkRequest);
 
-                if (request.mode === "navigate") {
-                    return (
-                        await caches.match("./CONTROLE%20DE%20CONSUMO/login.html") ||
-                        await caches.match("./offline.html")
-                    );
-                }
+            if (response && response.ok) {
+                const cache = await caches.open(CACHE_NAME);
+                cache.put(request, response.clone());
+            }
+            return response;
+        } catch (_) {
+            const cached = await caches.match(request, { ignoreSearch: true });
+            if (cached) return cached;
 
-                return Response.error();
-            })
-    );
+            if (request.mode === "navigate") {
+                return (
+                    await caches.match("./CONTROLE%20DE%20CONSUMO/login.html", { ignoreSearch: true }) ||
+                    await caches.match("./offline.html", { ignoreSearch: true })
+                );
+            }
+
+            return Response.error();
+        }
+    })());
 });
