@@ -2041,3 +2041,470 @@ body.saindo-sistema {
         width: min(560px, calc(100vw - 48px)) !important;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 2.2 - CORREÇÃO DE RESPONSIVIDADE
+   - impede rolagem da página inteira "sem fim"
+   - mantém o sistema preso à altura da tela
+   - conteúdo interno é que rola
+   - tabelas viram cartões no celular
+   - impede informações saindo dos blocos
+   ============================================================ */
+
+@media (max-width: 1024px) {
+    html {
+        height: 100%;
+        overflow: hidden !important;
+    }
+
+    body.corpo-dashboard {
+        width: 100%;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        background: #f4f6f9;
+    }
+
+    .layout-sistema {
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        display: block !important;
+    }
+
+    .conteudo-principal {
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        position: relative;
+    }
+
+    .topbar {
+        position: sticky !important;
+        top: 0;
+        z-index: 1200;
+        flex: 0 0 auto;
+    }
+
+    .dashboard-container,
+    .relatorios-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow-x: hidden !important;
+        padding-bottom: 28px !important;
+    }
+
+    .dashboard-container > *,
+    .relatorios-container > *,
+    .cards-grid > *,
+    .cards-relatorio-grid > *,
+    .inferior-grid > *,
+    .config-grid > * {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .card-resumo,
+    .card-stat,
+    .painel-bloco,
+    .painel-tabela,
+    .tabela-relatorio-box,
+    .config-card,
+    .aba-card,
+    .filtros-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow: hidden;
+    }
+
+    .painel-cabecalho,
+    .dashboard-cabecalho,
+    .topo-acoes,
+    .config-cabecalho {
+        max-width: 100% !important;
+    }
+
+    .painel-cabecalho > *,
+    .dashboard-cabecalho > *,
+    .topo-acoes > *,
+    .config-cabecalho > * {
+        min-width: 0;
+    }
+
+    .painel-cabecalho h3,
+    .dashboard-cabecalho h1,
+    .topo-acoes h1,
+    .config-cabecalho h1,
+    .card-titulo,
+    .card-rodape,
+    .config-texto,
+    .config-aviso,
+    .config-aviso-suave {
+        overflow-wrap: anywhere;
+    }
+
+    .sidebar {
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        min-height: 0 !important;
+    }
+
+    .sidebar-menu {
+        min-height: 0 !important;
+    }
+
+    .modal-fundo {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        overflow: hidden !important;
+    }
+
+    .modal-caixa {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+    }
+}
+
+/* Celular: o corpo NÃO rola. Apenas a área branca do login rola, se necessário. */
+@media (max-width: 700px) {
+    html,
+    body:not(.corpo-dashboard) {
+        width: 100%;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .pagina-login {
+        width: 100% !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        max-height: 100dvh !important;
+        overflow: hidden !important;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: minmax(190px, 32dvh) minmax(0, 1fr) !important;
+    }
+
+    .lado-esquerdo {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        padding: 16px !important;
+    }
+
+    .conteudo-esquerda {
+        max-height: 100%;
+        justify-content: center;
+    }
+
+    .imagem-logo {
+        width: clamp(92px, 26vw, 118px) !important;
+        height: clamp(92px, 26vw, 118px) !important;
+        margin-bottom: 7px !important;
+    }
+
+    .texto-sistema {
+        margin: 2px 0 !important;
+        font-size: 13px !important;
+    }
+
+    .lado-direito {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        border-radius: 24px 24px 0 0 !important;
+    }
+
+    .caixa-login {
+        width: 100% !important;
+        max-width: 480px !important;
+        min-height: 0 !important;
+        margin: 0 auto !important;
+        padding: 24px 20px 26px !important;
+    }
+
+    /* Cabeçalhos e botões nunca escapam do bloco */
+    .dashboard-cabecalho,
+    .topo-acoes,
+    .painel-cabecalho,
+    .config-cabecalho {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .dashboard-cabecalho > .btn-novo-funcionario,
+    .dashboard-cabecalho > button,
+    .config-cabecalho button {
+        width: 100% !important;
+    }
+
+    .titulo-com-icone {
+        min-width: 0;
+    }
+
+    /* Status de banco dentro do painel, com espaço nas bordas */
+    .painel-tabela > [id^="status-"] {
+        margin: 0 !important;
+        padding: 0 14px 12px !important;
+        overflow-wrap: anywhere;
+    }
+
+    /* Barra de pesquisa/filtro sempre dentro do painel */
+    .barra-pesquisa {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 12px !important;
+        overflow: hidden !important;
+    }
+
+    .barra-pesquisa input,
+    .barra-pesquisa select {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    /* ===== TABELAS COMO CARTÕES NO CELULAR ===== */
+    .tabela-scroll,
+    .painel-tabela > div[style*="overflow-x"],
+    .tabela-relatorio-box > div[style*="overflow-x"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+
+    .tabela-dados {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        border-collapse: separate !important;
+        background: transparent !important;
+    }
+
+    .tabela-dados thead,
+    .tabela-dados .mobile-header-row {
+        display: none !important;
+    }
+
+    .tabela-dados tbody {
+        display: grid !important;
+        width: 100% !important;
+        gap: 10px;
+        padding: 10px 12px 4px;
+    }
+
+    .tabela-dados tbody tr {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0,0,0,.03);
+    }
+
+    .tabela-dados tbody td {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        padding: 9px 12px !important;
+        text-align: left !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word;
+        border-bottom: 1px solid #f2f2f2 !important;
+        line-height: 1.35;
+    }
+
+    .tabela-dados tbody td:last-child {
+        border-bottom: 0 !important;
+    }
+
+    .tabela-dados tbody td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 3px;
+        color: #8b8b8b;
+        font-size: 9px;
+        line-height: 1.2;
+        font-weight: 900;
+        letter-spacing: .35px;
+        text-transform: uppercase;
+    }
+
+    .tabela-dados tbody td[data-label=""]::before,
+    .tabela-dados tbody td.mobile-cell-full::before {
+        display: none;
+    }
+
+    .tabela-dados tbody td.mobile-cell-full {
+        text-align: center !important;
+        padding: 18px 12px !important;
+    }
+
+    /* Avatares dentro das tabelas ocupavam espaço e empurravam o texto */
+    .tabela-dados tbody td .avatar-letra {
+        display: none !important;
+    }
+
+    .tabela-dados tbody td[style*="display:flex"],
+    .tabela-dados tbody td[style*="display: flex"] {
+        display: block !important;
+        padding-left: 12px !important;
+    }
+
+    .tabela-dados tbody td > div {
+        max-width: 100%;
+    }
+
+    .tabela-dados tbody td .badge-ativo,
+    .tabela-dados tbody td .badge-inativo {
+        display: inline-flex;
+    }
+
+    .tabela-dados tbody td .coluna-acoes,
+    .tabela-dados tbody td:last-child > div {
+        justify-content: flex-start !important;
+    }
+
+    .tabela-rodape {
+        width: 100%;
+        padding: 11px 12px !important;
+    }
+
+    /* Relatórios: tabela dinâmica também vira cartão */
+    #tabela-relatorio-conteudo tbody {
+        padding-top: 8px;
+    }
+
+    /* Cards e painéis */
+    .cards-grid,
+    .cards-relatorio-grid,
+    .inferior-grid,
+    .config-grid {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .card-resumo,
+    .card-stat,
+    .painel-bloco,
+    .config-card {
+        overflow: hidden !important;
+    }
+
+    .card-valor,
+    .card-stat-value {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    /* Últimos consumos não ultrapassam o bloco */
+    .item-registro,
+    .detalhes-registro,
+    .valor-data-registro {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .nome-registro,
+    .sub-registro,
+    .data-reg {
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+    }
+
+    /* Gráfico fica inteiramente dentro do painel */
+    .grafico-simulado,
+    .eixo-x {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .corpo-grafico {
+        overflow: hidden !important;
+    }
+
+    /* Configurações */
+    .config-status-item,
+    .config-info-menor > div {
+        max-width: 100%;
+    }
+
+    .config-status-item strong,
+    .config-info-menor strong,
+    .config-status-linha {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* Aparelhos muito estreitos */
+@media (max-width: 420px) {
+    .pagina-login {
+        grid-template-rows: minmax(165px, 28dvh) minmax(0, 1fr) !important;
+    }
+
+    .imagem-logo {
+        width: 86px !important;
+        height: 86px !important;
+    }
+
+    .caixa-login {
+        padding: 20px 16px 24px !important;
+    }
+
+    .caixa-login h2 {
+        font-size: 23px !important;
+    }
+
+    .subtitulo {
+        margin-bottom: 18px !important;
+    }
+
+    .grupo-input {
+        margin-bottom: 14px !important;
+    }
+
+    .opcoes-login {
+        margin-bottom: 18px !important;
+    }
+
+    .dashboard-container,
+    .relatorios-container {
+        padding: 12px 9px 20px !important;
+    }
+
+    .painel-bloco {
+        padding: 12px !important;
+    }
+
+    .tabela-dados tbody {
+        padding-left: 9px;
+        padding-right: 9px;
+    }
+}

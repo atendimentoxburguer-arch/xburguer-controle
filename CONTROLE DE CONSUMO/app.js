@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "2.1.0";
+    window.XBURGUER_VERSAO = "2.2.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     // A proteção das páginas agora usa a sessão real do Supabase, não sessionStorage.
@@ -183,19 +183,83 @@
 
 
     function prepararTabelasResponsivas() {
-        document.querySelectorAll("table.tabela-dados").forEach(function (tabela) {
-            if (tabela.parentElement && tabela.parentElement.classList.contains("tabela-scroll")) {
-                return;
+        function aplicarRotulos(tabela) {
+            if (!tabela) return;
+
+            let cabecalhos = Array.from(
+                tabela.querySelectorAll("thead th")
+            ).map(th => th.textContent.trim());
+
+            let linhaCabecalhoInline = null;
+
+            if (!cabecalhos.length) {
+                linhaCabecalhoInline = Array.from(
+                    tabela.querySelectorAll("tr")
+                ).find(tr => tr.querySelector("th"));
+
+                if (linhaCabecalhoInline) {
+                    cabecalhos = Array.from(
+                        linhaCabecalhoInline.querySelectorAll("th")
+                    ).map(th => th.textContent.trim());
+
+                    linhaCabecalhoInline.classList.add("mobile-header-row");
+                }
             }
 
-            const wrapper = document.createElement("div");
-            wrapper.className = "tabela-scroll";
-            wrapper.setAttribute("tabindex", "0");
-            wrapper.setAttribute("role", "region");
-            wrapper.setAttribute("aria-label", "Tabela com rolagem horizontal em telas pequenas");
+            if (!cabecalhos.length) return;
 
-            tabela.parentNode.insertBefore(wrapper, tabela);
-            wrapper.appendChild(tabela);
+            tabela.querySelectorAll("tbody tr").forEach(tr => {
+                if (tr === linhaCabecalhoInline || tr.querySelector("th")) {
+                    tr.classList.add("mobile-header-row");
+                    return;
+                }
+
+                const celulas = Array.from(tr.children).filter(
+                    el => el.tagName === "TD"
+                );
+
+                celulas.forEach((td, indice) => {
+                    if (Number(td.colSpan || 1) > 1) {
+                        td.dataset.label = "";
+                        td.classList.add("mobile-cell-full");
+                        return;
+                    }
+
+                    td.classList.remove("mobile-cell-full");
+                    td.dataset.label = cabecalhos[indice] || "";
+                });
+            });
+        }
+
+        document.querySelectorAll("table.tabela-dados").forEach(function (tabela) {
+            if (!tabela.closest(".tabela-scroll")) {
+                const wrapper = document.createElement("div");
+                wrapper.className = "tabela-scroll";
+                wrapper.setAttribute("tabindex", "0");
+                wrapper.setAttribute("role", "region");
+                wrapper.setAttribute(
+                    "aria-label",
+                    "Tabela responsiva"
+                );
+
+                tabela.parentNode.insertBefore(wrapper, tabela);
+                wrapper.appendChild(tabela);
+            }
+
+            aplicarRotulos(tabela);
+
+            if (!tabela.dataset.responsiveObserver) {
+                const observer = new MutationObserver(function () {
+                    aplicarRotulos(tabela);
+                });
+
+                observer.observe(tabela, {
+                    childList: true,
+                    subtree: true
+                });
+
+                tabela.dataset.responsiveObserver = "1";
+            }
         });
     }
 
