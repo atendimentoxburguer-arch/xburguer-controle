@@ -1,9 +1,9 @@
 (function () {
-    window.XBURGUER_VERSAO = "3.0.0";
+    window.XBURGUER_VERSAO = "3.1.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     // ========================================================
-    // X-BURGUER PWA 3.0
+    // X-BURGUER PWA 3.1
     // ========================================================
     let xburguerInstallPrompt = null;
 
@@ -504,7 +504,7 @@
         criarAvisoConectividade();
         criarNavegacaoMobile();
         prepararTabelasResponsivas();
-        criarBotaoInstalarPWA();
+        // Botão visual de instalação removido na versão 3.1.
         criarTransicaoSecoes();
 
         // Tenta reenviar ações que ficaram pendentes por falha temporária de conexão.
