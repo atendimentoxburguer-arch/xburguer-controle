@@ -1,4 +1,4 @@
-const CACHE_NAME = "xburguer-pwa-v2.7.0";
+const CACHE_NAME = "xburguer-pwa-v2.8.0";
 const PRECACHE = [
   "./",
   "./index.html",

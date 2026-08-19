@@ -1,9 +1,9 @@
 (function () {
-    window.XBURGUER_VERSAO = "2.7.0";
+    window.XBURGUER_VERSAO = "2.8.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     // ========================================================
-    // X-BURGUER PWA 2.7
+    // X-BURGUER PWA 2.8
     // ========================================================
     let xburguerInstallPrompt = null;
 
@@ -452,12 +452,60 @@
         });
     }
 
+
+    function criarTransicaoSecoes() {
+        if (isLogin) return;
+
+        const links = document.querySelectorAll(".sidebar-menu a[href]");
+
+        links.forEach(function (link) {
+            link.addEventListener("click", function (event) {
+                if (
+                    event.defaultPrevented ||
+                    event.button !== 0 ||
+                    event.ctrlKey ||
+                    event.metaKey ||
+                    event.shiftKey ||
+                    event.altKey ||
+                    link.target === "_blank"
+                ) {
+                    return;
+                }
+
+                const href = link.getAttribute("href");
+                if (!href || href.startsWith("#")) return;
+
+                const destino = new URL(href, window.location.href);
+
+                if (destino.origin !== window.location.origin) return;
+
+                const atual = new URL(window.location.href);
+
+                if (
+                    destino.pathname === atual.pathname &&
+                    destino.search === atual.search
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                document.body.classList.add("trocando-secao");
+
+                window.setTimeout(function () {
+                    window.location.href = destino.href;
+                }, 120);
+            });
+        });
+    }
+
     window.addEventListener("DOMContentLoaded", function () {
         document.documentElement.classList.add("site-pronto");
         criarAvisoConectividade();
         criarNavegacaoMobile();
         prepararTabelasResponsivas();
         criarBotaoInstalarPWA();
+        criarTransicaoSecoes();
 
         // Tenta reenviar ações que ficaram pendentes por falha temporária de conexão.
         if (!isLogin && window.sincronizarHistoricoPendente) {

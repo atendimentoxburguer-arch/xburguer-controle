@@ -4039,3 +4039,76 @@ body.saindo-sistema {
         font-size: 12px !important;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 2.8 - SEM BARRA BRANCA + TRANSIÇÃO SUAVE
+   ============================================================ */
+
+@media (min-width: 1025px) {
+    /* A faixa branca da esquerda vinha do "both-edges".
+       O espaço da barra de rolagem agora fica somente onde deve:
+       dentro da área de conteúdo, no lado direito. */
+    html,
+    body.corpo-dashboard {
+        scrollbar-gutter: auto !important;
+    }
+
+    .conteudo-principal {
+        overflow-y: scroll !important;
+        scrollbar-gutter: stable !important;
+    }
+
+    /* Sidebar encostada corretamente na borda esquerda */
+    .layout-sistema {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    .sidebar {
+        margin-left: 0 !important;
+        left: 0 !important;
+    }
+}
+
+/* Animação leve apenas no conteúdo da seção.
+   Sidebar e topbar ficam paradas, evitando sensação de "pulo". */
+body.corpo-dashboard .dashboard-container,
+body.corpo-dashboard .relatorios-container {
+    animation: xburguerEntradaSecao .20s cubic-bezier(.2,.7,.3,1) both;
+    transform-origin: top center;
+}
+
+body.corpo-dashboard.trocando-secao .dashboard-container,
+body.corpo-dashboard.trocando-secao .relatorios-container {
+    opacity: 0 !important;
+    transform: translateY(4px) !important;
+    transition:
+        opacity .12s ease,
+        transform .12s ease !important;
+}
+
+@keyframes xburguerEntradaSecao {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Respeita quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+    body.corpo-dashboard .dashboard-container,
+    body.corpo-dashboard .relatorios-container {
+        animation: none !important;
+    }
+
+    body.corpo-dashboard.trocando-secao .dashboard-container,
+    body.corpo-dashboard.trocando-secao .relatorios-container {
+        transition: none !important;
+        transform: none !important;
+    }
+}
