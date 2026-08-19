@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "2.0.0";
+    window.XBURGUER_VERSAO = "2.1.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     // A proteção das páginas agora usa a sessão real do Supabase, não sessionStorage.
@@ -181,9 +181,101 @@
 
     window.addEventListener("offline", atualizarAvisoConectividade);
 
+
+    function prepararTabelasResponsivas() {
+        document.querySelectorAll("table.tabela-dados").forEach(function (tabela) {
+            if (tabela.parentElement && tabela.parentElement.classList.contains("tabela-scroll")) {
+                return;
+            }
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "tabela-scroll";
+            wrapper.setAttribute("tabindex", "0");
+            wrapper.setAttribute("role", "region");
+            wrapper.setAttribute("aria-label", "Tabela com rolagem horizontal em telas pequenas");
+
+            tabela.parentNode.insertBefore(wrapper, tabela);
+            wrapper.appendChild(tabela);
+        });
+    }
+
+    function criarNavegacaoMobile() {
+        if (isLogin) return;
+
+        const sidebar = document.querySelector(".sidebar");
+        const topbar = document.querySelector(".topbar");
+        const sidebarTopo = document.querySelector(".sidebar-topo");
+
+        if (!sidebar || !topbar || !sidebarTopo) return;
+        if (document.getElementById("btn-menu-mobile")) return;
+
+        sidebar.id = sidebar.id || "menu-principal";
+
+        const abrir = document.createElement("button");
+        abrir.type = "button";
+        abrir.id = "btn-menu-mobile";
+        abrir.className = "btn-menu-mobile";
+        abrir.innerHTML = "☰";
+        abrir.setAttribute("aria-label", "Abrir menu");
+        abrir.setAttribute("aria-controls", sidebar.id);
+        abrir.setAttribute("aria-expanded", "false");
+
+        topbar.insertBefore(abrir, topbar.firstChild);
+
+        const fechar = document.createElement("button");
+        fechar.type = "button";
+        fechar.className = "btn-fechar-menu-mobile";
+        fechar.innerHTML = "×";
+        fechar.setAttribute("aria-label", "Fechar menu");
+        sidebarTopo.appendChild(fechar);
+
+        const overlay = document.createElement("div");
+        overlay.className = "sidebar-overlay";
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.appendChild(overlay);
+
+        function definirAberto(aberto) {
+            document.body.classList.toggle("menu-mobile-aberto", aberto);
+            abrir.setAttribute("aria-expanded", aberto ? "true" : "false");
+            overlay.setAttribute("aria-hidden", aberto ? "false" : "true");
+        }
+
+        abrir.addEventListener("click", function () {
+            definirAberto(!document.body.classList.contains("menu-mobile-aberto"));
+        });
+
+        fechar.addEventListener("click", function () {
+            definirAberto(false);
+        });
+
+        overlay.addEventListener("click", function () {
+            definirAberto(false);
+        });
+
+        sidebar.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                definirAberto(false);
+            });
+        });
+
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 1024) {
+                definirAberto(false);
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                definirAberto(false);
+            }
+        });
+    }
+
     window.addEventListener("DOMContentLoaded", function () {
         document.documentElement.classList.add("site-pronto");
         criarAvisoConectividade();
+        criarNavegacaoMobile();
+        prepararTabelasResponsivas();
 
         // Tenta reenviar ações que ficaram pendentes por falha temporária de conexão.
         if (!isLogin && window.sincronizarHistoricoPendente) {

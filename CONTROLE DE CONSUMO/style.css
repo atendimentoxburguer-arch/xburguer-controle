@@ -1312,3 +1312,732 @@ body.saindo-sistema {
     visibility: visible;
     transform: translate(-50%, 0);
 }
+
+
+/* ============================================================
+   X-BURGUER 2.1 - RESPONSIVIDADE REAL PARA CELULAR E TABLET
+   ============================================================ */
+
+:root {
+    --mobile-header-height: 64px;
+}
+
+/* Botões criados pelo app.js para navegação móvel */
+.btn-menu-mobile,
+.btn-fechar-menu-mobile,
+.sidebar-overlay {
+    display: none;
+}
+
+.tabela-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+}
+
+.tabela-scroll::-webkit-scrollbar {
+    height: 7px;
+}
+
+.tabela-scroll::-webkit-scrollbar-thumb {
+    background: #d6c2c2;
+    border-radius: 99px;
+}
+
+.tabela-scroll .tabela-dados {
+    margin: 0;
+}
+
+/* Tablets e telas menores */
+@media (max-width: 1024px) {
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    body.corpo-dashboard {
+        min-height: 100dvh;
+        height: auto;
+        overflow-x: hidden;
+    }
+
+    .layout-sistema {
+        display: block !important;
+        width: 100%;
+        height: auto !important;
+        min-height: 100dvh;
+        overflow: visible !important;
+    }
+
+    /* Menu vira gaveta lateral */
+    .sidebar {
+        position: fixed !important;
+        inset: 0 auto 0 0;
+        width: min(300px, 84vw) !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        z-index: 3000;
+        transform: translateX(-105%);
+        transition: transform .26s ease;
+        box-shadow: 14px 0 32px rgba(0,0,0,.22);
+        overflow: hidden;
+    }
+
+    body.menu-mobile-aberto {
+        overflow: hidden !important;
+    }
+
+    body.menu-mobile-aberto .sidebar {
+        transform: translateX(0);
+    }
+
+    .sidebar-topo {
+        min-height: 68px;
+        padding: 14px 16px !important;
+    }
+
+    .sidebar-menu {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 3px !important;
+        padding: 10px 8px 14px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar .menu-item {
+        flex: 0 0 auto !important;
+        width: 100%;
+        min-height: 46px;
+        padding: 12px 14px !important;
+        border-radius: 9px;
+        white-space: normal !important;
+    }
+
+    .sidebar-sair {
+        flex: 0 0 auto;
+        padding: 7px 8px;
+    }
+
+    .btn-fechar-menu-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 9px;
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+    }
+
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 2900;
+        background: rgba(0,0,0,.45);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: .22s ease;
+        backdrop-filter: blur(2px);
+    }
+
+    body.menu-mobile-aberto .sidebar-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .conteudo-principal {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 100dvh;
+        overflow: visible !important;
+    }
+
+    /* Barra superior fica acessível enquanto rola */
+    .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 1200;
+        width: 100%;
+        min-height: var(--mobile-header-height) !important;
+        height: var(--mobile-header-height) !important;
+        padding: 0 16px !important;
+        gap: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+
+    .btn-menu-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        border: 1px solid #eadede;
+        border-radius: 10px;
+        background: #fff;
+        color: #7a0b0b;
+        font-size: 23px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .topbar-marca {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .topbar-usuario {
+        flex: 0 0 auto;
+    }
+
+    .dashboard-container,
+    .relatorios-container {
+        width: 100%;
+        padding: 20px 16px !important;
+    }
+
+    .dashboard-cabecalho,
+    .topo-acoes {
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .cards-grid,
+    .cards-relatorio-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+    }
+
+    .inferior-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .config-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .abas-relatorio {
+        gap: 12px !important;
+    }
+
+    /* Filtros de relatório cabem em tablet sem estourar */
+    .filtros-box {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: end !important;
+        gap: 12px !important;
+        padding: 16px !important;
+    }
+
+    .filtro-grupo {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .filtro-grupo input,
+    .filtro-grupo select {
+        width: 100% !important;
+        min-width: 0;
+    }
+
+    .filtros-box .btn-visualizar {
+        width: 100%;
+        min-height: 42px;
+        justify-content: center;
+    }
+
+    /* Tabelas ficam dentro da tela e deslizam horizontalmente */
+    .painel-tabela,
+    .tabela-relatorio-box {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden !important;
+    }
+
+    .tabela-scroll {
+        max-width: 100%;
+        overflow-x: auto !important;
+    }
+
+    .tabela-dados {
+        min-width: 680px !important;
+    }
+
+    .tabela-dados th,
+    .tabela-dados td {
+        white-space: nowrap;
+    }
+
+    .barra-pesquisa {
+        max-width: 100%;
+    }
+
+    .barra-pesquisa input {
+        max-width: 100% !important;
+    }
+
+    .grafico-simulado {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .painel-bloco {
+        min-width: 0;
+    }
+
+    /* Modais não saem da tela */
+    .modal-fundo {
+        padding: 16px;
+    }
+
+    .modal-caixa {
+        width: min(100%, 520px) !important;
+        max-width: 520px !important;
+        max-height: calc(100dvh - 32px) !important;
+    }
+
+    .grupo-input-modal input,
+    .grupo-input-modal select,
+    .grupo-input-modal textarea {
+        max-width: 100%;
+    }
+}
+
+/* Celulares */
+@media (max-width: 700px) {
+    body {
+        min-height: 100dvh;
+        height: auto;
+    }
+
+    /* Login em coluna */
+    .pagina-login {
+        width: 100%;
+        min-height: 100dvh !important;
+        height: auto !important;
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .lado-esquerdo {
+        flex: none !important;
+        width: 100%;
+        min-height: 31dvh !important;
+        padding: 22px 16px !important;
+    }
+
+    .imagem-logo {
+        width: 118px !important;
+        height: 118px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .texto-sistema {
+        margin: 6px 0;
+        font-size: 14px;
+    }
+
+    .lado-direito {
+        flex: 1 !important;
+        width: 100%;
+        min-height: 69dvh !important;
+        border-radius: 26px 26px 0 0 !important;
+        box-shadow: 0 -8px 24px rgba(0,0,0,.10) !important;
+        align-items: flex-start !important;
+    }
+
+    .caixa-login {
+        width: 100%;
+        max-width: 480px !important;
+        padding: 28px 22px 32px !important;
+        margin: 0 auto;
+    }
+
+    .caixa-login h2 {
+        font-size: 26px;
+    }
+
+    .grupo-input input {
+        min-height: 48px;
+        font-size: 16px !important; /* evita zoom automático no iPhone */
+    }
+
+    .btn-entrar {
+        min-height: 48px;
+    }
+
+    .rodape-login {
+        margin-top: 28px !important;
+    }
+
+    /* Topbar */
+    .topbar {
+        padding: 0 12px !important;
+    }
+
+    .topbar-sub,
+    .info-usuario {
+        display: none !important;
+    }
+
+    .topbar-titulo {
+        font-size: 13px;
+    }
+
+    .logo-mini {
+        width: 30px;
+        height: 30px;
+    }
+
+    .avatar-admin {
+        width: 34px;
+        height: 34px;
+    }
+
+    .dashboard-container,
+    .relatorios-container {
+        padding: 16px 12px 24px !important;
+    }
+
+    .dashboard-cabecalho,
+    .topo-acoes {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        margin-bottom: 16px !important;
+    }
+
+    .dashboard-cabecalho > *,
+    .topo-acoes > * {
+        width: 100%;
+    }
+
+    .dashboard-cabecalho h1,
+    .topo-acoes h1 {
+        font-size: 21px !important;
+        margin-top: 0;
+    }
+
+    .titulo-com-icone {
+        gap: 9px;
+    }
+
+    .btn-novo-funcionario,
+    .btn-atualizar-dashboard,
+    .btn-config-secundario {
+        min-height: 44px;
+    }
+
+    .dashboard-cabecalho > .btn-novo-funcionario {
+        width: 100%;
+    }
+
+    .dashboard-acoes {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .dashboard-acoes .btn-atualizar-dashboard {
+        width: 100%;
+    }
+
+    .cards-grid,
+    .cards-relatorio-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .card-resumo,
+    .card-stat {
+        padding: 15px !important;
+    }
+
+    .card-valor {
+        font-size: 27px !important;
+    }
+
+    .card-stat-value {
+        font-size: 22px !important;
+    }
+
+    .painel-bloco {
+        padding: 14px !important;
+        border-radius: 10px;
+    }
+
+    .painel-cabecalho {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* Últimos registros no Dashboard */
+    .item-registro {
+        display: grid !important;
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 8px 10px;
+        align-items: center;
+    }
+
+    .item-registro .avatar-letra {
+        grid-row: 1 / span 2;
+    }
+
+    .item-registro .detalhes-registro {
+        margin-left: 0 !important;
+        min-width: 0;
+    }
+
+    .item-registro .valor-data-registro {
+        grid-column: 2;
+        text-align: left !important;
+        min-width: 0 !important;
+        align-items: flex-start;
+    }
+
+    .nome-registro,
+    .sub-registro {
+        overflow-wrap: anywhere;
+    }
+
+    /* Gráfico compacto */
+    .grafico-simulado {
+        height: 175px !important;
+        padding-left: 32px !important;
+    }
+
+    .eixo-y {
+        width: 28px !important;
+        font-size: 9px !important;
+    }
+
+    .corpo-grafico {
+        gap: 3px !important;
+        padding: 0 2px !important;
+    }
+
+    .coluna-grafico {
+        max-width: none !important;
+    }
+
+    .barra-grafico {
+        width: min(20px, 72%) !important;
+    }
+
+    .valor-barra {
+        font-size: 8px !important;
+    }
+
+    .eixo-x {
+        padding-left: 32px !important;
+        gap: 1px !important;
+    }
+
+    .eixo-x span {
+        font-size: 8px !important;
+    }
+
+    /* Pesquisa/filtros */
+    .barra-pesquisa {
+        padding: 14px !important;
+    }
+
+    .barra-pesquisa[style*="display: flex"],
+    .barra-pesquisa[style*="display:flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+    .barra-pesquisa select,
+    .barra-pesquisa input {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 44px;
+        font-size: 16px !important;
+    }
+
+    /* Relatórios */
+    .abas-relatorio {
+        grid-template-columns: 1fr !important;
+    }
+
+    .aba-card {
+        padding: 14px !important;
+    }
+
+    .filtros-box {
+        grid-template-columns: 1fr !important;
+        padding: 14px !important;
+    }
+
+    .filtro-grupo input,
+    .filtro-grupo select {
+        min-height: 44px;
+        font-size: 16px !important;
+    }
+
+    .topo-acoes > div:last-child {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+    }
+
+    .topo-acoes .btn-visualizar,
+    .topo-acoes .btn-imprimir {
+        width: 100%;
+        min-height: 44px;
+        justify-content: center;
+        padding: 9px 10px !important;
+    }
+
+    /* Configurações */
+    .config-status-geral {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr;
+        align-items: stretch !important;
+    }
+
+    .config-status-item,
+    .config-info-menor > div {
+        gap: 8px;
+    }
+
+    /* Modais como "bottom sheet" no celular */
+    .modal-fundo {
+        padding: 0 !important;
+        align-items: flex-end !important;
+    }
+
+    .modal-caixa {
+        width: 100% !important;
+        max-width: none !important;
+        max-height: 92dvh !important;
+        margin: 0 !important;
+        border-radius: 20px 20px 0 0 !important;
+        padding: 20px 18px calc(20px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .grupo-input-modal input,
+    .grupo-input-modal select,
+    .grupo-input-modal textarea {
+        width: 100% !important;
+        min-height: 44px;
+        font-size: 16px !important;
+    }
+
+    .modal-botoes {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+    }
+
+    .modal-botoes button {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 8px !important;
+    }
+
+    .tabela-rodape {
+        padding: 12px 14px !important;
+    }
+
+    .tabela-dados {
+        min-width: 650px !important;
+    }
+
+    .tabela-dados th {
+        padding: 12px 14px !important;
+    }
+
+    .tabela-dados td {
+        padding: 16px 14px !important;
+    }
+
+    .aviso-conectividade {
+        bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+        width: calc(100% - 24px) !important;
+    }
+}
+
+/* Celulares muito estreitos */
+@media (max-width: 420px) {
+    .topbar-titulo {
+        display: none !important;
+    }
+
+    .topbar-marca {
+        gap: 6px;
+    }
+
+    .dashboard-container,
+    .relatorios-container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .card-resumo,
+    .painel-bloco,
+    .painel-tabela,
+    .tabela-relatorio-box,
+    .config-card {
+        border-radius: 9px !important;
+    }
+
+    .modal-caixa {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    .modal-botoes {
+        grid-template-columns: 1fr !important;
+    }
+
+    .topo-acoes > div:last-child {
+        grid-template-columns: 1fr !important;
+    }
+
+    .config-status-item,
+    .config-info-menor > div {
+        align-items: flex-start !important;
+        flex-direction: column !important;
+    }
+
+    .config-status-item strong,
+    .config-info-menor strong {
+        text-align: left !important;
+    }
+}
+
+/* Tablet em paisagem: usa duas colunas sem apertar demais */
+@media (min-width: 701px) and (max-width: 1024px) {
+    .dashboard-cabecalho > .btn-novo-funcionario {
+        flex: 0 0 auto;
+    }
+
+    .config-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .modal-caixa {
+        width: min(560px, calc(100vw - 48px)) !important;
+    }
+}
