@@ -4181,3 +4181,96 @@ body.corpo-dashboard.trocando-secao .relatorios-container {
         width: 100% !important;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 3.0 - ROLAGEM DE MODAL NO TABLET
+   Corrige o modal "Novo Consumo" e os demais modais longos.
+   Em tablets, a rolagem passa a acontecer no fundo do modal,
+   evitando travamento de scroll por toque em navegadores móveis.
+   ============================================================ */
+
+@media (min-width: 600px) and (max-width: 1024px) {
+    .modal-fundo {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior-y: auto !important;
+        touch-action: pan-y !important;
+
+        padding:
+            max(16px, env(safe-area-inset-top))
+            16px
+            max(20px, env(safe-area-inset-bottom)) !important;
+    }
+
+    .modal-caixa {
+        flex: 0 0 auto !important;
+
+        width: min(560px, calc(100vw - 32px)) !important;
+        max-width: 560px !important;
+
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+
+        margin: 0 auto !important;
+
+        overflow: visible !important;
+        overscroll-behavior: auto !important;
+        touch-action: pan-y !important;
+
+        box-sizing: border-box !important;
+        border-radius: 14px !important;
+    }
+
+    .modal-caixa form {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+
+        height: auto !important;
+        max-height: none !important;
+
+        overflow: visible !important;
+        touch-action: pan-y !important;
+    }
+
+    .modal-topo,
+    .grupo-input-modal,
+    .modal-botoes {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Dá uma folga extra no fim para os botões Salvar/Cancelar
+       não ficarem colados à borda inferior do tablet. */
+    .modal-botoes {
+        margin-bottom: 4px !important;
+    }
+}
+
+/* Tablet em modo paisagem: aproveita mais a altura disponível,
+   mantendo a mesma rolagem por toque. */
+@media (min-width: 600px) and (max-width: 1024px) and (orientation: landscape) {
+    .modal-fundo {
+        padding-top: 12px !important;
+        padding-bottom: 16px !important;
+    }
+
+    .modal-caixa {
+        width: min(600px, calc(100vw - 40px)) !important;
+        max-width: 600px !important;
+    }
+}
