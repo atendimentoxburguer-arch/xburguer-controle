@@ -3128,3 +3128,420 @@ body.saindo-sistema {
         vertical-align: middle;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 2.5 - MOBILE SEM CORTES
+   Corrige:
+   - colunas pela metade
+   - textos desaparecendo na esquerda/direita
+   - linhas/tabelas maiores que o bloco
+   - filtros de relatório sobrepostos
+   - botões e títulos escapando do card
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    /* Nunca permite a página ficar mais larga que a tela */
+    html,
+    body,
+    .layout-sistema,
+    .conteudo-principal,
+    .dashboard-container,
+    .relatorios-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    .dashboard-container,
+    .relatorios-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    /* Cabeçalho da página */
+    .dashboard-cabecalho,
+    .topo-acoes {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .dashboard-cabecalho > *,
+    .topo-acoes > * {
+        min-width: 0 !important;
+    }
+
+    .dashboard-cabecalho h1,
+    .topo-acoes h1 {
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    .dashboard-cabecalho > .btn-novo-funcionario,
+    .dashboard-cabecalho > button,
+    .btn-novo-funcionario {
+        width: auto !important;
+        max-width: 170px !important;
+        white-space: normal !important;
+        text-align: center !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Painéis sempre fechados dentro da largura visível */
+    .painel-tabela,
+    .tabela-relatorio-box,
+    .painel-bloco,
+    .filtros-box,
+    .config-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Remove o modelo antigo que criava uma tabela de 610/650px */
+    .tabela-scroll {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+        padding: 0 !important;
+    }
+
+    .tabela-dados {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        background: #fff !important;
+    }
+
+    /* No celular, o cabeçalho tradicional some.
+       Cada informação recebe seu próprio rótulo dentro da linha. */
+    .tabela-dados thead,
+    .tabela-dados .mobile-header-row {
+        display: none !important;
+    }
+
+    .tabela-dados tbody {
+        display: block !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .tabela-dados tbody tr {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 11px 12px !important;
+        gap: 9px 12px !important;
+        background: #fff !important;
+        border: 0 !important;
+        border-bottom: 1px solid #e9ebee !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+    }
+
+    .tabela-dados tbody tr:last-child {
+        border-bottom: 0 !important;
+    }
+
+    .tabela-dados tbody td {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        border: 0 !important;
+        text-align: left !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+        line-height: 1.35 !important;
+        font-size: 13px !important;
+    }
+
+    .tabela-dados tbody td::before {
+        content: attr(data-label) !important;
+        display: block !important;
+        margin-bottom: 3px !important;
+        color: #7a7f87 !important;
+        font-size: 9px !important;
+        line-height: 1.15 !important;
+        font-weight: 800 !important;
+        letter-spacing: .25px !important;
+        text-transform: uppercase !important;
+    }
+
+    .tabela-dados tbody td[data-label=""]::before,
+    .tabela-dados tbody td.mobile-cell-full::before {
+        display: none !important;
+        content: none !important;
+    }
+
+    /* Primeira informação de cada registro ganha mais espaço.
+       Isso preserva nome de funcionário/produto sem cortar. */
+    .tabela-dados tbody td:first-child {
+        grid-column: 1 / -1 !important;
+    }
+
+    /* Célula vazia */
+    .tabela-dados tbody td.mobile-cell-full,
+    .tabela-dados tbody td[colspan] {
+        grid-column: 1 / -1 !important;
+        text-align: center !important;
+        padding: 12px 4px !important;
+    }
+
+    /* Avatar e nome cabem na mesma linha sem empurrar o restante */
+    .tabela-dados tbody td:first-child .avatar-letra {
+        display: inline-flex !important;
+        vertical-align: middle !important;
+        margin-right: 8px !important;
+        flex: 0 0 auto !important;
+    }
+
+    .tabela-dados tbody td:first-child > span {
+        vertical-align: middle !important;
+    }
+
+    /* Corrige estilos inline que forçavam display:flex no TD */
+    .tabela-dados tbody td[style*="display:flex"],
+    .tabela-dados tbody td[style*="display: flex"] {
+        display: block !important;
+        padding-left: 0 !important;
+    }
+
+    .tabela-dados tbody td[style*="display:flex"] .avatar-letra,
+    .tabela-dados tbody td[style*="display: flex"] .avatar-letra {
+        display: inline-flex !important;
+    }
+
+    /* Conteúdo de ações não pode sair da linha */
+    .tabela-dados tbody td:last-child {
+        min-width: 0 !important;
+    }
+
+    .tabela-dados tbody td:last-child > div,
+    .tabela-dados .coluna-acoes {
+        max-width: 100% !important;
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Status fica compacto */
+    .badge-ativo,
+    .badge-inativo {
+        max-width: 100% !important;
+        white-space: nowrap !important;
+    }
+
+    /* Pesquisa e status do banco */
+    .barra-pesquisa {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 12px !important;
+        overflow: hidden !important;
+    }
+
+    .barra-pesquisa input,
+    .barra-pesquisa select {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .painel-tabela > [id^="status-"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 8px 12px 10px !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    .painel-tabela > [id^="status-"] button {
+        max-width: 100% !important;
+        white-space: normal !important;
+        line-height: 1.25 !important;
+    }
+
+    /* ========================================================
+       RELATÓRIOS
+       ======================================================== */
+
+    /* Título + ações: título/status em cima, botões abaixo em 2 colunas */
+    .relatorios-container .topo-acoes {
+        grid-template-columns: 1fr !important;
+        align-items: stretch !important;
+    }
+
+    .relatorios-container .topo-acoes > div:last-child {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        width: 100% !important;
+        gap: 8px !important;
+    }
+
+    .relatorios-container .topo-acoes .btn-visualizar,
+    .relatorios-container .topo-acoes .btn-imprimir {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        min-height: 44px !important;
+        justify-content: center !important;
+        padding: 9px 8px !important;
+        white-space: normal !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Abas nunca ultrapassam a borda */
+    .abas-relatorio {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .aba-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .aba-titulo,
+    .aba-desc {
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    /* Datas lado a lado, funcionário ocupando a largura toda.
+       Evita o campo Funcionário invadir Data fim. */
+    .filtros-box {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px 10px !important;
+        padding: 14px !important;
+        align-items: end !important;
+        overflow: hidden !important;
+    }
+
+    .filtro-grupo {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .filtro-grupo label {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 6px !important;
+        font-size: 11px !important;
+        white-space: normal !important;
+    }
+
+    .filtro-grupo input,
+    .filtro-grupo select,
+    #grupo-filtro-func select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        padding: 8px 9px !important;
+        font-size: 13px !important;
+    }
+
+    #grupo-filtro-func {
+        grid-column: 1 / -1 !important;
+    }
+
+    #grupo-filtro-func select {
+        min-width: 0 !important;
+    }
+
+    .filtros-box > .btn-visualizar {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        min-height: 44px !important;
+        justify-content: center !important;
+        margin: 0 !important;
+    }
+
+    /* Indicadores seguem 2x2, mas valores grandes não vazam */
+    .cards-relatorio-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+
+    .card-stat {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .card-stat-title,
+    .card-stat-value {
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    /* Modais */
+    .modal-caixa,
+    .modal-caixa form,
+    .grupo-input-modal {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .grupo-input-modal input,
+    .grupo-input-modal select,
+    .grupo-input-modal textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
+/* Celulares estreitos: preserva legibilidade sem quebrar o layout */
+@media (max-width: 370px) {
+    .dashboard-container,
+    .relatorios-container {
+        padding-left: 9px !important;
+        padding-right: 9px !important;
+    }
+
+    .dashboard-cabecalho,
+    .topo-acoes {
+        grid-template-columns: 1fr !important;
+    }
+
+    .dashboard-cabecalho > .btn-novo-funcionario,
+    .dashboard-cabecalho > button,
+    .btn-novo-funcionario {
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    .cards-grid,
+    .cards-relatorio-grid {
+        gap: 8px !important;
+    }
+
+    .filtros-box {
+        grid-template-columns: 1fr !important;
+    }
+
+    #grupo-filtro-func,
+    .filtros-box > .btn-visualizar {
+        grid-column: 1 !important;
+    }
+}

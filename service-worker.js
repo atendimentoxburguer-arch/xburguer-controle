@@ -1,4 +1,4 @@
-const CACHE_NAME = "xburguer-pwa-v2.4.0";
+const CACHE_NAME = "xburguer-pwa-v2.5.0";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -58,44 +58,32 @@ self.addEventListener("fetch", event => {
 
     const url = new URL(request.url);
 
-    // Nunca intercepta Supabase, CDN ou qualquer outro domínio.
-    // Isso evita guardar respostas do banco/autenticação no cache do aplicativo.
+    // Supabase/CDNs continuam fora do cache do app.
     if (url.origin !== self.location.origin) return;
 
-    if (request.mode === "navigate") {
-        event.respondWith(
-            fetch(request)
-                .then(response => {
-                    if (response && response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
-                    }
-                    return response;
-                })
-                .catch(async () => {
+    // Network-first: publica uma correção e o aparelho recebe a versão nova,
+    // usando cache apenas quando a internet falhar.
+    event.respondWith(
+        fetch(request)
+            .then(response => {
+                if (response && response.ok) {
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+                }
+                return response;
+            })
+            .catch(async () => {
+                const cached = await caches.match(request);
+                if (cached) return cached;
+
+                if (request.mode === "navigate") {
                     return (
-                        await caches.match(request) ||
                         await caches.match("./CONTROLE%20DE%20CONSUMO/login.html") ||
                         await caches.match("./offline.html")
                     );
-                })
-        );
-        return;
-    }
+                }
 
-    event.respondWith(
-        caches.match(request).then(cached => {
-            const network = fetch(request)
-                .then(response => {
-                    if (response && response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
-                    }
-                    return response;
-                })
-                .catch(() => cached);
-
-            return cached || network;
-        })
+                return Response.error();
+            })
     );
 });

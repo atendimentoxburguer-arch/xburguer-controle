@@ -1,9 +1,9 @@
 (function () {
-    window.XBURGUER_VERSAO = "2.4.0";
+    window.XBURGUER_VERSAO = "2.5.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     // ========================================================
-    // X-BURGUER PWA 2.4
+    // X-BURGUER PWA 2.5
     // ========================================================
     let xburguerInstallPrompt = null;
 
@@ -359,6 +359,11 @@
             }
 
             aplicarRotulos(tabela);
+
+            const wrapperTabela = tabela.closest(".tabela-scroll");
+            if (wrapperTabela) {
+                wrapperTabela.scrollLeft = 0;
+            }
 
             if (!tabela.dataset.responsiveObserver) {
                 const observer = new MutationObserver(function () {
