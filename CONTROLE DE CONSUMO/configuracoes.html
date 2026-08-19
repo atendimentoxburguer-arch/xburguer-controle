@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Burguer | Configurações</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+</head>
+<body class="corpo-dashboard">
+<div class="layout-sistema">
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar-topo">
+                <img src="logo.jfif" class="logo-sidebar" alt="Logo">
+                <div class="logo-texto">
+                    <span class="logo-titulo">X-BURGUER</span>
+                    <span class="logo-sub">Sanduicheria e Chopperia</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item"><span>🏠</span> Dashboard</a>
+                <a href="funcionarios.html" class="menu-item"><span>👥</span> Funcionários</a>
+                <a href="produtos.html" class="menu-item"><span>🍔</span> Produtos</a>
+                <a href="consumos.html" class="menu-item"><span>📋</span> Consumos</a>
+                <a href="faltas.html" class="menu-item"><span>📅</span> Faltas</a>
+                <a href="relatorios.html" class="menu-item"><span>📊</span> Relatórios</a>
+                <a href="historico.html" class="menu-item"><span>🔄</span> Histórico de Ações</a>
+                <a href="configuracoes.html" class="menu-item ativo"><span>⚙️</span> Configurações</a>
+            </nav>
+        </div>
+        <div class="sidebar-sair">
+            <a href="login.html" class="menu-item"><span>🚪</span> Sair</a>
+        </div>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header class="topbar">
+            <div class="topbar-marca">
+                <img src="logo.jfif" class="logo-mini" alt="Logo">
+                <span class="topbar-titulo">X-BURGUER</span>
+                <span class="topbar-sub">Sanduicheria e Chopperia</span>
+            </div>
+            <div class="topbar-usuario">
+                <div class="info-usuario">
+                    <span class="saudacao">Olá, Administrador</span>
+                    <span class="cargo">Administrador</span>
+                </div>
+                <div class="avatar-admin">A</div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <div class="dashboard-cabecalho config-cabecalho">
+                <div>
+                    <h1>⚙️ Configurações</h1>
+                    <span class="config-subtitulo">Backup, recuperação e verificação do banco de dados da empresa.</span>
+                </div>
+                <div class="config-status-geral">
+                    <span id="status-configuracoes">Verificando sistema...</span>
+                    <button id="btn-verificar-sistema" class="btn-config-secundario" type="button" onclick="verificarSistema(true)">↻ Verificar agora</button>
+                </div>
+            </div>
+
+            <div class="config-grid">
+                <section class="painel-bloco config-card">
+                    <div class="painel-cabecalho">
+                        <h3>🩺 Status do sistema</h3>
+                    </div>
+                    <p class="config-texto">Confere a sessão, a conexão com o Supabase e a quantidade de registros salvos em cada tabela.</p>
+
+                    <div class="config-status-lista">
+                        <div class="config-status-item"><span>👥 Funcionários</span><strong id="check-funcionarios">—</strong></div>
+                        <div class="config-status-item"><span>🍔 Produtos</span><strong id="check-produtos">—</strong></div>
+                        <div class="config-status-item"><span>📋 Consumos</span><strong id="check-consumos">—</strong></div>
+                        <div class="config-status-item"><span>📅 Faltas</span><strong id="check-faltas">—</strong></div>
+                        <div class="config-status-item"><span>🔄 Histórico</span><strong id="check-historico">—</strong></div>
+                    </div>
+
+                    <div class="config-info-menor">
+                        <div><span>Usuário:</span><strong id="config-usuario">—</strong></div>
+                        <div><span>Última verificação:</span><strong id="config-verificado-em">—</strong></div>
+                    </div>
+                </section>
+
+                <section class="painel-bloco config-card">
+                    <div class="painel-cabecalho">
+                        <h3>💾 Backup completo</h3>
+                    </div>
+                    <p class="config-texto">Baixa um arquivo JSON com todos os dados atuais do banco: funcionários, produtos, consumos, faltas e histórico.</p>
+
+                    <div class="config-destaque">
+                        <span>Último backup feito neste navegador</span>
+                        <strong id="ultimo-backup">Nenhum registrado</strong>
+                    </div>
+
+                    <button id="btn-exportar-backup" class="btn-novo-funcionario config-botao-largo" type="button" onclick="exportarBackupSupabase()">
+                        ⬇ Baixar backup agora
+                    </button>
+
+                    <div id="status-backup" class="config-status-linha">Pronto para gerar backup.</div>
+                </section>
+
+                <section class="painel-bloco config-card">
+                    <div class="painel-cabecalho">
+                        <h3>♻️ Recuperar dados</h3>
+                    </div>
+                    <p class="config-texto">Importa um backup criado pelo próprio sistema e recupera registros operacionais que estejam faltando no banco.</p>
+
+                    <div class="config-aviso">
+                        <strong>Proteção do histórico:</strong>
+                        o arquivo inclui o histórico completo, mas esta tela não regrava ações antigas automaticamente. Isso evita adulterar o registro de auditoria.
+                    </div>
+
+                    <button class="btn-config-secundario config-botao-largo" type="button" onclick="document.getElementById('arquivo-backup').click()">
+                        📂 Selecionar backup para recuperação
+                    </button>
+                    <input type="file" id="arquivo-backup" accept=".json,application/json" hidden onchange="analisarBackupSelecionado(event)">
+
+                    <div id="resumo-restauracao" class="config-status-linha">Nenhum arquivo selecionado.</div>
+                </section>
+
+                <section class="painel-bloco config-card">
+                    <div class="painel-cabecalho">
+                        <h3>🛡️ Segurança e sincronização</h3>
+                    </div>
+                    <p class="config-texto">Mostra o estado da sessão e sincroniza ações de histórico que possam ter ficado pendentes durante uma falha temporária de internet.</p>
+
+                    <div class="config-info-menor">
+                        <div><span>Sessão:</span><strong id="config-sessao">—</strong></div>
+                        <div><span>Projeto:</span><strong id="config-projeto">—</strong></div>
+                        <div><span>Histórico pendente:</span><strong id="config-pendencias">—</strong></div>
+                    </div>
+
+                    <button class="btn-config-secundario config-botao-largo" type="button" onclick="sincronizarPendenciasManual()">
+                        🔄 Sincronizar pendências
+                    </button>
+
+                    <div class="config-aviso-suave">
+                        Nenhuma chave secreta do Supabase é armazenada no site. O frontend usa apenas a chave publicável e as regras RLS do banco.
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="configuracoes-supabase.js"></script>
+</body>
+</html>

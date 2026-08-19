@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Burguer | Relatórios</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .relatorios-container {
+            padding: 24px;
+        }
+        .topo-acoes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn-imprimir {
+            background-color: #b58500;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .btn-imprimir:hover {
+            background-color: #9c7100;
+        }
+        .abas-relatorio {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .aba-card {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .aba-card.ativa {
+            border-color: #800000;
+            background-color: #fffdfd;
+        }
+        .aba-titulo {
+            font-weight: bold;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .aba-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        .filtros-box {
+            background: #fff;
+            padding: 16px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .filtro-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filtro-grupo label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+        .filtro-grupo input, .filtro-grupo select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+        }
+        .btn-visualizar {
+            background-color: #800000;
+            color: white;
+            border: none;
+            padding: 9px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-visualizar:hover {
+            background-color: #600000;
+        }
+        .cards-relatorio-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .card-stat {
+            background: #fff;
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .card-stat-title {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .card-stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #222;
+        }
+        .tabela-relatorio-box {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .tabela-cabecalho-bloco {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .tabela-cabecalho-bloco h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        .tabela-cabecalho-bloco span {
+            font-size: 12px;
+            color: #666;
+        }
+        table.tabela-dados {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table.tabela-dados th {
+            background: #fafafa;
+            padding: 12px 20px;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eee;
+        }
+        table.tabela-dados td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        @media print {
+            .sidebar, .topbar, .filtros-box, .abas-relatorio, .btn-imprimir, #btn-atualizar-relatorios, #status-relatorios-banco {
+                display: none !important;
+            }
+            .conteudo-principal {
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+</head>
+<body class="corpo-dashboard">
+
+    <div class="layout-sistema">
+        
+        <!-- MENU LATERAL -->
+        <aside class="sidebar">
+            <div class="sidebar-topo">
+                <img src="logo.jfif" alt="Logo" class="logo-sidebar">
+                <div class="logo-texto">
+                    <span class="logo-titulo">X-BURGUER</span>
+                    <span class="logo-sub">Sanduicheria e Chopperia</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item"><span>🏠</span> Dashboard</a>
+                <a href="funcionarios.html" class="menu-item"><span>👥</span> Funcionários</a>
+                <a href="produtos.html" class="menu-item"><span>🍔</span> Produtos</a>
+                <a href="consumos.html" class="menu-item"><span>📋</span> Consumos</a>
+                <a href="faltas.html" class="menu-item"><span>📅</span> Faltas</a>
+                <a href="relatorios.html" class="menu-item ativo"><span>📊</span> Relatórios <span class="ponto-ativo"></span></a>
+                <a href="historico.html" class="menu-item"><span>🔄</span> Histórico de Ações</a>
+                <a href="configuracoes.html" class="menu-item"><span>⚙️</span> Configurações</a>
+            </nav>
+
+            <div class="sidebar-sair">
+                <a href="login.html" class="menu-item"><span>🚪</span> Sair</a>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="conteudo-principal">
+            
+            <!-- BARRA SUPERIOR -->
+            <header class="topbar">
+                <div class="topbar-marca">
+                    <img src="logo.jfif" alt="Logo" class="logo-mini">
+                    <span class="topbar-titulo">X-BURGUER</span>
+                    <span class="topbar-sub">Sanduicheria e Chopperia</span>
+                </div>
+                <div class="topbar-usuario">
+                    <div class="info-usuario">
+                        <span class="saudacao">Olá, Administrador</span>
+                        <span class="cargo">Administrador</span>
+                    </div>
+                    <div class="avatar-admin">A</div>
+                </div>
+            </header>
+
+            <!-- CORPO DOS RELATÓRIOS -->
+            <div class="relatorios-container">
+                
+                <div class="topo-acoes">
+                    <div>
+                        <h1 style="font-size: 24px; color: #222;">📊 Relatórios</h1>
+                        <div id="status-relatorios-banco" style="font-size:12px;color:#777;margin-top:4px;">
+                            Carregando dados do banco...
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <button class="btn-visualizar" id="btn-atualizar-relatorios" type="button" onclick="gerarRelatorio(true)">
+                            ↻ Atualizar
+                        </button>
+                        <button class="btn-imprimir" onclick="window.print()">
+                            🖨️ Imprimir
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ABAS DE SELEÇÃO -->
+                <div class="abas-relatorio">
+                    <div class="aba-card ativa" id="aba-mensal" onclick="mudarTipoRelatorio('mensal')">
+                        <div class="aba-titulo">📋 Relatório Mensal</div>
+                        <div class="aba-desc">Resumo por funcionário + desconto em salário</div>
+                    </div>
+                    <div class="aba-card" id="aba-funcionario" onclick="mudarTipoRelatorio('funcionario')">
+                        <div class="aba-titulo">👥 Por Funcionário</div>
+                        <div class="aba-desc">Detalhe completo de consumos e itens adicionados</div>
+                    </div>
+                    <div class="aba-card" id="aba-produto" onclick="mudarTipoRelatorio('produto')">
+                        <div class="aba-titulo">🍔 Por Produto</div>
+                        <div class="aba-desc">Total consumido por produto e valores</div>
+                    </div>
+                </div>
+
+                <!-- FILTROS -->
+                <div class="filtros-box">
+                    <div class="filtro-grupo">
+                        <label>Data início</label>
+                        <input type="date" id="filtro-data-inicio">
+                    </div>
+                    <div class="filtro-grupo">
+                        <label>Data fim</label>
+                        <input type="date" id="filtro-data-fim">
+                    </div>
+                    <div class="filtro-grupo" id="grupo-filtro-func">
+                        <label>Funcionário</label>
+                        <select id="filtro-funcionario" style="min-width: 180px;">
+                            <option value="Todos">Todos</option>
+                        </select>
+                    </div>
+                    <button class="btn-visualizar" onclick="gerarRelatorio()">
+                        🔍 Visualizar
+                    </button>
+                </div>
+
+                <!-- CARDS DE ESTATÍSTICA -->
+                <div class="cards-relatorio-grid">
+                    <div class="card-stat">
+                        <div class="card-stat-title" id="titulo-card-1">Total consumido</div>
+                        <div class="card-stat-value" id="stat-total-consumido" style="color: #800000;">R$ 0,00</div>
+                    </div>
+                    <div class="card-stat">
+                        <div class="card-stat-title" id="titulo-card-2">Nº consumos</div>
+                        <div class="card-stat-value" id="stat-num-consumos">0</div>
+                    </div>
+                    <div class="card-stat">
+                        <div class="card-stat-title">Total faltas</div>
+                        <div class="card-stat-value" id="stat-total-faltas" style="color: #b58500;">0</div>
+                    </div>
+                    <div class="card-stat">
+                        <div class="card-stat-title" id="titulo-card-4">Funcionários</div>
+                        <div class="card-stat-value" id="stat-funcionarios">0</div>
+                    </div>
+                </div>
+
+                <!-- TABELA DE RESULTADOS -->
+                <div class="tabela-relatorio-box">
+                    <div class="tabela-cabecalho-bloco">
+                        <h3 id="tabela-titulo-principal">Resumo Mensal — Desconto em Folha</h3>
+                        <span id="tabela-periodo-sub">Período: -</span>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="tabela-dados" id="tabela-relatorio-conteudo">
+                            <!-- Preenchido via JavaScript -->
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- RELATÓRIOS CONECTADOS DIRETAMENTE AO SUPABASE -->
+    <script src="relatorios-supabase.js"></script>
+</body>
+</html>

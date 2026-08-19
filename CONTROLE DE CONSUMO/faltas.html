@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Burguer | Faltas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+</head>
+<body class="corpo-dashboard">
+
+    <div class="layout-sistema">
+        
+        <!-- MENU LATERAL -->
+        <aside class="sidebar">
+            <div class="sidebar-topo">
+                <img src="logo.jfif" alt="Logo" class="logo-sidebar">
+                <div class="logo-texto">
+                    <span class="logo-titulo">X-BURGUER</span>
+                    <span class="logo-sub">Sanduicheria e Chopperia</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item"><span>🏠</span> Dashboard</a>
+                <a href="funcionarios.html" class="menu-item"><span>👥</span> Funcionários</a>
+                <a href="produtos.html" class="menu-item"><span>🍔</span> Produtos</a>
+                <a href="consumos.html" class="menu-item"><span>📋</span> Consumos</a>
+                <a href="faltas.html" class="menu-item ativo">
+                    <span>📅</span> Faltas <span class="ponto-ativo"></span>
+                </a>
+                <a href="relatorios.html" class="menu-item"><span>📊</span> Relatórios</a>
+                <a href="historico.html" class="menu-item"><span>🔄</span> Histórico de Ações</a>
+                <a href="configuracoes.html" class="menu-item"><span>⚙️</span> Configurações</a>
+            </nav>
+
+            <div class="sidebar-sair">
+                <a href="login.html" class="menu-item"><span>🚪</span> Sair</a>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="conteudo-principal">
+            
+            <header class="topbar">
+                <div class="topbar-marca">
+                    <img src="logo.jfif" alt="Logo" class="logo-mini">
+                    <span class="topbar-titulo">X-BURGUER</span>
+                    <span class="topbar-sub">Sanduicheria e Chopperia</span>
+                </div>
+                <div class="topbar-usuario">
+                    <div class="info-usuario">
+                        <span class="saudacao">Olá, Administrador</span>
+                        <span class="cargo">Administrador</span>
+                    </div>
+                    <div class="avatar-admin">A</div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                
+                <div class="dashboard-cabecalho">
+                    <div class="titulo-com-icone">
+                        <span class="icone-secao">📅</span>
+                        <h1>Faltas</h1>
+                    </div>
+                    <button class="btn-novo-funcionario" onclick="abrirModalFalta()">+ Nova Falta</button>
+                </div>
+
+                <div class="painel-tabela">
+                    <!-- BARRA DE FILTRO POR FUNCIONÁRIO -->
+                    <div class="barra-pesquisa" style="display: flex; align-items: center; justify-content: space-between;">
+                        <select id="filtro-funcionario-falta" onchange="atualizarTabelaFaltas()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 250px; font-family: 'Nunito', sans-serif; outline: none;">
+                            <option value="todos">Todos os funcionários</option>
+                        </select>
+                        <span id="contador-topo-faltas" style="font-size: 13px; color: #666; font-weight: 700;">Total: 0 registros</span>
+                    </div>
+
+                    <div id="status-faltas-banco" style="font-size:12px; margin:0 0 12px 2px; color:#777;">
+                        Carregando faltas do banco de dados...
+                    </div>
+
+                    <table class="tabela-dados">
+                        <thead>
+                            <tr>
+                                <th>FUNCIONÁRIO</th>
+                                <th>DATA</th>
+                                <th>MOTIVO</th>
+                                <th>OBSERVAÇÃO</th>
+                                <th class="coluna-acoes">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela-falta">
+                            <tr id="linha-vazia">
+                                <td colspan="5" class="tabela-vazia">
+                                    <span class="ponto-vermelho-vazio"></span>
+                                    Nenhum registro de falta
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="tabela-rodape" id="contador-rodape-falta">
+                        Total: 0 registros
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- MODAL DE NOVA FALTA -->
+    <div id="modal-falta" class="modal-fundo" style="display: none;">
+        <div class="modal-caixa">
+            <div class="modal-topo">
+                <h3>📅 Nova Falta</h3>
+                <p style="font-size: 13px; color: #666; margin-top: 5px;">Registre a falta de um funcionário</p>
+            </div>
+            
+            <form onsubmit="salvarFalta(event)">
+                <div class="grupo-input-modal">
+                    <label>Funcionário *</label>
+                    <select id="cad-func-falta" required style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; outline: none; background: white;">
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input-modal">
+                    <label>Data *</label>
+                    <input type="date" id="cad-data-falta" required style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; outline: none; background: white;">
+                </div>
+
+                <div class="grupo-input-modal">
+                    <label>Motivo</label>
+                    <input type="text" id="cad-motivo-falta" placeholder="Ex: Atestado, Pessoal, Falta injustificada...">
+                </div>
+
+                <div class="grupo-input-modal">
+                    <label>Observação (opcional)</label>
+                    <input type="text" id="cad-obs-falta" placeholder="Digite uma observação...">
+                </div>
+
+                <div class="modal-botoes">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalFalta()">Cancelar</button>
+                    <button type="submit" class="btn-salvar-modal">💾 Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div id="modal-excluir" class="modal-fundo" style="display: none;">
+        <div class="modal-caixa modal-caixa-excluir">
+            <div class="modal-excluir-topo">
+                <div class="icone-lixeira-modal">🗑️</div>
+                <h3>Excluir falta</h3>
+            </div>
+            <p class="texto-aviso-excluir">
+                Deseja realmente excluir este registro de falta? Esta ação não pode ser desfeita.
+            </p>
+            <input type="hidden" id="excluir-index" value="">
+            <div class="modal-botoes">
+                <button type="button" class="btn-cancelar" onclick="fecharModalExcluir()">Cancelar</button>
+                <button type="button" class="btn-excluir-modal" onclick="confirmarExclusao()">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FALTAS CONECTADAS AO SUPABASE -->
+    <script src="faltas-supabase.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Burguer | Histórico de Ações</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+</head>
+<body class="corpo-dashboard">
+<div class="layout-sistema">
+<aside class="sidebar">
+  <div>
+    <div class="sidebar-topo"><img src="logo.jfif" class="logo-sidebar" alt="Logo"><div class="logo-texto"><span class="logo-titulo">X-BURGUER</span><span class="logo-sub">Sanduicheria e Chopperia</span></div></div>
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="menu-item"><span>🏠</span> Dashboard</a>
+      <a href="funcionarios.html" class="menu-item"><span>👥</span> Funcionários</a>
+      <a href="produtos.html" class="menu-item"><span>🍔</span> Produtos</a>
+      <a href="consumos.html" class="menu-item"><span>📋</span> Consumos</a>
+      <a href="faltas.html" class="menu-item"><span>📅</span> Faltas</a>
+      <a href="relatorios.html" class="menu-item"><span>📊</span> Relatórios</a>
+      <a href="historico.html" class="menu-item ativo"><span>🔄</span> Histórico de Ações</a>
+      <a href="configuracoes.html" class="menu-item"><span>⚙️</span> Configurações</a>
+    </nav>
+  </div>
+  <div class="sidebar-sair"><a href="login.html" class="menu-item"><span>🚪</span> Sair</a></div>
+</aside>
+<main class="conteudo-principal">
+<header class="topbar">
+ <div class="topbar-marca"><img src="logo.jfif" class="logo-mini" alt="Logo"><span class="topbar-titulo">X-BURGUER</span><span class="topbar-sub">Sanduicheria e Chopperia</span></div>
+ <div class="topbar-usuario"><div class="info-usuario"><span class="saudacao">Olá, Administrador</span><span class="cargo">Administrador</span></div><div class="avatar-admin">A</div></div>
+</header>
+<div class="dashboard-container">
+ <div class="dashboard-cabecalho"><div><h1>🔄 Histórico de Ações</h1><span style="font-size:13px;color:#777;">Registro das principais alterações realizadas no sistema.</span></div><button class="btn-novo-funcionario" onclick="recarregarHistorico()">Atualizar histórico</button></div>
+ <div class="painel-tabela">
+   <div class="barra-pesquisa"><input type="text" id="busca-historico" placeholder="Buscar ação, usuário ou detalhe..." oninput="renderizarHistorico()"></div>
+   <div id="status-historico-banco" style="font-size:12px;margin:0 0 12px 2px;color:#777;">Carregando histórico do banco de dados...</div>
+   <div style="overflow-x:auto"><table class="tabela-dados" style="min-width:720px"><thead><tr><th>Data</th><th>Hora</th><th>Ação</th><th>Detalhes</th><th>Usuário</th></tr></thead><tbody id="corpo-historico"></tbody></table></div>
+   <div class="tabela-rodape" id="contador-historico">Total: 0 registros</div>
+ </div>
+</div>
+</main></div>
+<script src="historico-supabase.js"></script>
+</body></html>

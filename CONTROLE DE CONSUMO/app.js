@@ -1,0 +1,215 @@
+(function () {
+    window.XBURGUER_VERSAO = "2.0.0";
+    const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
+
+    // A proteção das páginas agora usa a sessão real do Supabase, não sessionStorage.
+    async function protegerPagina() {
+        if (isLogin) return;
+        try {
+            const { data, error } = await window.supabaseClient.auth.getSession();
+            if (error || !data.session) {
+                location.replace("login.html");
+            }
+        } catch (erro) {
+            console.error("Falha ao verificar sessão:", erro);
+            location.replace("login.html");
+        }
+    }
+
+    protegerPagina();
+
+    window.formatarMoeda = function (valor) {
+        if (valor === null || valor === undefined || valor === "") return 0;
+        if (typeof valor === "number") return Number.isFinite(valor) ? valor : 0;
+        let s = String(valor).trim().replace(/\s/g, "").replace(/^R\$/i, "");
+        if (s.includes(",")) s = s.replace(/\./g, "").replace(",", ".");
+        const n = parseFloat(s);
+        return Number.isFinite(n) ? n : 0;
+    };
+
+    window.moedaBR = function (valor) {
+        return window.formatarMoeda(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    };
+
+    // Histórico definitivo: grava as ações diretamente no Supabase.
+    // Se houver uma falha temporária de rede, a ação fica em uma fila local
+    // e é reenviada automaticamente quando a conexão voltar.
+    const CHAVE_HISTORICO_PENDENTE = "historico_pendente_xburguer";
+
+    function lerHistoricoPendente() {
+        try {
+            const dados = JSON.parse(localStorage.getItem(CHAVE_HISTORICO_PENDENTE) || "[]");
+            return Array.isArray(dados) ? dados : [];
+        } catch (_) {
+            return [];
+        }
+    }
+
+    function salvarHistoricoPendente(lista) {
+        localStorage.setItem(CHAVE_HISTORICO_PENDENTE, JSON.stringify(lista.slice(-500)));
+    }
+
+    function adicionarHistoricoPendente(item) {
+        const lista = lerHistoricoPendente();
+        lista.push(item);
+        salvarHistoricoPendente(lista);
+    }
+
+    function obterNomeUsuario(user) {
+        return (
+            user?.user_metadata?.nome ||
+            user?.user_metadata?.full_name ||
+            user?.email ||
+            "Administrador"
+        );
+    }
+
+    window.registrarNoHistorico = async function (acao, detalhes, icone) {
+        const registroBase = {
+            acao: String(acao || "Ação"),
+            detalhes: String(detalhes || ""),
+            icone: String(icone || "📝")
+        };
+
+        try {
+            if (!window.supabaseClient) {
+                throw new Error("Cliente Supabase não carregado.");
+            }
+
+            const { data: sessaoData, error: sessaoErro } =
+                await window.supabaseClient.auth.getSession();
+
+            if (sessaoErro) throw sessaoErro;
+
+            const user = sessaoData?.session?.user;
+            if (!user) throw new Error("Sessão não encontrada.");
+
+            const payload = {
+                ...registroBase,
+                usuario_id: user.id,
+                usuario_nome: obterNomeUsuario(user)
+            };
+
+            const { error } = await window.supabaseClient
+                .from("historico_acoes")
+                .insert(payload);
+
+            if (error) throw error;
+            return true;
+        } catch (erro) {
+            console.warn("Histórico: gravação online indisponível; salvando na fila local.", erro);
+
+            // Mantém a ação para sincronizar depois e evitar perda por falha de rede.
+            adicionarHistoricoPendente({
+                ...registroBase,
+                data_hora: new Date().toISOString()
+            });
+            return false;
+        }
+    };
+
+    window.sincronizarHistoricoPendente = async function () {
+        const pendentes = lerHistoricoPendente();
+        if (!pendentes.length || !window.supabaseClient) return 0;
+
+        try {
+            const { data: sessaoData, error: sessaoErro } =
+                await window.supabaseClient.auth.getSession();
+
+            if (sessaoErro) throw sessaoErro;
+
+            const user = sessaoData?.session?.user;
+            if (!user) return 0;
+
+            const payload = pendentes.map(item => ({
+                usuario_id: user.id,
+                usuario_nome: obterNomeUsuario(user),
+                acao: String(item.acao || "Ação"),
+                detalhes: String(item.detalhes || ""),
+                icone: String(item.icone || "📝"),
+                data_hora: item.data_hora || new Date().toISOString()
+            }));
+
+            const { error } = await window.supabaseClient
+                .from("historico_acoes")
+                .insert(payload);
+
+            if (error) throw error;
+
+            localStorage.removeItem(CHAVE_HISTORICO_PENDENTE);
+            return payload.length;
+        } catch (erro) {
+            console.warn("Histórico: não foi possível sincronizar a fila pendente.", erro);
+            return 0;
+        }
+    };
+
+
+    function criarAvisoConectividade() {
+        if (document.getElementById("aviso-conectividade")) return;
+
+        const aviso = document.createElement("div");
+        aviso.id = "aviso-conectividade";
+        aviso.className = "aviso-conectividade";
+        aviso.setAttribute("role", "status");
+        aviso.setAttribute("aria-live", "polite");
+        document.body.appendChild(aviso);
+
+        atualizarAvisoConectividade();
+    }
+
+    function atualizarAvisoConectividade() {
+        const aviso = document.getElementById("aviso-conectividade");
+        if (!aviso) return;
+
+        if (navigator.onLine) {
+            aviso.classList.remove("visivel");
+            aviso.textContent = "";
+        } else {
+            aviso.textContent = "⚠ Sem conexão com a internet. Consultas e cadastros podem falhar até a conexão voltar.";
+            aviso.classList.add("visivel");
+        }
+    }
+
+    window.addEventListener("online", function () {
+        atualizarAvisoConectividade();
+
+        if (window.sincronizarHistoricoPendente) {
+            window.sincronizarHistoricoPendente();
+        }
+    });
+
+    window.addEventListener("offline", atualizarAvisoConectividade);
+
+    window.addEventListener("DOMContentLoaded", function () {
+        document.documentElement.classList.add("site-pronto");
+        criarAvisoConectividade();
+
+        // Tenta reenviar ações que ficaram pendentes por falha temporária de conexão.
+        if (!isLogin && window.sincronizarHistoricoPendente) {
+            window.sincronizarHistoricoPendente();
+        }
+
+        document.querySelectorAll(".sidebar-sair a").forEach(function (link) {
+            link.addEventListener("click", async function (event) {
+                event.preventDefault();
+                try {
+                    await window.supabaseClient.auth.signOut();
+                } catch (erro) {
+                    console.error("Erro ao sair:", erro);
+                }
+                sessionStorage.removeItem("xburguer_autenticado");
+                document.body.classList.add("saindo-sistema");
+                setTimeout(() => location.href = "login.html", 350);
+            });
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                document.querySelectorAll(".modal-fundo").forEach(function (modal) {
+                    if (getComputedStyle(modal).display !== "none") modal.style.display = "none";
+                });
+            }
+        });
+    });
+})();

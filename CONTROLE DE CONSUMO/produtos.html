@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Burguer | Produtos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+</head>
+<body class="corpo-dashboard">
+
+    <div class="layout-sistema">
+        
+        <!-- MENU LATERAL -->
+        <aside class="sidebar">
+            <div class="sidebar-topo">
+                <img src="logo.jfif" alt="Logo" class="logo-sidebar">
+                <div class="logo-texto">
+                    <span class="logo-titulo">X-BURGUER</span>
+                    <span class="logo-sub">Sanduicheria e Chopperia</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item"><span>🏠</span> Dashboard</a>
+                <a href="funcionarios.html" class="menu-item"><span>👥</span> Funcionários</a>
+                <a href="produtos.html" class="menu-item ativo">
+                    <span>🍔</span> Produtos <span class="ponto-ativo"></span>
+                </a>
+                <a href="consumos.html" class="menu-item"><span>📋</span> Consumos</a>
+                <a href="faltas.html" class="menu-item"><span>📅</span> Faltas</a>
+                <a href="relatorios.html" class="menu-item"><span>📊</span> Relatórios</a>
+                <a href="historico.html" class="menu-item"><span>🔄</span> Histórico de Ações</a>
+                <a href="configuracoes.html" class="menu-item"><span>⚙️</span> Configurações</a>
+            </nav>
+
+            <div class="sidebar-sair">
+                <a href="login.html" class="menu-item"><span>🚪</span> Sair</a>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="conteudo-principal">
+            
+            <header class="topbar">
+                <div class="topbar-marca">
+                    <img src="logo.jfif" alt="Logo" class="logo-mini">
+                    <span class="topbar-titulo">X-BURGUER</span>
+                    <span class="topbar-sub">Sanduicheria e Chopperia</span>
+                </div>
+                <div class="topbar-usuario">
+                    <div class="info-usuario">
+                        <span class="saudacao">Olá, Administrador</span>
+                        <span class="cargo">Administrador</span>
+                    </div>
+                    <div class="avatar-admin">A</div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                
+                <div class="dashboard-cabecalho">
+                    <div class="titulo-com-icone">
+                        <span class="icone-secao">🍔</span>
+                        <h1>Produtos</h1>
+                    </div>
+                    <button class="btn-novo-funcionario" onclick="abrirModalCadastro()">+ Novo Produto</button>
+                </div>
+
+                <div class="painel-tabela">
+                    <div class="barra-pesquisa">
+                        <input type="text" id="input-busca" onkeyup="filtrarProdutos()" placeholder="Buscar produto...">
+                    </div>
+
+                    <div id="status-produtos-banco" style="font-size:12px; margin:0 0 12px 2px; color:#777;">
+                        Carregando produtos do banco de dados...
+                    </div>
+
+                    <table class="tabela-dados">
+                        <thead>
+                            <tr>
+                                <th>PRODUTO</th>
+                                <th>PREÇO</th>
+                                <th>STATUS</th>
+                                <th class="coluna-acoes">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela">
+                            <tr id="linha-vazia">
+                                <td colspan="4" class="tabela-vazia">
+                                    <span class="ponto-vermelho-vazio"></span>
+                                    Nenhum produto encontrado
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="tabela-rodape" id="contador-rodape">
+                        Total: 0 produtos
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- MODAL DE CADASTRO / EDIÇÃO DE PRODUTO -->
+    <div id="modal-produto" class="modal-fundo" style="display: none;">
+        <div class="modal-caixa">
+            <div class="modal-topo">
+                <h3 id="modal-titulo">➕ Novo Produto</h3>
+            </div>
+            
+            <form onsubmit="salvarProduto(event)">
+                <input type="hidden" id="edit-index" value="">
+
+                <div class="grupo-input-modal">
+                    <label>Nome *</label>
+                    <input type="text" id="cad-nome" placeholder="Ex: Marmita, Café, Suco..." required>
+                </div>
+
+                <div class="grupo-input-modal">
+                    <label>Preço (R$)</label>
+                    <input type="text" id="cad-preco" placeholder="0.00">
+                </div>
+
+                <div class="grupo-input-modal">
+                    <label>Status</label>
+                    <div class="radio-status">
+                        <label><input type="radio" name="status" value="Ativo" checked> Ativo</label>
+                        <label><input type="radio" name="status" value="Inativo"> Inativo</label>
+                    </div>
+                </div>
+
+                <div class="modal-botoes">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalCadastro()">Cancelar</button>
+                    <button type="submit" class="btn-salvar-modal">💾 Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div id="modal-excluir" class="modal-fundo" style="display: none;">
+        <div class="modal-caixa modal-caixa-excluir">
+            <div class="modal-excluir-topo">
+                <div class="icone-lixeira-modal">🗑️</div>
+                <h3>Excluir produto</h3>
+            </div>
+            <p class="texto-aviso-excluir" id="texto-confirma-exclusao">
+                Excluir permanentemente "Produto"? Esta ação não pode ser desfeita.
+            </p>
+            <input type="hidden" id="excluir-index" value="">
+            <div class="modal-botoes">
+                <button type="button" class="btn-cancelar" onclick="fecharModalExcluir()">Cancelar</button>
+                <button type="button" class="btn-excluir-modal" onclick="confirmarExclusao()">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUTOS CONECTADOS AO SUPABASE -->
+    <script src="produtos-supabase.js"></script>
+</body>
+</html>
