@@ -3886,12 +3886,9 @@ body.saindo-sistema {
    ============================================================ */
 
 @media (min-width: 1025px) {
-    html {
-        scrollbar-gutter: stable both-edges;
-    }
-
+    html,
     body.corpo-dashboard {
-        scrollbar-gutter: stable both-edges;
+        scrollbar-gutter: auto !important;
     }
 
     /* A área principal sempre reserva o espaço da barra de rolagem */
@@ -4110,5 +4107,77 @@ body.corpo-dashboard.trocando-secao .relatorios-container {
     body.corpo-dashboard.trocando-secao .relatorios-container {
         transition: none !important;
         transform: none !important;
+    }
+}
+
+
+/* ============================================================
+   X-BURGUER 2.9 - CORREÇÃO DEFINITIVA DA FAIXA ESQUERDA
+   ============================================================ */
+
+@media (min-width: 1025px) {
+    /* A página raiz não cria mais gutter/margem lateral.
+       A única rolagem vertical fica dentro do conteúdo principal. */
+    html,
+    body.corpo-dashboard {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none !important;
+        overflow: hidden !important;
+        scrollbar-gutter: auto !important;
+        background: #7a0b0b !important;
+    }
+
+    /* O sistema ocupa literalmente todo o viewport.
+       Isso impede qualquer espaço branco antes da sidebar. */
+    .layout-sistema {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        overflow: hidden !important;
+    }
+
+    .sidebar {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+        transform: none !important;
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
+    }
+
+    /* Reserva estável apenas para a barra de rolagem do CONTEÚDO,
+       no lado direito. */
+    .conteudo-principal {
+        position: relative !important;
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: scroll !important;
+        scrollbar-gutter: stable !important;
+        background: #f4f6f9 !important;
+    }
+
+    /* Topo permanece travado e sem deslocamento */
+    .topbar {
+        margin: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
     }
 }
