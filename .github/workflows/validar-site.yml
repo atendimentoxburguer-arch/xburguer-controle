@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validar:
@@ -24,8 +24,6 @@ jobs:
     steps:
       - name: Baixar repositorio
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Preparar Python
         uses: actions/setup-python@v5
@@ -38,24 +36,15 @@ jobs:
           node-version: '22'
 
       - name: Auditar estrutura, HTML, CSS, JS e PWA
-        id: auditoria
         shell: bash
         run: |
-          set +e
+          set -o pipefail
           python scripts/auditar_site.py 2>&1 | tee auditoria-site.txt
-          codigo=${PIPESTATUS[0]}
-          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
-          exit 0
 
-      - name: Salvar relatorio da auditoria
-        shell: bash
-        run: |
-          git config user.name "X-Burguer Auditoria"
-          git config user.email "actions@users.noreply.github.com"
-          git add auditoria-site.txt
-          git commit -m "Atualizar relatorio de auditoria do site" || true
-          git push origin main || true
-
-      - name: Encerrar com resultado da auditoria
-        shell: bash
-        run: exit "${{ steps.auditoria.outputs.codigo }}"
+      - name: Guardar relatorio da auditoria
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-site
+          path: auditoria-site.txt
+          retention-days: 7
