@@ -1,4 +1,5 @@
 const CACHE_NAME = "xburguer-pwa-v4.5.1";
+const APP_PATH = "/xburguer-controle/";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -44,7 +45,10 @@ self.addEventListener("activate", event => {
         caches.keys()
             .then(keys => Promise.all(
                 keys
-                    .filter(key => key.startsWith("xburguer-pwa-") && key !== CACHE_NAME)
+                    .filter(key =>
+                        (key.startsWith("xburguer-pwa-") || key.startsWith("xburguer-consumo-")) &&
+                        key !== CACHE_NAME
+                    )
                     .map(key => caches.delete(key))
             ))
             .then(() => self.clients.claim())
@@ -57,12 +61,15 @@ self.addEventListener("fetch", event => {
 
     const url = new URL(request.url);
 
-    // Supabase, Google Fonts, jsDelivr e qualquer outro domínio ficam fora do cache local.
-    if (url.origin !== self.location.origin) return;
+    // Este worker só controla recursos do Controle de Consumo.
+    // O Controle de Caixa vive em /xburguer-caixa/ e nunca é interceptado aqui.
+    if (
+        url.origin !== self.location.origin ||
+        !url.pathname.startsWith(APP_PATH)
+    ) return;
 
     event.respondWith((async () => {
         try {
-            // Para arquivos do próprio sistema, força revalidação de rede.
             const networkRequest = new Request(request, { cache: "no-store" });
             const response = await fetch(networkRequest);
 
