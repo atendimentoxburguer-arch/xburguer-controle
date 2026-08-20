@@ -384,7 +384,6 @@
             observacao: observacao || null,
             quantidade,
             preco_unitario: precoUnitario,
-            valor_total: precoUnitario * quantidade,
             data_hora: new Date().toISOString()
         };
 

@@ -173,6 +173,7 @@ def main():
     faltas_js = (APP / "faltas-supabase.js").read_text(encoding="utf-8")
     relatorios_js = (APP / "relatorios-supabase.js").read_text(encoding="utf-8")
     configuracoes_js = (APP / "configuracoes-supabase.js").read_text(encoding="utf-8")
+    consumos_js = (APP / "consumos-supabase.js").read_text(encoding="utf-8")
 
     if "cad-descontar-falta" not in faltas_html or "cad-valor-desconto-falta" not in faltas_html:
         erro("faltas: controles de desconto nao estao presentes na tela")
@@ -184,6 +185,8 @@ def main():
         erro("backup: restauracao de faltas nao preserva valor_desconto")
     if (APP / "desconto-faltas.js").exists():
         erro("faltas: camada antiga desconto-faltas.js ainda existe")
+    if "valor_total: precoUnitario * quantidade" in consumos_js:
+        erro("consumos: valor_total e coluna gerada pelo banco e nao deve ser enviado no insert")
 
     for path in APP.glob("*.js"):
         texto = path.read_text(encoding="utf-8")
