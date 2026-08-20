@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Faltas</title>
-    <link rel="stylesheet" href="style.css?v=3.9.0">
+    <link rel="stylesheet" href="style.css?v=4.1.0">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=3.9.0"></script>
-    <script src="app.js?v=3.9.0"></script>
+    <script src="supabase-config.js?v=4.1.0"></script>
+    <script src="app.js?v=4.1.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -76,11 +76,11 @@
 
                 <div class="painel-tabela">
                     <!-- BARRA DE FILTRO POR FUNCIONÁRIO -->
-                    <div class="barra-pesquisa" style="display: flex; align-items: center; justify-content: space-between;">
-                        <select id="filtro-funcionario-falta" aria-label="Filtrar faltas por funcionário" onchange="atualizarTabelaFaltas()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 250px; font-family: 'Nunito', sans-serif; outline: none;">
+                    <div class="barra-pesquisa barra-filtros-lista">
+                        <select id="filtro-funcionario-falta" aria-label="Filtrar faltas por funcionário" onchange="atualizarTabelaFaltas()">
                             <option value="todos">Todos os funcionários</option>
                         </select>
-                        <span id="contador-topo-faltas" style="font-size: 13px; color: #666; font-weight: 700;">Total: 0 registros</span>
+                        <span id="contador-topo-faltas" class="contador-filtro-lista">Total: 0 registros</span>
                     </div>
 <table class="tabela-dados">
                         <thead>
@@ -171,6 +171,6 @@
     </div>
 
     <!-- FALTAS CONECTADAS AO SUPABASE -->
-    <script src="faltas-supabase.js?v=3.9.0"></script>
+    <script src="faltas-supabase.js?v=4.1.0"></script>
 </body>
 </html>

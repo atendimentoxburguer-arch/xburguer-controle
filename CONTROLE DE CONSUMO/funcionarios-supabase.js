@@ -304,8 +304,8 @@
         $("excluir-index").value = id;
         $("texto-confirma-exclusao").innerHTML =
             `Excluir permanentemente "<strong>${escaparHtml(f.nome)}</strong>"? ` +
-            `Os consumos e faltas vinculados a este funcionário no banco também serão afetados. ` +
-            `Esta ação não pode ser desfeita.`;
+            `Se houver consumos ou faltas vinculados, a exclusão será bloqueada para proteger o histórico. ` +
+            `Nesse caso, altere o status para Inativo.`;
 
         $("modal-excluir").style.display = "flex";
     };

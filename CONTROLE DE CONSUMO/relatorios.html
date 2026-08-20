@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Relatórios</title>
-    <link rel="stylesheet" href="style.css?v=3.9.0">
+    <link rel="stylesheet" href="style.css?v=4.1.0">
     <style>
         .relatorios-container {
             padding: 24px;
@@ -178,8 +178,8 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=3.9.0"></script>
-    <script src="app.js?v=3.9.0"></script>
+    <script src="supabase-config.js?v=4.1.0"></script>
+    <script src="app.js?v=4.1.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -241,7 +241,7 @@
             <div class="relatorios-container">
                 
                 <div class="topo-acoes">
-                    <div>
+                    <div class="titulo-relatorios-wrap">
                         <h1 class="titulo-relatorios-pagina">📊 Relatórios</h1>
 </div>
                     <div class="topo-botoes-relatorio">
@@ -283,7 +283,7 @@
                             <option value="Todos">Todos</option>
                         </select>
                     </div>
-                    <button class="btn-visualizar" onclick="gerarRelatorio()">
+                    <button class="btn-visualizar" onclick="gerarRelatorio(true)">
                         🔍 Visualizar
                     </button>
                 </div>
@@ -328,6 +328,6 @@
     </div>
 
     <!-- RELATÓRIOS CONECTADOS DIRETAMENTE AO SUPABASE -->
-    <script src="relatorios-supabase.js?v=3.9.0"></script>
+    <script src="relatorios-supabase.js?v=4.1.0"></script>
 </body>
 </html>

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Login</title>
-    <link rel="stylesheet" href="style.css?v=3.9.0">
+    <link rel="stylesheet" href="style.css?v=4.1.0">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=3.9.0"></script>
-    <script src="app.js?v=3.9.0"></script>
+    <script src="supabase-config.js?v=4.1.0"></script>
+    <script src="app.js?v=4.1.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -52,7 +52,7 @@
                         <div class="campo-com-icone">
                             <span class="icone-input">🔒</span>
                             <input type="password" id="senha" autocomplete="current-password" placeholder="Digite sua senha" required>
-                            <span class="icone-ver-senha" id="icone-olho" onclick="mostrarSenha()">👁️</span>
+                            <button type="button" class="icone-ver-senha" id="icone-olho" onclick="mostrarSenha()" aria-label="Mostrar ou ocultar senha">👁️</button>
                         </div>
                     </div>
 
@@ -64,7 +64,7 @@
                 </form>
 
                 <p id="status-supabase" class="status-login-conexao" style="display:none;"></p>
-                <p class="rodape-login">© 2026 X-Burguer - Versão 3.9.0</p>
+                <p class="rodape-login">© 2026 X-Burguer - Versão 4.1.0</p>
             </div>
         </div>
 
@@ -124,8 +124,6 @@
                     botao.innerText = textoOriginal;
                     return;
                 }
-
-                sessionStorage.setItem("xburguer_autenticado", "1");
                 document.querySelector(".pagina-login").classList.add("saindo-login");
 
                 setTimeout(function () {

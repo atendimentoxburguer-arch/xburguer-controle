@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "3.9.0";
+    window.XBURGUER_VERSAO = "4.1.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     
@@ -39,7 +39,7 @@
     }
 
 // ========================================================
-    // X-BURGUER PWA 3.9 - sem botão visual de instalação
+    // X-BURGUER PWA 4.1 - sem botão visual de instalação
     // ========================================================
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
@@ -68,6 +68,17 @@
     }
 
     protegerPagina();
+
+
+    // Mantém a sessão consistente durante longos períodos de uso.
+    // Se a conta sair em outra aba ou a sessão for encerrada, volta ao login.
+    if (!isLogin && window.supabaseClient?.auth?.onAuthStateChange) {
+        window.supabaseClient.auth.onAuthStateChange(function (evento, sessao) {
+            if (evento === "SIGNED_OUT" || (evento === "USER_DELETED") || (!sessao && evento === "TOKEN_REFRESHED")) {
+                location.replace("login.html");
+            }
+        });
+    }
 
     window.formatarMoeda = function (valor) {
         if (valor === null || valor === undefined || valor === "") return 0;
@@ -604,7 +615,6 @@
                 } catch (erro) {
                     console.error("Erro ao sair:", erro);
                 }
-                sessionStorage.removeItem("xburguer_autenticado");
                 document.body.classList.add("saindo-sistema");
                 setTimeout(() => location.href = "login.html", 350);
             });
