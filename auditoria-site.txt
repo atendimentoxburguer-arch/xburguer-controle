@@ -3,4 +3,4 @@ Versao detectada: 4.5.0
 ================ RESUMO ================
 Erros: 0
 Avisos: 0
-Auditoria estrutural e funcional concluida com sucesso.
+Auditoria estrutural concluida com sucesso.
