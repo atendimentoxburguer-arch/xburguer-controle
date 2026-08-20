@@ -16,19 +16,3 @@ if (!window.supabaseClient) {
         }
     );
 }
-
-// Complemento 4.2: desconto opcional por falta.
-// É carregado somente nas telas que utilizam esse recurso.
-(function carregarComplementoDescontoFaltas() {
-    const pagina = (location.pathname.split("/").pop() || "").toLowerCase();
-    if (pagina !== "faltas.html" && pagina !== "relatorios.html") return;
-
-    window.addEventListener("load", function () {
-        if (document.querySelector('script[data-xb-desconto-faltas="1"]')) return;
-
-        const script = document.createElement("script");
-        script.src = "desconto-faltas.js?v=4.2.0";
-        script.dataset.xbDescontoFaltas = "1";
-        document.body.appendChild(script);
-    });
-})();
