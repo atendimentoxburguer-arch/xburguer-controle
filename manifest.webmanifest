@@ -43,13 +43,13 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "url": "/xburguer-controle/CONTROLE%20DE%20CONSUMO/dashboard.html",
+      "url": "./CONTROLE%20DE%20CONSUMO/dashboard.html",
       "icons": [{"src":"./icons/xburguer-rounded-192.png","sizes":"192x192","type":"image/png"}]
     },
     {
       "name": "Registrar consumo",
       "short_name": "Consumo",
-      "url": "/xburguer-controle/CONTROLE%20DE%20CONSUMO/consumos.html",
+      "url": "./CONTROLE%20DE%20CONSUMO/consumos.html",
       "icons": [{"src":"./icons/xburguer-rounded-192.png","sizes":"192x192","type":"image/png"}]
     }
   ]
