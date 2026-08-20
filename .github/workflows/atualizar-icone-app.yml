@@ -1,0 +1,127 @@
+name: Atualizar icone do aplicativo
+
+on:
+  push:
+    paths:
+      - '.github/workflows/atualizar-icone-app.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar-icone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar Pillow
+        run: pip install pillow
+
+      - name: Gerar icones e atualizar PWA
+        shell: bash
+        run: |
+          python <<'PY'
+          from PIL import Image, ImageDraw, ImageFilter
+          from pathlib import Path
+          import json, re
+
+          raiz = Path('.')
+          src = Image.open(raiz / 'CONTROLE DE CONSUMO' / 'logo.jfif').convert('RGB')
+          src = src.crop((15, 15, 432, 432))
+
+          pasta = raiz / 'icons'
+          pasta.mkdir(exist_ok=True)
+
+          def make_icon(size, maskable=False):
+              bg = Image.new('RGB', (size, size), '#8b0a0a')
+              frac = 0.72 if maskable else 0.84
+              d = int(size * frac)
+              x0 = (size - d) // 2
+              y0 = (size - d) // 2
+
+              shadow = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+              sd = ImageDraw.Draw(shadow)
+              off = max(2, size // 100)
+              sd.ellipse((x0 + off, y0 + off, x0 + d + off, y0 + d + off), fill=(0, 0, 0, 45))
+              shadow = shadow.filter(ImageFilter.GaussianBlur(max(2, size // 64)))
+              canvas = Image.alpha_composite(bg.convert('RGBA'), shadow)
+
+              draw = ImageDraw.Draw(canvas)
+              border = max(2, size // 80)
+              draw.ellipse((x0, y0, x0 + d, y0 + d), fill='#ffffff', outline='#d79b1f', width=border)
+
+              inner = int(d * 0.93)
+              logo = src.resize((inner, inner), Image.Resampling.LANCZOS).convert('RGBA')
+              mask = Image.new('L', (inner, inner), 0)
+              md = ImageDraw.Draw(mask)
+              md.ellipse((0, 0, inner - 1, inner - 1), fill=255)
+              logo.putalpha(mask)
+              canvas.alpha_composite(logo, ((size - inner) // 2, (size - inner) // 2))
+              return canvas.convert('RGB')
+
+          make_icon(180).save(pasta / 'xburguer-app-180.png', optimize=True)
+          make_icon(192).save(pasta / 'xburguer-app-192.png', optimize=True)
+          make_icon(512).save(pasta / 'xburguer-app-512.png', optimize=True)
+          make_icon(512, True).save(pasta / 'xburguer-app-maskable-512.png', optimize=True)
+
+          # Manifest com arquivos novos para evitar cache de icone antigo.
+          manifest_path = raiz / 'manifest.webmanifest'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          manifest['icons'] = [
+              {'src': './icons/xburguer-app-180.png', 'sizes': '180x180', 'type': 'image/png', 'purpose': 'any'},
+              {'src': './icons/xburguer-app-192.png', 'sizes': '192x192', 'type': 'image/png', 'purpose': 'any'},
+              {'src': './icons/xburguer-app-512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'any'},
+              {'src': './icons/xburguer-app-maskable-512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'maskable'},
+          ]
+          for atalho in manifest.get('shortcuts', []):
+              atalho['icons'] = [{'src': './icons/xburguer-app-192.png', 'sizes': '192x192', 'type': 'image/png'}]
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          def atualizar_html(path, prefixo):
+              texto = path.read_text(encoding='utf-8')
+              novo_apple = f'{prefixo}icons/xburguer-app-180.png'
+              novo_favicon = f'{prefixo}icons/xburguer-app-192.png'
+
+              if 'rel="apple-touch-icon"' in texto:
+                  texto = re.sub(r'<link\s+rel="apple-touch-icon"\s+href="[^"]+"\s*/?>',
+                                 f'<link rel="apple-touch-icon" sizes="180x180" href="{novo_apple}">', texto)
+              else:
+                  texto = texto.replace('</head>', f'    <link rel="apple-touch-icon" sizes="180x180" href="{novo_apple}">\n</head>')
+
+              if 'rel="icon"' not in texto:
+                  texto = texto.replace('</head>', f'    <link rel="icon" type="image/png" sizes="192x192" href="{novo_favicon}">\n</head>')
+
+              path.write_text(texto, encoding='utf-8')
+
+          atualizar_html(raiz / 'index.html', '')
+          for html in (raiz / 'CONTROLE DE CONSUMO').glob('*.html'):
+              atualizar_html(html, '../')
+
+          # Atualiza cache do PWA e substitui referencias antigas.
+          sw_path = raiz / 'service-worker.js'
+          sw = sw_path.read_text(encoding='utf-8')
+          sw = re.sub(r'xburguer-pwa-v[0-9.]+', 'xburguer-pwa-v4.3.0', sw)
+          sw = sw.replace('./icons/xburguer-180.png', './icons/xburguer-app-180.png')
+          sw = sw.replace('./icons/xburguer-192.png', './icons/xburguer-app-192.png')
+          sw = sw.replace('./icons/xburguer-512.png', './icons/xburguer-app-512.png')
+          sw = sw.replace('./icons/xburguer-maskable-512.png', './icons/xburguer-app-maskable-512.png')
+          if '"./icons/xburguer-app-180.png"' not in sw:
+              sw = sw.replace('"./manifest.webmanifest",', '"./manifest.webmanifest",\n  "./icons/xburguer-app-180.png",')
+          sw_path.write_text(sw, encoding='utf-8')
+          PY
+
+      - name: Publicar icones novos
+        run: |
+          git config user.name "X-Burguer App"
+          git config user.email "actions@users.noreply.github.com"
+          git add icons manifest.webmanifest index.html service-worker.js 'CONTROLE DE CONSUMO/'*.html
+          git commit -m "Melhorar logo do aplicativo instalado" || exit 0
+          git push origin main
