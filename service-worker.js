@@ -1,13 +1,13 @@
-const CACHE_NAME = "xburguer-pwa-v4.2.0";
+const CACHE_NAME = "xburguer-pwa-v4.3.0";
 const PRECACHE = [
   "./",
   "./index.html",
   "./offline.html",
   "./manifest.webmanifest",
-  "./icons/xburguer-180.png",
-  "./icons/xburguer-192.png",
-  "./icons/xburguer-512.png",
-  "./icons/xburguer-maskable-512.png",
+  "./icons/xburguer-app-180.png",
+  "./icons/xburguer-app-192.png",
+  "./icons/xburguer-app-512.png",
+  "./icons/xburguer-app-maskable-512.png",
   "./CONTROLE%20DE%20CONSUMO/app.js",
   "./CONTROLE%20DE%20CONSUMO/configuracoes-supabase.js",
   "./CONTROLE%20DE%20CONSUMO/configuracoes.html",

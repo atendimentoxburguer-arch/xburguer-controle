@@ -18,19 +18,25 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "./icons/xburguer-192.png",
+      "src": "./icons/xburguer-app-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/xburguer-app-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/xburguer-512.png",
+      "src": "./icons/xburguer-app-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/xburguer-maskable-512.png",
+      "src": "./icons/xburguer-app-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -43,8 +49,9 @@
       "url": "./CONTROLE%20DE%20CONSUMO/dashboard.html",
       "icons": [
         {
-          "src": "./icons/xburguer-192.png",
-          "sizes": "192x192"
+          "src": "./icons/xburguer-app-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -54,8 +61,9 @@
       "url": "./CONTROLE%20DE%20CONSUMO/consumos.html",
       "icons": [
         {
-          "src": "./icons/xburguer-192.png",
-          "sizes": "192x192"
+          "src": "./icons/xburguer-app-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }
