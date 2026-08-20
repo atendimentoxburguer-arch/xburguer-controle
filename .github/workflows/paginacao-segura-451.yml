@@ -1,0 +1,126 @@
+name: Paginacao segura 4.5.1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/paginacao-segura-451.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  corrigir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Aplicar paginacao e atualizar cache
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          ROOT = Path('.')
+          APP = ROOT / 'CONTROLE DE CONSUMO'
+          NOVA = '4.5.1'
+
+          def rw(path): return path.read_text(encoding='utf-8')
+          def ww(path, text): path.write_text(text, encoding='utf-8')
+          def sub1(path, pattern, replacement, label, flags=re.S):
+              text = rw(path)
+              new, n = re.subn(pattern, replacement, text, count=1, flags=flags)
+              if n != 1:
+                  raise RuntimeError(f'{label}: substituicoes={n}')
+              ww(path, new)
+
+          # Consumos: carrega todos os lotes, sem truncamento silencioso.
+          cons = APP / 'consumos-supabase.js'
+          sub1(
+              cons,
+              r'    async function carregarDadosBase\(\) \{.*?\n    \}\n\n    async function carregarTudo\(\) \{',
+              '''    async function carregarConsumosPaginados() {\n        const tamanhoPagina = 1000;\n        let inicio = 0;\n        const todos = [];\n\n        while (true) {\n            const { data, error } = await window.supabaseClient\n                .from("consumos")\n                .select("id,funcionario_id,produto_id,tipo,descricao,observacao,quantidade,preco_unitario,valor_total,data_hora,created_at")\n                .order("data_hora", { ascending: false })\n                .range(inicio, inicio + tamanhoPagina - 1);\n\n            if (error) throw error;\n            const lote = Array.isArray(data) ? data : [];\n            todos.push(...lote);\n            if (lote.length < tamanhoPagina) break;\n            inicio += tamanhoPagina;\n        }\n\n        return todos;\n    }\n\n    async function carregarDadosBase() {\n        const [respFuncionarios, respProdutos, consumos] = await Promise.all([\n            window.supabaseClient\n                .from("funcionarios")\n                .select("id,nome,cargo,salario,status")\n                .order("nome", { ascending: true }),\n            window.supabaseClient\n                .from("produtos")\n                .select("id,nome,preco,ativo")\n                .order("nome", { ascending: true }),\n            carregarConsumosPaginados()\n        ]);\n\n        if (respFuncionarios.error) throw respFuncionarios.error;\n        if (respProdutos.error) throw respProdutos.error;\n\n        listaFuncionarios = Array.isArray(respFuncionarios.data) ? respFuncionarios.data : [];\n        listaProdutos = Array.isArray(respProdutos.data) ? respProdutos.data : [];\n        listaConsumos = consumos;\n    }\n\n    async function carregarTudo() {''',
+              'paginacao de consumos'
+          )
+
+          # Faltas: mesma protecao para historico de faltas.
+          faltas = APP / 'faltas-supabase.js'
+          sub1(
+              faltas,
+              r'    async function carregarDadosBase\(\) \{.*?\n    \}\n\n    async function carregarTudo\(\) \{',
+              '''    async function carregarFaltasPaginadas() {\n        const tamanhoPagina = 1000;\n        let inicio = 0;\n        const todas = [];\n\n        while (true) {\n            const { data, error } = await window.supabaseClient\n                .from("faltas")\n                .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")\n                .order("data", { ascending: false })\n                .range(inicio, inicio + tamanhoPagina - 1);\n\n            if (error) throw error;\n            const lote = Array.isArray(data) ? data : [];\n            todas.push(...lote);\n            if (lote.length < tamanhoPagina) break;\n            inicio += tamanhoPagina;\n        }\n\n        return todas;\n    }\n\n    async function carregarDadosBase() {\n        const [respFuncionarios, faltas] = await Promise.all([\n            window.supabaseClient\n                .from("funcionarios")\n                .select("id,nome,cargo,status")\n                .order("nome", { ascending: true }),\n            carregarFaltasPaginadas()\n        ]);\n\n        if (respFuncionarios.error) throw respFuncionarios.error;\n\n        listaFuncionarios = Array.isArray(respFuncionarios.data)\n            ? respFuncionarios.data\n            : [];\n        listaFaltas = faltas;\n    }\n\n    async function carregarTudo() {''',
+              'paginacao de faltas'
+          )
+
+          # Histórico: deixa de ocultar ações antigas depois do primeiro lote.
+          hist = APP / 'historico-supabase.js'
+          text = rw(hist)
+          anchor = '    async function carregarHistorico() {'
+          helper = '''    async function buscarHistoricoCompleto() {\n        const tamanhoPagina = 1000;\n        let inicio = 0;\n        const todos = [];\n\n        while (true) {\n            const { data, error } = await window.supabaseClient\n                .from("historico_acoes")\n                .select("id,usuario_id,usuario_nome,acao,detalhes,icone,data_hora")\n                .order("data_hora", { ascending: false })\n                .range(inicio, inicio + tamanhoPagina - 1);\n\n            if (error) throw error;\n            const lote = Array.isArray(data) ? data : [];\n            todos.push(...lote);\n            if (lote.length < tamanhoPagina) break;\n            inicio += tamanhoPagina;\n        }\n\n        return todos;\n    }\n\n'''
+          if 'async function buscarHistoricoCompleto()' not in text:
+              if anchor not in text: raise RuntimeError('ancora historico ausente')
+              text = text.replace(anchor, helper + anchor, 1)
+          old = '''            const { data, error } = await window.supabaseClient\n                .from("historico_acoes")\n                .select("id,usuario_id,usuario_nome,acao,detalhes,icone,data_hora")\n                .order("data_hora", { ascending: false })\n                .limit(1000);\n\n            if (error) throw error;\n\n            listaHistorico = Array.isArray(data) ? data : [];'''
+          new = '''            listaHistorico = await buscarHistoricoCompleto();'''
+          if old not in text: raise RuntimeError('consulta antiga do historico ausente')
+          text = text.replace(old, new, 1)
+          ww(hist, text)
+
+          # Relatórios: pagina os dois conjuntos filtrados, preservando exatidao.
+          rel = APP / 'relatorios-supabase.js'
+          sub1(
+              rel,
+              r'    async function buscarDadosRelatorio\(dataInicio, dataFim, funcionarioId\) \{.*?\n    \}\n\n    function atualizarCards\(',
+              '''    async function lerConsultaPaginada(criarConsulta) {\n        const tamanhoPagina = 1000;\n        let inicio = 0;\n        const todos = [];\n\n        while (true) {\n            const { data, error } = await criarConsulta()\n                .range(inicio, inicio + tamanhoPagina - 1);\n\n            if (error) throw error;\n            const lote = Array.isArray(data) ? data : [];\n            todos.push(...lote);\n            if (lote.length < tamanhoPagina) break;\n            inicio += tamanhoPagina;\n        }\n\n        return todos;\n    }\n\n    async function buscarDadosRelatorio(dataInicio, dataFim, funcionarioId) {\n        const criarConsultaConsumos = () => {\n            let consulta = window.supabaseClient\n                .from("consumos")\n                .select("id,funcionario_id,produto_id,tipo,descricao,observacao,quantidade,preco_unitario,valor_total,data_hora,created_at")\n                .order("data_hora", { ascending: true });\n\n            if (dataInicio) {\n                consulta = consulta.gte("data_hora", inicioLocalParaISOString(dataInicio));\n            }\n            if (dataFim) {\n                consulta = consulta.lt("data_hora", inicioLocalParaISOString(proximoDiaIso(dataFim)));\n            }\n            if (funcionarioId && funcionarioId !== "Todos" && tipoAtual !== "produto") {\n                consulta = consulta.eq("funcionario_id", funcionarioId);\n            }\n            return consulta;\n        };\n\n        const criarConsultaFaltas = () => {\n            let consulta = window.supabaseClient\n                .from("faltas")\n                .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")\n                .order("data", { ascending: true });\n\n            if (dataInicio) consulta = consulta.gte("data", dataInicio);\n            if (dataFim) consulta = consulta.lt("data", proximoDiaIso(dataFim));\n            if (funcionarioId && funcionarioId !== "Todos" && tipoAtual !== "produto") {\n                consulta = consulta.eq("funcionario_id", funcionarioId);\n            }\n            return consulta;\n        };\n\n        const [consumos, faltas] = await Promise.all([\n            lerConsultaPaginada(criarConsultaConsumos),\n            lerConsultaPaginada(criarConsultaFaltas)\n        ]);\n\n        return { consumos, faltas };\n    }\n\n    function atualizarCards(''',
+              'paginacao dos relatorios'
+          )
+
+          # Auditoria futura detecta se a paginacao critica for removida.
+          auditor = ROOT / 'scripts' / 'auditar_site.py'
+          a = rw(auditor)
+          anchor_a = '    if "valor_total: precoUnitario * quantidade" in consumos_js:\n        erro("consumos: valor_total e coluna gerada pelo banco e nao deve ser enviado no insert")\n'
+          add_a = '''    if "carregarConsumosPaginados" not in consumos_js:\n        erro("consumos: consulta principal sem paginacao")\n    if "lerConsultaPaginada" not in relatorios_js:\n        erro("relatorios: consultas sem paginacao, risco de truncamento")\n    historico_js = (APP / "historico-supabase.js").read_text(encoding="utf-8")\n    if "buscarHistoricoCompleto" not in historico_js:\n        erro("historico: consulta sem paginacao")\n'''
+          if add_a not in a:
+              if anchor_a not in a: raise RuntimeError('ancora de auditoria para paginacao ausente')
+              a = a.replace(anchor_a, anchor_a + add_a, 1)
+          ww(auditor, a)
+
+          # Bump patch para forcar navegador/PWA a buscar os JS corrigidos.
+          for path in list(APP.glob('*.html')) + [ROOT/'index.html', ROOT/'offline.html', ROOT/'404.html']:
+              t = rw(path)
+              t = re.sub(r'\?v=4\.5\.0', '?v=' + NOVA, t)
+              t = t.replace('Versão 4.5.0', 'Versão ' + NOVA)
+              ww(path, t)
+
+          app = APP / 'app.js'
+          t = rw(app)
+          t = re.sub(r'window\.XBURGUER_VERSAO\s*=\s*"[0-9.]+";', f'window.XBURGUER_VERSAO = "{NOVA}";', t, count=1)
+          ww(app, t)
+
+          sw = ROOT / 'service-worker.js'
+          t = rw(sw)
+          t = re.sub(r'xburguer-pwa-v[0-9.]+', 'xburguer-pwa-v' + NOVA, t)
+          ww(sw, t)
+          PY
+
+      - name: Validar codigo e auditoria
+        run: |
+          for f in 'CONTROLE DE CONSUMO/'*.js service-worker.js; do node --check "$f"; done
+          python scripts/auditar_site.py
+
+      - name: Publicar e remover workflow temporario
+        run: |
+          rm -f '.github/workflows/paginacao-segura-451.yml'
+          git config user.name "X-Burguer Revisao"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Evitar truncamento de dados e finalizar revisao 4.5.1"
+          git push origin main
