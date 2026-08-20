@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "3.3.0";
+    window.XBURGUER_VERSAO = "3.5.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     
@@ -39,7 +39,7 @@
     }
 
 // ========================================================
-    // X-BURGUER PWA 3.4 - sem botão visual de instalação
+    // X-BURGUER PWA 3.5 - sem botão visual de instalação
     // ========================================================
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
@@ -475,7 +475,28 @@
         });
     }
 
+
+    function fecharModaisResiduais() {
+        document.querySelectorAll(".modal-fundo").forEach(function (modal) {
+            modal.style.display = "none";
+        });
+
+        document.body.classList.remove("modal-aberto");
+        document.documentElement.classList.remove("modal-aberto");
+    }
+
+    /* Safari/iPhone pode restaurar uma página exatamente como ela estava
+       ao voltar de outra seção. Garantimos que nenhum modal antigo volte aberto. */
+    window.addEventListener("pageshow", function () {
+        fecharModaisResiduais();
+    });
+
+    window.addEventListener("pagehide", function () {
+        fecharModaisResiduais();
+    });
+
     window.addEventListener("DOMContentLoaded", function () {
+        fecharModaisResiduais();
         document.documentElement.classList.add("site-pronto");
         criarAvisoConectividade();
         criarNavegacaoMobile();

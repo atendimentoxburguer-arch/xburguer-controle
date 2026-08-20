@@ -2379,3 +2379,150 @@ body.corpo-dashboard .sidebar-sair {
         border-radius: 20px 20px 0 0 !important;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 3.5 - MODAIS MOBILE DESTRAVADOS + CONFIRMAÇÃO POLIDA
+   ============================================================ */
+
+/* REGRA CRÍTICA:
+   algumas regras antigas de tablet usavam "display:flex !important"
+   em .modal-fundo e acabavam vencendo o style="display:none".
+   Agora qualquer modal marcado como oculto fica realmente oculto. */
+.modal-fundo[style*="display: none"],
+.modal-fundo[style*="display:none"] {
+    display: none !important;
+}
+
+/* Quando o JavaScript abre o modal explicitamente, ele volta a aparecer. */
+.modal-fundo[style*="display: flex"],
+.modal-fundo[style*="display:flex"] {
+    display: flex !important;
+}
+
+/* Confirmação de exclusão: compacta e consistente em qualquer tela. */
+#modal-excluir {
+    background: rgba(20, 20, 24, .52) !important;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.modal-caixa-excluir {
+    width: min(430px, calc(100vw - 32px)) !important;
+    max-width: 430px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: calc(var(--x-viewport-height, 100dvh) - 32px) !important;
+    padding: 22px !important;
+    margin: 0 auto !important;
+    border-radius: 18px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: #fff !important;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, .26) !important;
+    touch-action: pan-y !important;
+}
+
+.modal-caixa-excluir .modal-excluir-topo {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin: 0 0 14px !important;
+}
+
+.modal-caixa-excluir .icone-lixeira-modal {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 12px !important;
+    background: #fff0ef !important;
+    color: #b42318 !important;
+    font-size: 20px !important;
+}
+
+.modal-caixa-excluir .modal-excluir-topo h3 {
+    margin: 0 !important;
+    font-size: 20px !important;
+    line-height: 1.2 !important;
+    color: #20242b !important;
+}
+
+.modal-caixa-excluir .texto-aviso-excluir {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #666b73 !important;
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+}
+
+/* A confirmação de exclusão não usa a barra sticky dos formulários longos. */
+.modal-caixa-excluir .modal-botoes {
+    position: static !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin: 20px 0 0 !important;
+    padding: 16px 0 0 !important;
+    border-top: 1px solid #eceef1 !important;
+    background: transparent !important;
+}
+
+.modal-caixa-excluir .modal-botoes button {
+    width: 100% !important;
+    min-height: 46px !important;
+    margin: 0 !important;
+    border-radius: 11px !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}
+
+.modal-caixa-excluir .btn-cancelar {
+    background: #fff !important;
+    border: 1px solid #d7dbe0 !important;
+    color: #3f4650 !important;
+}
+
+.modal-caixa-excluir .btn-excluir-modal {
+    background: #b42318 !important;
+    color: #fff !important;
+    border: 1px solid #b42318 !important;
+}
+
+.modal-caixa-excluir .btn-excluir-modal:active {
+    background: #8f1c14 !important;
+}
+
+/* Celular: confirmação vira uma folha inferior pequena,
+   sem ocupar metade da tela e sem espaço branco sobrando. */
+@media (max-width: 700px) {
+    #modal-excluir {
+        align-items: flex-end !important;
+        justify-content: center !important;
+        padding: 10px 10px max(10px, env(safe-area-inset-bottom)) !important;
+    }
+
+    .modal-caixa-excluir {
+        width: 100% !important;
+        max-width: 440px !important;
+        max-height: min(72dvh, calc(var(--x-viewport-height, 100dvh) - 28px)) !important;
+        margin: 0 auto !important;
+        padding: 20px 18px !important;
+        border-radius: 20px !important;
+    }
+
+    .modal-caixa-excluir .modal-excluir-topo h3 {
+        font-size: 19px !important;
+    }
+
+    .modal-caixa-excluir .texto-aviso-excluir {
+        font-size: 14px !important;
+    }
+}
+
+/* Celulares estreitos: botões empilhados apenas se realmente necessário. */
+@media (max-width: 340px) {
+    .modal-caixa-excluir .modal-botoes {
+        grid-template-columns: 1fr !important;
+    }
+}
