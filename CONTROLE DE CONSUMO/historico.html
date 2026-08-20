@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>X-Burguer | Histórico de Ações</title>
-<link rel="stylesheet" href="style.css?v=3.5.0">
+<link rel="stylesheet" href="style.css?v=3.6.0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=3.5.0"></script>
-    <script src="app.js?v=3.5.0"></script>
+    <script src="supabase-config.js?v=3.6.0"></script>
+    <script src="app.js?v=3.6.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -58,14 +58,13 @@
                 </div>
             </header>
 <div class="dashboard-container">
- <div class="dashboard-cabecalho"><div><h1>🔄 Histórico de Ações</h1><span style="font-size:13px;color:#777;">Registro das principais alterações realizadas no sistema.</span></div><button class="btn-novo-funcionario" onclick="recarregarHistorico()">Atualizar histórico</button></div>
+ <div class="dashboard-cabecalho"><div><h1>🔄 Histórico de Ações</h1><span style="font-size:13px;color:#777;">Registro das principais alterações realizadas no sistema.</span></div></div>
  <div class="painel-tabela">
    <div class="barra-pesquisa"><input type="text" id="busca-historico" placeholder="Buscar ação, usuário ou detalhe..." oninput="renderizarHistorico()"></div>
-   <div id="status-historico-banco" style="font-size:12px;margin:0 0 12px 2px;color:#777;">Carregando histórico do banco de dados...</div>
-   <div style="overflow-x:auto"><table class="tabela-dados" style="min-width:720px"><thead><tr><th>Data</th><th>Hora</th><th>Ação</th><th>Detalhes</th><th>Usuário</th></tr></thead><tbody id="corpo-historico"></tbody></table></div>
+<div style="overflow-x:auto"><table class="tabela-dados" style="min-width:720px"><thead><tr><th>Data</th><th>Hora</th><th>Ação</th><th>Detalhes</th><th>Usuário</th></tr></thead><tbody id="corpo-historico"></tbody></table></div>
    <div class="tabela-rodape" id="contador-historico">Total: 0 registros</div>
  </div>
 </div>
 </main></div>
-<script src="historico-supabase.js?v=3.5.0"></script>
+<script src="historico-supabase.js?v=3.6.0"></script>
 </body></html>

@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "3.5.0";
+    window.XBURGUER_VERSAO = "3.6.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     
@@ -39,7 +39,7 @@
     }
 
 // ========================================================
-    // X-BURGUER PWA 3.5 - sem botão visual de instalação
+    // X-BURGUER PWA 3.6 - sem botão visual de instalação
     // ========================================================
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
@@ -476,6 +476,91 @@
     }
 
 
+
+    let intervaloAtualizacaoAutomatica = null;
+    let atualizacaoAutomaticaEmAndamento = false;
+
+    function existeInteracaoAtiva() {
+        const ativo = document.activeElement;
+        if (ativo && ["INPUT", "SELECT", "TEXTAREA"].includes(ativo.tagName)) {
+            return true;
+        }
+
+        return Array.from(document.querySelectorAll(".modal-fundo")).some(function (modal) {
+            return window.getComputedStyle(modal).display !== "none";
+        });
+    }
+
+    function obterAtualizadorDaPagina() {
+        const pagina = (location.pathname.split("/").pop() || "").toLowerCase();
+
+        const mapa = {
+            "funcionarios.html": () => window.recarregarFuncionariosDoBanco?.(),
+            "produtos.html": () => window.recarregarProdutosDoBanco?.(),
+            "consumos.html": () => window.recarregarConsumosDoBanco?.(),
+            "faltas.html": () => window.recarregarFaltasDoBanco?.(),
+            "historico.html": () => window.recarregarHistorico?.(),
+            "relatorios.html": () => window.gerarRelatorio?.(false)
+        };
+
+        return mapa[pagina] || null;
+    }
+
+    async function atualizarPaginaSilenciosamente() {
+        if (
+            isLogin ||
+            document.hidden ||
+            !navigator.onLine ||
+            atualizacaoAutomaticaEmAndamento ||
+            existeInteracaoAtiva()
+        ) {
+            return;
+        }
+
+        const atualizar = obterAtualizadorDaPagina();
+        if (!atualizar) return;
+
+        atualizacaoAutomaticaEmAndamento = true;
+        window.XBURGUER_ATUALIZACAO_SILENCIOSA = true;
+
+        try {
+            await atualizar();
+        } catch (erro) {
+            console.warn("Atualização automática não concluída:", erro);
+        } finally {
+            window.XBURGUER_ATUALIZACAO_SILENCIOSA = false;
+            atualizacaoAutomaticaEmAndamento = false;
+        }
+    }
+
+    function iniciarAtualizacaoAutomatica() {
+        if (isLogin || intervaloAtualizacaoAutomatica) return;
+
+        /* Atualiza em segundo plano a cada 60 segundos.
+           O Dashboard já possui sua própria atualização automática. */
+        intervaloAtualizacaoAutomatica = window.setInterval(
+            atualizarPaginaSilenciosamente,
+            60000
+        );
+
+        document.addEventListener("visibilitychange", function () {
+            if (!document.hidden) {
+                window.setTimeout(atualizarPaginaSilenciosamente, 250);
+            }
+        });
+
+        window.addEventListener("online", function () {
+            window.setTimeout(atualizarPaginaSilenciosamente, 300);
+        });
+
+        window.addEventListener("beforeunload", function () {
+            if (intervaloAtualizacaoAutomatica) {
+                window.clearInterval(intervaloAtualizacaoAutomatica);
+                intervaloAtualizacaoAutomatica = null;
+            }
+        });
+    }
+
     function fecharModaisResiduais() {
         document.querySelectorAll(".modal-fundo").forEach(function (modal) {
             modal.style.display = "none";
@@ -504,6 +589,7 @@
         travarIdentidadeTopo();
         // Botão visual de instalação removido na versão 3.1.
         criarTransicaoSecoes();
+        iniciarAtualizacaoAutomatica();
 
         // Tenta reenviar ações que ficaram pendentes por falha temporária de conexão.
         if (!isLogin && window.sincronizarHistoricoPendente) {

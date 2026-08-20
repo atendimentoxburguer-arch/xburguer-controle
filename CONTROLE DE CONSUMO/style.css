@@ -2526,3 +2526,23 @@ body.corpo-dashboard .sidebar-sair {
         grid-template-columns: 1fr !important;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 3.6 - INTERFACE LIMPA / ATUALIZAÇÃO AUTOMÁTICA
+   ============================================================ */
+.status-login-conexao {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border: 1px solid #f0c7c3;
+    border-radius: 9px;
+    background: #fff4f2;
+    color: #9b1c1c;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Evita espaço residual de controles técnicos removidos. */
+.dashboard-acoes:empty {
+    display: none !important;
+}

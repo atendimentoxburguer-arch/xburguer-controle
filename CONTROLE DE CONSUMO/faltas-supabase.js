@@ -174,10 +174,12 @@
                 "erro"
             );
 
-            alert(
-                "Não foi possível carregar as faltas do banco de dados.\n\n" +
-                (erro.message || erro)
-            );
+            if (!window.XBURGUER_ATUALIZACAO_SILENCIOSA) {
+                alert(
+                    "Não foi possível carregar as faltas do banco de dados.\n\n" +
+                    (erro.message || erro)
+                );
+            }
         }
     }
 

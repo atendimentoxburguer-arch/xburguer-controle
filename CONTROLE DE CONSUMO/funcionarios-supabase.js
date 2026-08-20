@@ -100,7 +100,7 @@
         } catch (erro) {
             console.error("Erro ao carregar funcionários:", erro);
             definirStatus(`Erro ao carregar do banco: ${erro.message || erro}`, "erro");
-            alert("Não foi possível carregar os funcionários do banco de dados.\n\n" + (erro.message || erro));
+            if (!window.XBURGUER_ATUALIZACAO_SILENCIOSA) alert("Não foi possível carregar os funcionários do banco de dados.\n\n" + (erro.message || erro));
         }
     }
 
