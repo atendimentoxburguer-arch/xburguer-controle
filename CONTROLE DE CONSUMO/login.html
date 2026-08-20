@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Login</title>
-    <link rel="stylesheet" href="style.css?v=4.1.0">
+    <link rel="stylesheet" href="style.css?v=4.3.0">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=4.1.0"></script>
-    <script src="app.js?v=4.1.0"></script>
+    <script src="supabase-config.js?v=4.3.0"></script>
+    <script src="app.js?v=4.3.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -35,10 +35,7 @@
                 <h2>Bem-vindo!</h2>
                 <p class="subtitulo">Faça login para continuar</p>
 
-                <!-- Adicionamos um evento 'onsubmit' para rodar nossa validação -->
                 <form id="form-login" onsubmit="validarLogin(event)">
-                    
-                    <!-- Campo do Usuário -->
                     <div class="grupo-input">
                         <label for="usuario">E-mail</label>
                         <div class="campo-com-icone">
@@ -47,7 +44,6 @@
                         </div>
                     </div>
 
-                    <!-- Campo da Senha -->
                     <div class="grupo-input">
                         <label for="senha">Senha</label>
                         <div class="campo-com-icone">
@@ -65,13 +61,11 @@
                 </form>
 
                 <p id="status-supabase" class="status-login-conexao" style="display:none;"></p>
-                <p class="rodape-login">© 2026 X-Burguer - Versão 4.1.0</p>
+                <p class="rodape-login">© 2026 X-Burguer - Versão 4.3.0</p>
             </div>
         </div>
-
     </div>
 
-    <!-- Script de validação e ver senha -->
     <script>
         function mostrarSenha() {
             var inputSenha = document.getElementById("senha");
@@ -125,12 +119,11 @@
                     botao.innerText = textoOriginal;
                     return;
                 }
-                document.querySelector(".pagina-login").classList.add("saindo-login");
 
+                document.querySelector(".pagina-login").classList.add("saindo-login");
                 setTimeout(function () {
                     window.location.href = "dashboard.html";
                 }, 350);
-
             } catch (erro) {
                 console.error("Erro inesperado no login:", erro);
                 alert(`Erro ao conectar ao Supabase.\n\n${erro?.message || erro}`);
