@@ -1,0 +1,6 @@
+Versao detectada: 4.4.0
+
+================ RESUMO ================
+Erros: 0
+Avisos: 0
+Auditoria estrutural concluida com sucesso.
