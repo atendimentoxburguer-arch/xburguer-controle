@@ -1,0 +1,120 @@
+name: Isolar Controle de Consumo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separar-projetos-consumo.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  separar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Separar PWA e caches do Consumo
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('.')
+          app = root/'CONTROLE DE CONSUMO'/'app.js'
+          t = app.read_text(encoding='utf-8')
+          bloco = re.compile(r'''\n\s*// =+\n\s*// X-BURGUER PWA 4\.5 - sem botão visual de instalação\n\s*// =+\n\s*if \("serviceWorker" in navigator\) \{.*?\n\s*\}\n\n''', re.S)
+          t2, n = bloco.subn('\n', t, count=1)
+          if n != 1:
+              raise SystemExit('Bloco antigo de PWA não encontrado em app.js')
+          app.write_text(t2, encoding='utf-8')
+
+          cfg = root/'CONTROLE DE CONSUMO'/'supabase-config.js'
+          t = cfg.read_text(encoding='utf-8')
+          ini = t.find('// PWA exclusivo do sistema de Consumo.')
+          if ini < 0:
+              raise SystemExit('Bloco PWA não encontrado em supabase-config.js')
+          novo = r'''// PWA exclusivo do Controle de Consumo.
+// Importante: só limpa/registra workers dentro de /xburguer-controle/.
+// Nunca toca no Controle de Caixa, que usa /xburguer-caixa/.
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+        const base = '/xburguer-controle/';
+        const scopeUrl = new URL(base, location.origin).href;
+        const workerUrl = new URL(base + 'sw-consumo.js?v=2', location.origin).href;
+
+        try {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (const reg of regs) {
+                if (reg.scope !== scopeUrl) continue;
+                const atual = reg.active?.scriptURL || reg.waiting?.scriptURL || reg.installing?.scriptURL || '';
+                if (atual && !atual.includes('/xburguer-controle/sw-consumo.js')) {
+                    await reg.unregister();
+                }
+            }
+
+            const reg = await navigator.serviceWorker.register(workerUrl, {
+                scope: base,
+                updateViaCache: 'none'
+            });
+            reg.update().catch(() => {});
+        } catch (erro) {
+            console.warn('Não foi possível registrar o PWA X-Burguer Consumo:', erro);
+        }
+    });
+}
+'''
+          cfg.write_text(t[:ini].rstrip() + '\n\n' + novo, encoding='utf-8')
+
+          sw = root/'sw-consumo.js'
+          t = sw.read_text(encoding='utf-8')
+          t = t.replace("const CACHE_NAME='xburguer-consumo-v1';", "const CACHE_NAME='xburguer-consumo-v2';\nconst APP_PATH='/xburguer-controle/';")
+          t = t.replace("await Promise.all(names.filter(n=>n.startsWith('xburguer-consumo-')&&n!==CACHE_NAME).map(n=>caches.delete(n)));",
+                        "await Promise.all(names.filter(n=>((n.startsWith('xburguer-consumo-')||n.startsWith('xburguer-pwa-'))&&n!==CACHE_NAME)).map(n=>caches.delete(n)));")
+          t = t.replace("if(req.method!=='GET'||url.origin!==self.location.origin)return;",
+                        "if(req.method!=='GET'||url.origin!==self.location.origin||!url.pathname.startsWith(APP_PATH))return;")
+          sw.write_text(t, encoding='utf-8')
+
+          idx = root/'index.html'
+          t = idx.read_text(encoding='utf-8')
+          t = t.replace('manifest.webmanifest?v=pwa-consumo-3', 'manifest.webmanifest?v=pwa-consumo-4')
+          t = t.replace('xburguer-rounded-180.png?v=pwa-consumo-3', 'xburguer-rounded-180.png?v=pwa-consumo-4')
+          t = t.replace('xburguer-rounded-192.png?v=pwa-consumo-3', 'xburguer-rounded-192.png?v=pwa-consumo-4')
+          t = t.replace("navigator.serviceWorker.register('/xburguer-controle/sw-consumo.js?v=1',{scope:'/xburguer-controle/',updateViaCache:'none'})",
+                        "navigator.serviceWorker.register('/xburguer-controle/sw-consumo.js?v=2',{scope:'/xburguer-controle/',updateViaCache:'none'})")
+          idx.write_text(t, encoding='utf-8')
+
+          audit = root/'scripts'/'auditar_site.py'
+          t = audit.read_text(encoding='utf-8')
+          marcador = "    if versao and f\"xburguer-pwa-v{versao}\" not in sw:\n        erro(f\"service-worker: cache nao corresponde a versao {versao}\")\n"
+          extra = marcador + "\n    app_main = (APP / 'app.js').read_text(encoding='utf-8')\n    sb_cfg = (APP / 'supabase-config.js').read_text(encoding='utf-8')\n    sw_consumo = (ROOT / 'sw-consumo.js').read_text(encoding='utf-8')\n    if '../service-worker.js' in app_main:\n        erro('PWA: app.js ainda registra o Service Worker legado')\n    if '/xburguer-controle/sw-consumo.js' not in sb_cfg:\n        erro('PWA: registro exclusivo do Controle de Consumo ausente')\n    if \"APP_PATH='/xburguer-controle/'\" not in sw_consumo:\n        erro('PWA: sw-consumo.js sem limite de caminho exclusivo')\n    if manifest.get('id') != '/xburguer-controle/consumo-app' or manifest.get('scope') != '/xburguer-controle/':\n        erro('PWA: identidade/escopo do Controle de Consumo incorretos')\n"
+          if marcador not in t:
+              raise SystemExit('Marcador de auditoria não encontrado')
+          t = t.replace(marcador, extra, 1)
+          audit.write_text(t, encoding='utf-8')
+
+          readme = root/'README.md'
+          readme.write_text('''# X-Burguer — Controle de Consumo\n\nEste repositório contém **somente o sistema de Controle de Consumo**.\n\n- GitHub Pages: `/xburguer-controle/`\n- PWA ID: `/xburguer-controle/consumo-app`\n- Service Worker: `sw-consumo.js`\n- Cache: prefixo `xburguer-consumo-`\n- Banco: projeto Supabase exclusivo do Controle de Consumo\n\nO sistema **Controle de Caixa** fica em outro repositório (`xburguer-caixa`), usa outro caminho, outro PWA, outro cache e outro projeto Supabase. Não adicionar arquivos do Caixa neste repositório.\n''', encoding='utf-8')
+          PY
+
+      - name: Validar
+        run: |
+          node --check 'CONTROLE DE CONSUMO/app.js'
+          node --check 'CONTROLE DE CONSUMO/supabase-config.js'
+          node --check sw-consumo.js
+          python scripts/auditar_site.py
+
+      - name: Publicar
+        run: |
+          git config user.name 'X-Burguer Organização'
+          git config user.email 'actions@users.noreply.github.com'
+          git add 'CONTROLE DE CONSUMO/app.js' 'CONTROLE DE CONSUMO/supabase-config.js' sw-consumo.js index.html scripts/auditar_site.py README.md
+          git commit -m 'Isolar PWA e caches do Controle de Consumo'
+          git push origin main
