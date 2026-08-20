@@ -187,64 +187,64 @@
         gerarRelatorio();
     };
 
+    async function lerConsultaPaginada(criarConsulta) {
+        const tamanhoPagina = 1000;
+        let inicio = 0;
+        const todos = [];
+
+        while (true) {
+            const { data, error } = await criarConsulta()
+                .range(inicio, inicio + tamanhoPagina - 1);
+
+            if (error) throw error;
+            const lote = Array.isArray(data) ? data : [];
+            todos.push(...lote);
+            if (lote.length < tamanhoPagina) break;
+            inicio += tamanhoPagina;
+        }
+
+        return todos;
+    }
+
     async function buscarDadosRelatorio(dataInicio, dataFim, funcionarioId) {
-        let consultaConsumos = window.supabaseClient
-            .from("consumos")
-            .select("id,funcionario_id,produto_id,tipo,descricao,observacao,quantidade,preco_unitario,valor_total,data_hora,created_at")
-            .order("data_hora", { ascending: true });
+        const criarConsultaConsumos = () => {
+            let consulta = window.supabaseClient
+                .from("consumos")
+                .select("id,funcionario_id,produto_id,tipo,descricao,observacao,quantidade,preco_unitario,valor_total,data_hora,created_at")
+                .order("data_hora", { ascending: true });
 
-        let consultaFaltas = window.supabaseClient
-            .from("faltas")
-            .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")
-            .order("data", { ascending: true });
+            if (dataInicio) {
+                consulta = consulta.gte("data_hora", inicioLocalParaISOString(dataInicio));
+            }
+            if (dataFim) {
+                consulta = consulta.lt("data_hora", inicioLocalParaISOString(proximoDiaIso(dataFim)));
+            }
+            if (funcionarioId && funcionarioId !== "Todos" && tipoAtual !== "produto") {
+                consulta = consulta.eq("funcionario_id", funcionarioId);
+            }
+            return consulta;
+        };
 
-        if (dataInicio) {
-            consultaConsumos = consultaConsumos.gte(
-                "data_hora",
-                inicioLocalParaISOString(dataInicio)
-            );
-            consultaFaltas = consultaFaltas.gte("data", dataInicio);
-        }
+        const criarConsultaFaltas = () => {
+            let consulta = window.supabaseClient
+                .from("faltas")
+                .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")
+                .order("data", { ascending: true });
 
-        if (dataFim) {
-            const diaSeguinte = proximoDiaIso(dataFim);
+            if (dataInicio) consulta = consulta.gte("data", dataInicio);
+            if (dataFim) consulta = consulta.lt("data", proximoDiaIso(dataFim));
+            if (funcionarioId && funcionarioId !== "Todos" && tipoAtual !== "produto") {
+                consulta = consulta.eq("funcionario_id", funcionarioId);
+            }
+            return consulta;
+        };
 
-            consultaConsumos = consultaConsumos.lt(
-                "data_hora",
-                inicioLocalParaISOString(diaSeguinte)
-            );
-            consultaFaltas = consultaFaltas.lt("data", diaSeguinte);
-        }
-
-        // Na aba Produto o filtro de funcionário fica oculto e o relatório
-        // considera toda a equipe.
-        if (funcionarioId && funcionarioId !== "Todos" && tipoAtual !== "produto") {
-            consultaConsumos = consultaConsumos.eq(
-                "funcionario_id",
-                funcionarioId
-            );
-            consultaFaltas = consultaFaltas.eq(
-                "funcionario_id",
-                funcionarioId
-            );
-        }
-
-        const [respConsumos, respFaltas] = await Promise.all([
-            consultaConsumos,
-            consultaFaltas
+        const [consumos, faltas] = await Promise.all([
+            lerConsultaPaginada(criarConsultaConsumos),
+            lerConsultaPaginada(criarConsultaFaltas)
         ]);
 
-        if (respConsumos.error) throw respConsumos.error;
-        if (respFaltas.error) throw respFaltas.error;
-
-        return {
-            consumos: Array.isArray(respConsumos.data)
-                ? respConsumos.data
-                : [],
-            faltas: Array.isArray(respFaltas.data)
-                ? respFaltas.data
-                : []
-        };
+        return { consumos, faltas };
     }
 
     function atualizarCards(consumos, faltas, funcionariosRelatorio) {

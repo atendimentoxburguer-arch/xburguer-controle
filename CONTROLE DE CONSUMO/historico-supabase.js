@@ -122,6 +122,28 @@
             : `Total: ${listaHistorico.length} registro(s)`;
     };
 
+    async function buscarHistoricoCompleto() {
+        const tamanhoPagina = 1000;
+        let inicio = 0;
+        const todos = [];
+
+        while (true) {
+            const { data, error } = await window.supabaseClient
+                .from("historico_acoes")
+                .select("id,usuario_id,usuario_nome,acao,detalhes,icone,data_hora")
+                .order("data_hora", { ascending: false })
+                .range(inicio, inicio + tamanhoPagina - 1);
+
+            if (error) throw error;
+            const lote = Array.isArray(data) ? data : [];
+            todos.push(...lote);
+            if (lote.length < tamanhoPagina) break;
+            inicio += tamanhoPagina;
+        }
+
+        return todos;
+    }
+
     async function carregarHistorico() {
         definirStatus("Carregando histórico do banco de dados...");
 
@@ -133,15 +155,7 @@
                 await window.sincronizarHistoricoPendente();
             }
 
-            const { data, error } = await window.supabaseClient
-                .from("historico_acoes")
-                .select("id,usuario_id,usuario_nome,acao,detalhes,icone,data_hora")
-                .order("data_hora", { ascending: false })
-                .limit(1000);
-
-            if (error) throw error;
-
-            listaHistorico = Array.isArray(data) ? data : [];
+            listaHistorico = await buscarHistoricoCompleto();
             renderizarHistorico();
 
             definirStatus(

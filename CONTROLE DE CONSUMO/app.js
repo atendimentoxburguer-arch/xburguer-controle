@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "4.5.0";
+    window.XBURGUER_VERSAO = "4.5.1";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     

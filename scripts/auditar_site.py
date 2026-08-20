@@ -187,6 +187,13 @@ def main():
         erro("faltas: camada antiga desconto-faltas.js ainda existe")
     if "valor_total: precoUnitario * quantidade" in consumos_js:
         erro("consumos: valor_total e coluna gerada pelo banco e nao deve ser enviado no insert")
+    if "carregarConsumosPaginados" not in consumos_js:
+        erro("consumos: consulta principal sem paginacao")
+    if "lerConsultaPaginada" not in relatorios_js:
+        erro("relatorios: consultas sem paginacao, risco de truncamento")
+    historico_js = (APP / "historico-supabase.js").read_text(encoding="utf-8")
+    if "buscarHistoricoCompleto" not in historico_js:
+        erro("historico: consulta sem paginacao")
 
     for path in APP.glob("*.js"):
         texto = path.read_text(encoding="utf-8")

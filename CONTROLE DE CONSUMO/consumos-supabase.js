@@ -151,8 +151,30 @@
         localStorage.setItem("consumos_xburguer", JSON.stringify(espelho));
     }
 
+    async function carregarConsumosPaginados() {
+        const tamanhoPagina = 1000;
+        let inicio = 0;
+        const todos = [];
+
+        while (true) {
+            const { data, error } = await window.supabaseClient
+                .from("consumos")
+                .select("id,funcionario_id,produto_id,tipo,descricao,observacao,quantidade,preco_unitario,valor_total,data_hora,created_at")
+                .order("data_hora", { ascending: false })
+                .range(inicio, inicio + tamanhoPagina - 1);
+
+            if (error) throw error;
+            const lote = Array.isArray(data) ? data : [];
+            todos.push(...lote);
+            if (lote.length < tamanhoPagina) break;
+            inicio += tamanhoPagina;
+        }
+
+        return todos;
+    }
+
     async function carregarDadosBase() {
-        const [respFuncionarios, respProdutos, respConsumos] = await Promise.all([
+        const [respFuncionarios, respProdutos, consumos] = await Promise.all([
             window.supabaseClient
                 .from("funcionarios")
                 .select("id,nome,cargo,salario,status")
@@ -161,19 +183,15 @@
                 .from("produtos")
                 .select("id,nome,preco,ativo")
                 .order("nome", { ascending: true }),
-            window.supabaseClient
-                .from("consumos")
-                .select("id,funcionario_id,produto_id,tipo,descricao,observacao,quantidade,preco_unitario,valor_total,data_hora,created_at")
-                .order("data_hora", { ascending: false })
+            carregarConsumosPaginados()
         ]);
 
         if (respFuncionarios.error) throw respFuncionarios.error;
         if (respProdutos.error) throw respProdutos.error;
-        if (respConsumos.error) throw respConsumos.error;
 
         listaFuncionarios = Array.isArray(respFuncionarios.data) ? respFuncionarios.data : [];
         listaProdutos = Array.isArray(respProdutos.data) ? respProdutos.data : [];
-        listaConsumos = Array.isArray(respConsumos.data) ? respConsumos.data : [];
+        listaConsumos = consumos;
     }
 
     async function carregarTudo() {

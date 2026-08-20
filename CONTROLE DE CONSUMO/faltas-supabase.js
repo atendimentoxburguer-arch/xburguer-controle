@@ -142,29 +142,43 @@
         localStorage.setItem("faltas_xburguer", JSON.stringify(espelho));
     }
 
+    async function carregarFaltasPaginadas() {
+        const tamanhoPagina = 1000;
+        let inicio = 0;
+        const todas = [];
+
+        while (true) {
+            const { data, error } = await window.supabaseClient
+                .from("faltas")
+                .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")
+                .order("data", { ascending: false })
+                .range(inicio, inicio + tamanhoPagina - 1);
+
+            if (error) throw error;
+            const lote = Array.isArray(data) ? data : [];
+            todas.push(...lote);
+            if (lote.length < tamanhoPagina) break;
+            inicio += tamanhoPagina;
+        }
+
+        return todas;
+    }
+
     async function carregarDadosBase() {
-        const [respFuncionarios, respFaltas] = await Promise.all([
+        const [respFuncionarios, faltas] = await Promise.all([
             window.supabaseClient
                 .from("funcionarios")
                 .select("id,nome,cargo,status")
                 .order("nome", { ascending: true }),
-
-            window.supabaseClient
-                .from("faltas")
-                .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")
-                .order("data", { ascending: false })
+            carregarFaltasPaginadas()
         ]);
 
         if (respFuncionarios.error) throw respFuncionarios.error;
-        if (respFaltas.error) throw respFaltas.error;
 
         listaFuncionarios = Array.isArray(respFuncionarios.data)
             ? respFuncionarios.data
             : [];
-
-        listaFaltas = Array.isArray(respFaltas.data)
-            ? respFaltas.data
-            : [];
+        listaFaltas = faltas;
     }
 
     async function carregarTudo() {
