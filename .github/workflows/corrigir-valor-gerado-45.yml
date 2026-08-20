@@ -1,0 +1,69 @@
+name: Corrigir valor total gerado 4.5
+
+on:
+  push:
+    paths:
+      - '.github/workflows/corrigir-valor-gerado-45.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  corrigir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Remover envio redundante de coluna gerada
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          p = Path('CONTROLE DE CONSUMO/consumos-supabase.js')
+          t = p.read_text(encoding='utf-8')
+          old = '            preco_unitario: precoUnitario,\n            valor_total: precoUnitario * quantidade,\n            data_hora: new Date().toISOString()'
+          new = '            preco_unitario: precoUnitario,\n            data_hora: new Date().toISOString()'
+          if t.count(old) != 1:
+              raise SystemExit('Trecho do payload de consumo nao encontrado exatamente uma vez.')
+          p.write_text(t.replace(old, new, 1), encoding='utf-8')
+
+          a = Path('scripts/auditar_site.py')
+          s = a.read_text(encoding='utf-8')
+          ancora = '    configuracoes_js = (APP / "configuracoes-supabase.js").read_text(encoding="utf-8")\n'
+          add = '    consumos_js = (APP / "consumos-supabase.js").read_text(encoding="utf-8")\n'
+          if add not in s:
+              if ancora not in s:
+                  raise SystemExit('Ancora da auditoria nao encontrada.')
+              s = s.replace(ancora, ancora + add, 1)
+          teste = '    if "valor_total: precoUnitario * quantidade" in consumos_js:\n        erro("consumos: valor_total e coluna gerada pelo banco e nao deve ser enviado no insert")\n'
+          alvo = '    if (APP / "desconto-faltas.js").exists():\n        erro("faltas: camada antiga desconto-faltas.js ainda existe")\n'
+          if teste not in s:
+              if alvo not in s:
+                  raise SystemExit('Alvo da auditoria nao encontrado.')
+              s = s.replace(alvo, alvo + teste, 1)
+          a.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Validar
+        run: |
+          for f in 'CONTROLE DE CONSUMO/'*.js service-worker.js; do node --check "$f"; done
+          python scripts/auditar_site.py
+
+      - name: Remover workflow temporario e publicar
+        run: |
+          rm -f '.github/workflows/corrigir-valor-gerado-45.yml'
+          git config user.name "X-Burguer Revisao"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Corrigir coluna gerada valor_total e reforcar auditoria"
+          git push origin main
