@@ -62,7 +62,7 @@ self.addEventListener("fetch", event => {
     const url = new URL(request.url);
 
     // Este worker só controla recursos do Controle de Consumo.
-    // O Controle de Caixa vive em /xburguer-caixa/ e nunca é interceptado aqui.
+    // Qualquer outro sistema da conta fica fora deste escopo.
     if (
         url.origin !== self.location.origin ||
         !url.pathname.startsWith(APP_PATH)
