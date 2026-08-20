@@ -168,6 +168,28 @@ def main():
         if p and not p.exists():
             erro(f"manifest: atalho inexistente {shortcut.get('url')}")
 
+    # Regras funcionais criticas que ja causaram regressao no sistema.
+    faltas_html = (APP / "faltas.html").read_text(encoding="utf-8")
+    faltas_js = (APP / "faltas-supabase.js").read_text(encoding="utf-8")
+    relatorios_js = (APP / "relatorios-supabase.js").read_text(encoding="utf-8")
+    configuracoes_js = (APP / "configuracoes-supabase.js").read_text(encoding="utf-8")
+
+    if "cad-descontar-falta" not in faltas_html or "cad-valor-desconto-falta" not in faltas_html:
+        erro("faltas: controles de desconto nao estao presentes na tela")
+    if "valor_desconto" not in faltas_js:
+        erro("faltas: valor_desconto nao esta integrado ao CRUD")
+    if "valor_desconto" not in relatorios_js or "Desconto Faltas" not in relatorios_js:
+        erro("relatorios: desconto de faltas nao esta integrado ao relatorio mensal")
+    if "valor_desconto: Math.max(0, Number(r.valor_desconto || 0))" not in configuracoes_js:
+        erro("backup: restauracao de faltas nao preserva valor_desconto")
+    if (APP / "desconto-faltas.js").exists():
+        erro("faltas: camada antiga desconto-faltas.js ainda existe")
+
+    for path in APP.glob("*.js"):
+        texto = path.read_text(encoding="utf-8")
+        if 'avatar.textContent = "X"' in texto:
+            erro(f"{path.relative_to(ROOT)}: identidade antiga do avatar ainda presente")
+
     sw = (ROOT / "service-worker.js").read_text(encoding="utf-8")
     if versao and f"xburguer-pwa-v{versao}" not in sw:
         erro(f"service-worker: cache nao corresponde a versao {versao}")

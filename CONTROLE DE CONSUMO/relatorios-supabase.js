@@ -117,7 +117,7 @@
 
         if (saudacao) saudacao.textContent = "X-Burguer";
         if (cargo) cargo.textContent = "Sistema de Gestão";
-        if (avatar) avatar.textContent = "X";
+        if (avatar) avatar.textContent = "XB";
 
         return user;
     }
@@ -195,7 +195,7 @@
 
         let consultaFaltas = window.supabaseClient
             .from("faltas")
-            .select("id,funcionario_id,data,motivo,observacao,created_at")
+            .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")
             .order("data", { ascending: true });
 
         if (dataInicio) {
@@ -299,8 +299,14 @@
                 0
             );
 
+            const totalDescontoFaltas = faltasFunc.reduce(
+                (soma, falta) => soma + Math.max(0, numero(falta.valor_desconto)),
+                0
+            );
+
+            const totalDescontar = totalConsumos + totalDescontoFaltas;
             const salario = numero(funcionario.salario);
-            const salarioLiquido = salario - totalConsumos;
+            const salarioLiquido = salario - totalDescontar;
 
             corpo += `
                 <tr>
@@ -319,6 +325,12 @@
                         - ${escaparHtml(moeda(totalConsumos))}
                     </td>
                     <td>${faltasFunc.length.toLocaleString("pt-BR")}</td>
+                    <td style="color:${totalDescontoFaltas > 0 ? "#d9534f" : "#777"};font-weight:bold;">
+                        ${totalDescontoFaltas > 0 ? `- ${escaparHtml(moeda(totalDescontoFaltas))}` : escaparHtml(moeda(0))}
+                    </td>
+                    <td style="color:#8a4b08;font-weight:bold;">
+                        - ${escaparHtml(moeda(totalDescontar))}
+                    </td>
                     <td style="color:${salarioLiquido < 0 ? "#b00020" : "#28a745"};font-weight:bold;">
                         ${escaparHtml(moeda(salarioLiquido))}
                     </td>
@@ -328,7 +340,7 @@
         if (!funcionarios.length) {
             corpo = `
                 <tr>
-                    <td colspan="7" style="text-align:center;color:#666;padding:20px;">
+                    <td colspan="9" style="text-align:center;color:#666;padding:20px;">
                         Nenhum funcionário encontrado.
                     </td>
                 </tr>`;
@@ -340,8 +352,10 @@
                 <th>Cargo</th>
                 <th>Salário Base</th>
                 <th>Consumos</th>
-                <th>A Descontar</th>
+                <th>Desconto Consumos</th>
                 <th>Faltas</th>
+                <th>Desconto Faltas</th>
+                <th>A Descontar</th>
                 <th>Salário Líquido</th>
             </tr>
             ${corpo}`;

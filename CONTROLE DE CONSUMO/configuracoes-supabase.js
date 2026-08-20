@@ -68,7 +68,7 @@
 
         if (saudacao) saudacao.textContent = "X-Burguer";
         if (cargo) cargo.textContent = "Sistema de Gestão";
-        if (avatar) avatar.textContent = "X";
+        if (avatar) avatar.textContent = "XB";
 
         return user;
     }
@@ -494,6 +494,7 @@
                 data: r.data,
                 motivo: r.motivo || "",
                 observacao: r.observacao || null,
+                valor_desconto: Math.max(0, Number(r.valor_desconto || 0)),
                 created_at: r.created_at || new Date().toISOString()
             }));
     }

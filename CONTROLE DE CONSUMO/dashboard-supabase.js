@@ -129,7 +129,7 @@
 
         if (saudacao) saudacao.textContent = "X-Burguer";
         if (cargo) cargo.textContent = "Sistema de Gestão";
-        if (avatar) avatar.textContent = "X";
+        if (avatar) avatar.textContent = "XB";
 
         return user;
     }

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Faltas</title>
-    <link rel="stylesheet" href="style.css?v=4.4.0">
+    <link rel="stylesheet" href="style.css?v=4.5.0">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=4.4.0"></script>
-    <script src="app.js?v=4.4.0"></script>
+    <script src="supabase-config.js?v=4.5.0"></script>
+    <script src="app.js?v=4.5.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -89,13 +89,14 @@
                                 <th>FUNCIONÁRIO</th>
                                 <th>DATA</th>
                                 <th>MOTIVO</th>
+                                <th>DESCONTO</th>
                                 <th>OBSERVAÇÃO</th>
                                 <th class="coluna-acoes">AÇÕES</th>
                             </tr>
                         </thead>
                         <tbody id="corpo-tabela-falta">
                             <tr id="linha-vazia">
-                                <td colspan="5" class="tabela-vazia">
+                                <td colspan="6" class="tabela-vazia">
                                     <span class="ponto-vermelho-vazio"></span>
                                     Nenhum registro de falta
                                 </td>
@@ -140,6 +141,20 @@
                     <input type="text" id="cad-motivo-falta" placeholder="Ex: Atestado, Pessoal, Falta injustificada...">
                 </div>
 
+                <div class="grupo-input-modal bloco-desconto-falta">
+                    <label class="opcao-desconto-falta" for="cad-descontar-falta">
+                        <input type="checkbox" id="cad-descontar-falta" onchange="alternarCampoDescontoFalta()">
+                        <span>Descontar esta falta do funcionário</span>
+                    </label>
+                    <p class="ajuda-desconto-falta">
+                        Marque somente quando esta falta realmente gerar desconto em folha.
+                    </p>
+                    <div id="grupo-valor-desconto-falta" class="campo-valor-desconto-falta" style="display:none;">
+                        <label for="cad-valor-desconto-falta">Valor do desconto (R$) *</label>
+                        <input type="text" id="cad-valor-desconto-falta" inputmode="decimal" autocomplete="off" placeholder="0,00">
+                    </div>
+                </div>
+
                 <div class="grupo-input-modal">
                     <label for="cad-obs-falta">Observação (opcional)</label>
                     <input type="text" id="cad-obs-falta" placeholder="Digite uma observação...">
@@ -172,6 +187,6 @@
     </div>
 
     <!-- FALTAS CONECTADAS AO SUPABASE -->
-    <script src="faltas-supabase.js?v=4.4.0"></script>
+    <script src="faltas-supabase.js?v=4.5.0"></script>
 </body>
 </html>

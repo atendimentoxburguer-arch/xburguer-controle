@@ -34,6 +34,24 @@
         return String(valor || "").trim().toLocaleLowerCase("pt-BR");
     }
 
+    function numeroMoeda(valor) {
+        if (window.formatarMoeda) return window.formatarMoeda(valor);
+        const texto = String(valor || "0")
+            .replace(/\s/g, "")
+            .replace(/^R\$/i, "");
+        const normalizado = texto.includes(",")
+            ? texto.replace(/\./g, "").replace(",", ".")
+            : texto;
+        const n = Number(normalizado.replace(/[^0-9.-]/g, ""));
+        return Number.isFinite(n) ? Math.max(0, n) : 0;
+    }
+
+    function moedaTela(valor) {
+        const n = Math.max(0, Number(valor) || 0);
+        if (window.moedaBR) return window.moedaBR(n);
+        return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
     function dataBancoParaTela(valor) {
         if (!valor) return "—";
 
@@ -116,7 +134,8 @@
                 data: dataBancoParaTela(falta.data),
                 motivo: falta.motivo || "—",
                 obs: falta.observacao || "—",
-                observacao: falta.observacao || ""
+                observacao: falta.observacao || "",
+                valorDesconto: Number(falta.valor_desconto || 0)
             };
         });
 
@@ -132,7 +151,7 @@
 
             window.supabaseClient
                 .from("faltas")
-                .select("id,funcionario_id,data,motivo,observacao,created_at")
+                .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")
                 .order("data", { ascending: false })
         ]);
 
@@ -213,6 +232,18 @@
         }
     };
 
+    window.alternarCampoDescontoFalta = function () {
+        const marcado = Boolean($("cad-descontar-falta")?.checked);
+        const grupo = $("grupo-valor-desconto-falta");
+        const campo = $("cad-valor-desconto-falta");
+
+        if (grupo) grupo.style.display = marcado ? "block" : "none";
+        if (campo) {
+            campo.required = marcado;
+            if (!marcado) campo.value = "";
+        }
+    };
+
     window.abrirModalFalta = function () {
         carregarSelects();
 
@@ -225,6 +256,9 @@
         $("cad-func-falta").value = "";
         $("cad-motivo-falta").value = "";
         $("cad-obs-falta").value = "";
+        if ($("cad-descontar-falta")) $("cad-descontar-falta").checked = false;
+        if ($("cad-valor-desconto-falta")) $("cad-valor-desconto-falta").value = "";
+        window.alternarCampoDescontoFalta();
         $("modal-falta").style.display = "flex";
     };
 
@@ -233,10 +267,10 @@
     };
 
     async function registrarHistoricoLocal(acao, detalhes, icone) {
-        // O Histórico será migrado ao Supabase em etapa própria.
         if (window.registrarNoHistorico) {
-            window.registrarNoHistorico(acao, detalhes, icone);
+            return await window.registrarNoHistorico(acao, detalhes, icone);
         }
+        return false;
     }
 
     window.salvarFalta = async function (event) {
@@ -246,6 +280,10 @@
         const data = $("cad-data-falta").value;
         const motivo = $("cad-motivo-falta").value.trim();
         const observacao = $("cad-obs-falta").value.trim();
+        const descontar = Boolean($("cad-descontar-falta")?.checked);
+        const valorDesconto = descontar
+            ? numeroMoeda($("cad-valor-desconto-falta")?.value || "")
+            : 0;
         const funcionario = obterFuncionarioPorId(funcionarioId);
         const botao = event.submitter || document.querySelector(".btn-salvar-modal");
 
@@ -259,11 +297,18 @@
             return;
         }
 
+        if (descontar && valorDesconto <= 0) {
+            alert("Informe um valor de desconto maior que zero.");
+            $("cad-valor-desconto-falta")?.focus();
+            return;
+        }
+
         const payload = {
             funcionario_id: funcionarioId,
             data,
             motivo: motivo || "",
-            observacao: observacao || null
+            observacao: observacao || null,
+            valor_desconto: valorDesconto
         };
 
         if (botao) {
@@ -280,14 +325,14 @@
             const { data: salva, error } = await window.supabaseClient
                 .from("faltas")
                 .insert(payload)
-                .select("id,funcionario_id,data,motivo,observacao,created_at")
+                .select("id,funcionario_id,data,motivo,observacao,valor_desconto,created_at")
                 .single();
 
             if (error) throw error;
 
             await registrarHistoricoLocal(
                 "Registrou falta",
-                `${funcionario.nome} - ${motivo || "Sem motivo informado"} - ${dataBancoParaTela(salva?.data || data)}`,
+                `${funcionario.nome} - ${motivo || "Sem motivo informado"} - ${dataBancoParaTela(salva?.data || data)} - ${valorDesconto > 0 ? `Desconto: ${moedaTela(valorDesconto)}` : "Sem desconto"}`,
                 "📅"
             );
 
@@ -399,7 +444,7 @@
         if (!filtradas.length) {
             corpo.innerHTML = `
                 <tr id="linha-vazia">
-                    <td colspan="5" class="tabela-vazia">
+                    <td colspan="6" class="tabela-vazia">
                         <span class="ponto-vermelho-vazio"></span>
                         Nenhum registro de falta
                     </td>
@@ -415,6 +460,7 @@
             const nome = funcionario?.nome || "Funcionário removido";
             const inicial = nome.charAt(0).toUpperCase();
             const idSeguro = JSON.stringify(falta.id);
+            const desconto = Math.max(0, Number(falta.valor_desconto || 0));
 
             return `
                 <tr>
@@ -424,6 +470,11 @@
                     </td>
                     <td style="text-align:left;">📅 ${escaparHtml(dataBancoParaTela(falta.data))}</td>
                     <td style="text-align:left;">${escaparHtml(falta.motivo || "—")}</td>
+                    <td style="text-align:left;">
+                        ${desconto > 0
+                            ? `<span class="badge-desconto-falta">- ${escaparHtml(moedaTela(desconto))}</span>`
+                            : `<span class="badge-sem-desconto">Sem desconto</span>`}
+                    </td>
                     <td style="text-align:left;color:#666;">${escaparHtml(falta.observacao || "—")}</td>
                     <td>
                         <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
@@ -536,7 +587,8 @@
                     funcionario_id: funcionario.id,
                     data,
                     motivo,
-                    observacao: observacao || null
+                    observacao: observacao || null,
+                    valor_desconto: Math.max(0, numeroMoeda(item.valor_desconto ?? item.valorDesconto ?? 0))
                 });
             }
 

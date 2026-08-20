@@ -1,4 +1,4 @@
-const CACHE_NAME = "xburguer-pwa-v4.4.0";
+const CACHE_NAME = "xburguer-pwa-v4.5.0";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -15,7 +15,6 @@ const PRECACHE = [
   "./CONTROLE%20DE%20CONSUMO/consumos.html",
   "./CONTROLE%20DE%20CONSUMO/dashboard-supabase.js",
   "./CONTROLE%20DE%20CONSUMO/dashboard.html",
-  "./CONTROLE%20DE%20CONSUMO/desconto-faltas.js",
   "./CONTROLE%20DE%20CONSUMO/faltas-supabase.js",
   "./CONTROLE%20DE%20CONSUMO/faltas.html",
   "./CONTROLE%20DE%20CONSUMO/funcionarios-supabase.js",
