@@ -1,0 +1,151 @@
+name: Corrigir carga inicial Dashboard 4.5.2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/corrigir-dashboard-inicial-452.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  corrigir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Corrigir primeira carga do Dashboard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          raiz = Path('.')
+          dashboard = raiz / 'CONTROLE DE CONSUMO' / 'dashboard-supabase.js'
+          texto = dashboard.read_text(encoding='utf-8')
+
+          antigo = '''    async function garantirSessao() {
+        if (!window.supabaseClient) {
+            throw new Error("Cliente Supabase não carregado.");
+        }
+
+        const { data, error } = await window.supabaseClient.auth.getSession();
+        if (error) throw error;
+
+        if (!data?.session) {
+            location.replace("login.html");
+            throw new Error("Sessão não encontrada.");
+        }
+
+        return data.session;
+    }
+'''
+          novo = '''    function esperar(ms) {
+        return new Promise(resolve => window.setTimeout(resolve, ms));
+    }
+
+    async function garantirSessao() {
+        if (!window.supabaseClient) {
+            throw new Error("Cliente Supabase não carregado.");
+        }
+
+        let resposta = await window.supabaseClient.auth.getSession();
+        if (resposta.error) throw resposta.error;
+
+        // Em alguns navegadores/PWA a sessão pode levar alguns milissegundos
+        // para ser restaurada ao abrir uma nova página. Evita um falso erro
+        // ou redirecionamento durante esse pequeno intervalo.
+        if (!resposta.data?.session) {
+            await esperar(350);
+            resposta = await window.supabaseClient.auth.getSession();
+            if (resposta.error) throw resposta.error;
+        }
+
+        if (!resposta.data?.session) {
+            location.replace("login.html");
+            throw new Error("Sessão não encontrada.");
+        }
+
+        return resposta.data.session;
+    }
+'''
+          if antigo not in texto:
+              raise SystemExit('Trecho garantirSessao não encontrado')
+          texto = texto.replace(antigo, novo, 1)
+
+          antigo = '    async function carregarDashboard({ manual = false } = {}) {'
+          novo = '    async function carregarDashboard({ manual = false, tentativa = 0 } = {}) {'
+          if antigo not in texto:
+              raise SystemExit('Assinatura carregarDashboard não encontrada')
+          texto = texto.replace(antigo, novo, 1)
+
+          marcador = '''        } catch (erro) {
+            console.error("Erro ao carregar Dashboard:", erro);
+
+            definirCardsComoErro();
+'''
+          substituto = '''        } catch (erro) {
+            console.error("Erro ao carregar Dashboard:", erro);
+
+            // Falhas breves podem ocorrer enquanto o token de autenticação é
+            // restaurado/renovado ou enquanto a conexão desperta. Na entrada,
+            // tenta novamente silenciosamente antes de mostrar erro ao usuário.
+            if (!manual && tentativa < 2 && navigator.onLine) {
+                const atraso = 650 * (tentativa + 1);
+                console.warn(`Dashboard: nova tentativa automática em ${atraso} ms.`);
+                carregando = false;
+                await esperar(atraso);
+                return carregarDashboard({ manual: false, tentativa: tentativa + 1 });
+            }
+
+            definirCardsComoErro();
+'''
+          if marcador not in texto:
+              raise SystemExit('Bloco catch não encontrado')
+          texto = texto.replace(marcador, substituto, 1)
+          dashboard.write_text(texto, encoding='utf-8')
+
+          # Atualiza cache/versionamento do site para forçar todos os aparelhos
+          # a receberem a correção imediatamente.
+          for arq in (raiz / 'CONTROLE DE CONSUMO').glob('*.html'):
+              t = arq.read_text(encoding='utf-8')
+              t = t.replace('4.5.1', '4.5.2')
+              arq.write_text(t, encoding='utf-8')
+
+          app = raiz / 'CONTROLE DE CONSUMO' / 'app.js'
+          t = app.read_text(encoding='utf-8').replace('4.5.1', '4.5.2')
+          app.write_text(t, encoding='utf-8')
+
+          sw = raiz / 'service-worker.js'
+          t = sw.read_text(encoding='utf-8').replace('xburguer-pwa-v4.5.1', 'xburguer-pwa-v4.5.2')
+          sw.write_text(t, encoding='utf-8')
+
+          auditoria = raiz / 'auditoria-site.txt'
+          if auditoria.exists():
+              t = auditoria.read_text(encoding='utf-8').replace('Versao detectada: 4.5.0', 'Versao detectada: 4.5.2').replace('Versao detectada: 4.5.1', 'Versao detectada: 4.5.2')
+              auditoria.write_text(t, encoding='utf-8')
+          PY
+
+      - name: Validar JavaScript alterado
+        run: |
+          node --check 'CONTROLE DE CONSUMO/dashboard-supabase.js'
+          node --check 'CONTROLE DE CONSUMO/app.js'
+          node --check service-worker.js
+
+      - name: Publicar correção
+        run: |
+          git config user.name 'X-Burguer Revisao'
+          git config user.email 'actions@users.noreply.github.com'
+          git add 'CONTROLE DE CONSUMO/dashboard-supabase.js' 'CONTROLE DE CONSUMO/app.js' 'CONTROLE DE CONSUMO/'*.html service-worker.js auditoria-site.txt
+          if git diff --cached --quiet; then
+            echo 'Nenhuma alteração necessária.'
+            exit 0
+          fi
+          git commit -m 'Corrigir falso erro na entrada do Dashboard 4.5.2'
+          git push origin main
