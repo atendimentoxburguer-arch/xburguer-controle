@@ -1,7 +1,6 @@
 Versao detectada: 4.5.1
-ERRO: manifest: atalho inexistente /xburguer-controle/CONTROLE%20DE%20CONSUMO/dashboard.html
-ERRO: manifest: atalho inexistente /xburguer-controle/CONTROLE%20DE%20CONSUMO/consumos.html
 
 ================ RESUMO ================
-Erros: 2
+Erros: 0
 Avisos: 0
+Auditoria estrutural concluida com sucesso.
