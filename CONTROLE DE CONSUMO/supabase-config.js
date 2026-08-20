@@ -17,17 +17,6 @@ if (!window.supabaseClient) {
     );
 }
 
-// PWA exclusivo do sistema de Consumo. Mantém este app separado do Controle de Caixa.
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-        try {
-            const reg = await navigator.serviceWorker.register(
-                '/xburguer-controle/sw-consumo.js?v=1',
-                { scope: '/xburguer-controle/', updateViaCache: 'none' }
-            );
-            reg.update().catch(() => {});
-        } catch (erro) {
-            console.warn('Não foi possível registrar o PWA X-Burguer Consumo:', erro);
-        }
-    });
-}
+// O PWA é registrado exclusivamente por app.js/service-worker.js.
+// Não registrar outro Service Worker aqui: isso evita dois workers disputando
+// o mesmo escopo /xburguer-controle/ e mantém o Controle de Caixa isolado.
