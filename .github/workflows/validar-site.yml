@@ -1,0 +1,39 @@
+name: Validar site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'CONTROLE DE CONSUMO/**'
+      - 'icons/**'
+      - 'manifest.webmanifest'
+      - 'service-worker.js'
+      - 'index.html'
+      - 'offline.html'
+      - '404.html'
+      - 'scripts/auditar_site.py'
+      - '.github/workflows/validar-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Auditar estrutura, HTML, CSS, JS e PWA
+        run: python scripts/auditar_site.py
