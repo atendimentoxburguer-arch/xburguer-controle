@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "3.7.0";
+    window.XBURGUER_VERSAO = "3.9.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     
@@ -39,7 +39,7 @@
     }
 
 // ========================================================
-    // X-BURGUER PWA 3.7 - sem botão visual de instalação
+    // X-BURGUER PWA 3.9 - sem botão visual de instalação
     // ========================================================
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
@@ -401,8 +401,8 @@
         if (cargo && cargo.textContent !== "Sistema de Gestão") {
             cargo.textContent = "Sistema de Gestão";
         }
-        if (avatar && avatar.textContent !== "X") {
-            avatar.textContent = "X";
+        if (avatar && avatar.textContent !== "XB") {
+            avatar.textContent = "XB";
         }
     }
 
