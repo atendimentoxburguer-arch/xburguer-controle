@@ -15,6 +15,18 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="X-Burguer">
     <link rel="apple-touch-icon" href="../icons/xburguer-180.png">
+
+    <style>
+        /* Correção 4.1.1: mantém visível a cor dos botões de ativar/inativar. */
+        .tabela-dados button[aria-label="Alternar status"] {
+            border: 3px solid #ffffff !important;
+            border-radius: 50% !important;
+            box-shadow: 0 0 0 1px #d9dde3, 0 3px 9px rgba(17, 24, 39, 0.12) !important;
+        }
+        .tabela-dados button[aria-label="Alternar status"]:hover {
+            transform: scale(1.06);
+        }
+    </style>
 </head>
 <body class="corpo-dashboard">
 
