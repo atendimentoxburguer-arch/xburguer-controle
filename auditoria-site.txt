@@ -1,6 +1,6 @@
 Versao detectada: 4.5.1
+ERRO: CONTROLE DE CONSUMO/dashboard.html: versao de cache dashboard-startup-guard.js?v=1.0.0 difere de 4.5.1
 
 ================ RESUMO ================
-Erros: 0
+Erros: 1
 Avisos: 0
-Auditoria estrutural concluida com sucesso.
