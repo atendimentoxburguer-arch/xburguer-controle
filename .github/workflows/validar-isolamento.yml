@@ -1,0 +1,69 @@
+name: Validar isolamento Consumo
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  isolamento:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir isolamento do Controle de Consumo
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, sys
+
+          root = Path('.')
+          errors = []
+
+          manifest = json.loads((root/'manifest.webmanifest').read_text(encoding='utf-8'))
+          if manifest.get('id') != '/xburguer-controle/consumo-app':
+              errors.append('Manifest ID do Consumo foi alterado.')
+          if manifest.get('scope') != '/xburguer-controle/':
+              errors.append('Manifest scope do Consumo foi alterado.')
+          if not str(manifest.get('start_url','')).startswith('/xburguer-controle/'):
+              errors.append('start_url do Consumo saiu do caminho exclusivo.')
+
+          sw = (root/'service-worker.js').read_text(encoding='utf-8')
+          if 'const APP_PATH = "/xburguer-controle/";' not in sw:
+              errors.append('Service Worker do Consumo perdeu o limite de caminho.')
+          if '/xburguer-caixa/' in sw or 'xburguer-caixa-' in sw:
+              errors.append('Service Worker do Consumo contém referência ao Caixa.')
+
+          cfg = (root/'CONTROLE DE CONSUMO'/'supabase-config.js').read_text(encoding='utf-8')
+          if 'rrslolruacewjijlhpdc.supabase.co' not in cfg:
+              errors.append('Supabase do Consumo foi alterado.')
+          if 'trnngxezppeembrvxkhh' in cfg:
+              errors.append('Consumo contém referência ao banco do Caixa.')
+
+          runtime_files = [
+              root/'index.html', root/'manifest.webmanifest', root/'service-worker.js',
+              *list((root/'CONTROLE DE CONSUMO').glob('*.html')),
+              *list((root/'CONTROLE DE CONSUMO').glob('*.js')),
+          ]
+          forbidden = ['/xburguer-caixa/', 'trnngxezppeembrvxkhh', 'xburguer-caixa-', 'xburguer_caixa_']
+          for path in runtime_files:
+              if not path.exists():
+                  continue
+              text = path.read_text(encoding='utf-8', errors='ignore')
+              for token in forbidden:
+                  if token in text:
+                      errors.append(f'{path}: referência proibida do Caixa: {token}')
+
+          if (root/'sw-consumo.js').exists():
+              errors.append('Existe um segundo Service Worker do Consumo (sw-consumo.js).')
+
+          if errors:
+              print('\n'.join('ERRO: '+e for e in errors))
+              sys.exit(1)
+
+          print('OK: Controle de Consumo isolado do Controle de Caixa.')
+          PY
