@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Relatórios</title>
-    <link rel="stylesheet" href="style.css?v=3.6.0">
+    <link rel="stylesheet" href="style.css?v=3.7.0">
     <style>
         .relatorios-container {
             padding: 24px;
@@ -178,8 +178,8 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=3.6.0"></script>
-    <script src="app.js?v=3.6.0"></script>
+    <script src="supabase-config.js?v=3.7.0"></script>
+    <script src="app.js?v=3.7.0"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -242,9 +242,9 @@
                 
                 <div class="topo-acoes">
                     <div>
-                        <h1 style="font-size: 24px; color: #222;">📊 Relatórios</h1>
+                        <h1 class="titulo-relatorios-pagina">📊 Relatórios</h1>
 </div>
-                    <div style="display:flex;gap:10px;align-items:center;">
+                    <div class="topo-botoes-relatorio">
 <button class="btn-imprimir" onclick="window.print()">
                             🖨️ Imprimir
                         </button>
@@ -279,7 +279,7 @@
                     </div>
                     <div class="filtro-grupo" id="grupo-filtro-func">
                         <label for="filtro-funcionario">Funcionário</label>
-                        <select id="filtro-funcionario" style="min-width: 180px;">
+                        <select id="filtro-funcionario" >
                             <option value="Todos">Todos</option>
                         </select>
                     </div>
@@ -328,6 +328,6 @@
     </div>
 
     <!-- RELATÓRIOS CONECTADOS DIRETAMENTE AO SUPABASE -->
-    <script src="relatorios-supabase.js?v=3.6.0"></script>
+    <script src="relatorios-supabase.js?v=3.7.0"></script>
 </body>
 </html>
