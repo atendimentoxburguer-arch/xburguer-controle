@@ -37,6 +37,26 @@ jobs:
               errors.append('Service Worker do Consumo perdeu o limite de caminho.')
           if '/xburguer-caixa/' in sw or 'xburguer-caixa-' in sw:
               errors.append('Service Worker do Consumo contém referência ao Caixa.')
+          if 'caches.match(' in sw:
+              errors.append('Service Worker do Consumo usa busca global de cache da origem.')
+          if 'cache.match(' not in sw:
+              errors.append('Service Worker do Consumo não consulta o próprio cache isolado.')
+
+          index = (root/'index.html').read_text(encoding='utf-8')
+          if '/xburguer-controle/service-worker.js' not in index:
+              errors.append('Index do Consumo não registra o Service Worker oficial.')
+          if "scope:'/xburguer-controle/'" not in index:
+              errors.append('Index do Consumo perdeu o escopo exclusivo.')
+          if 'getRegistrations()' not in index or 'old.scope!==expectedScope' not in index:
+              errors.append('Index do Consumo não limpa workers antigos do próprio escopo.')
+
+          legacy = (root/'pwa-consumo.js').read_text(encoding='utf-8')
+          if '/xburguer-controle/service-worker.js' not in legacy:
+              errors.append('Registrador legado do Consumo aponta para worker incorreto.')
+          if '/xburguer-controle/sw-consumo.js' in legacy:
+              errors.append('Registrador legado ainda aponta para sw-consumo.js.')
+          if 'getRegistrations()' not in legacy:
+              errors.append('Registrador legado não limpa workers antigos do Consumo.')
 
           cfg = (root/'CONTROLE DE CONSUMO'/'supabase-config.js').read_text(encoding='utf-8')
           if 'rrslolruacewjijlhpdc.supabase.co' not in cfg:
@@ -45,7 +65,7 @@ jobs:
               errors.append('Consumo contém referência ao banco do Caixa.')
 
           runtime_files = [
-              root/'index.html', root/'manifest.webmanifest', root/'service-worker.js',
+              root/'index.html', root/'manifest.webmanifest', root/'service-worker.js', root/'pwa-consumo.js',
               *list((root/'CONTROLE DE CONSUMO').glob('*.html')),
               *list((root/'CONTROLE DE CONSUMO').glob('*.js')),
           ]
@@ -65,5 +85,5 @@ jobs:
               print('\n'.join('ERRO: '+e for e in errors))
               sys.exit(1)
 
-          print('OK: Controle de Consumo isolado do Controle de Caixa.')
+          print('OK: Controle de Consumo isolado em PWA, cache, caminho e banco.')
           PY
