@@ -63,6 +63,12 @@ jobs:
               errors.append('Supabase do Consumo foi alterado.')
           if 'trnngxezppeembrvxkhh' in cfg:
               errors.append('Consumo contém referência ao banco do Caixa.')
+          if 'EXPECTED_PATH = "/xburguer-controle/"' not in cfg:
+              errors.append('Trava de identidade perdeu o caminho oficial do Consumo.')
+          if 'EXPECTED_SUPABASE_HOST = "rrslolruacewjijlhpdc.supabase.co"' not in cfg:
+              errors.append('Trava de identidade perdeu o Supabase oficial do Consumo.')
+          if 'validateSupabaseUrl' not in cfg or 'window.fetch = function' not in cfg:
+              errors.append('Trava de identidade do Consumo não está bloqueando conexões divergentes.')
 
           runtime_files = [
               root/'index.html', root/'manifest.webmanifest', root/'service-worker.js', root/'pwa-consumo.js',
@@ -85,5 +91,5 @@ jobs:
               print('\n'.join('ERRO: '+e for e in errors))
               sys.exit(1)
 
-          print('OK: Controle de Consumo isolado em PWA, cache, caminho e banco.')
+          print('OK: Controle de Consumo isolado em identidade, PWA, cache, caminho e banco.')
           PY
