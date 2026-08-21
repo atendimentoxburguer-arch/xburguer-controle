@@ -60,32 +60,31 @@ self.addEventListener("fetch", event => {
     if (request.method !== "GET") return;
 
     const url = new URL(request.url);
-
-    // Este worker só controla recursos do Controle de Consumo.
-    // Qualquer outro sistema da conta fica fora deste escopo.
     if (
         url.origin !== self.location.origin ||
         !url.pathname.startsWith(APP_PATH)
     ) return;
 
     event.respondWith((async () => {
+        const cache = await caches.open(CACHE_NAME);
+
         try {
             const networkRequest = new Request(request, { cache: "no-store" });
             const response = await fetch(networkRequest);
 
             if (response && response.ok) {
-                const cache = await caches.open(CACHE_NAME);
-                cache.put(request, response.clone());
+                cache.put(request, response.clone()).catch(() => {});
             }
             return response;
         } catch (_) {
-            const cached = await caches.match(request, { ignoreSearch: true });
+            // Procura SOMENTE no cache exclusivo do Controle de Consumo.
+            const cached = await cache.match(request, { ignoreSearch: true });
             if (cached) return cached;
 
             if (request.mode === "navigate") {
                 return (
-                    await caches.match("./CONTROLE%20DE%20CONSUMO/login.html", { ignoreSearch: true }) ||
-                    await caches.match("./offline.html", { ignoreSearch: true })
+                    await cache.match("./CONTROLE%20DE%20CONSUMO/login.html", { ignoreSearch: true }) ||
+                    await cache.match("./offline.html", { ignoreSearch: true })
                 );
             }
 
