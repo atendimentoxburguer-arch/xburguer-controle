@@ -4,6 +4,33 @@ const SUPABASE_URL = "https://rrslolruacewjijlhpdc.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_nfsY7E1z8HaTtqPMUhZx_Q_k1BRQe47";
 
 // ========================================================
+// CORREÇÃO VISUAL MOBILE / IOS
+// ========================================================
+(function carregarCorrecaoMobileIOS() {
+    "use strict";
+
+    if (!document.querySelector('link[data-xb-ios-fix="1"]')) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "ios-mobile-fix.css?v=1.0.0";
+        link.dataset.xbIosFix = "1";
+        document.head.appendChild(link);
+    }
+
+    function corrigirBarraIOS() {
+        document
+            .querySelectorAll('meta[name="apple-mobile-web-app-status-bar-style"]')
+            .forEach(meta => meta.setAttribute("content", "default"));
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", corrigirBarraIOS, { once: true });
+    } else {
+        corrigirBarraIOS();
+    }
+})();
+
+// ========================================================
 // TRAVA DE IDENTIDADE EM TEMPO DE EXECUÇÃO
 // ========================================================
 (function instalarTravaIdentidadeConsumo() {
