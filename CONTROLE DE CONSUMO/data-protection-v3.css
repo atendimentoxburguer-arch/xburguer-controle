@@ -1,0 +1,116 @@
+.protecao-grid-status {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.protecao-status-card {
+    border: 1px solid #ece7e7;
+    background: #fffafa;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.protecao-status-card span {
+    color: #777;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+}
+
+.protecao-status-card strong {
+    color: #611010;
+    font-size: 14px;
+}
+
+.protecao-acoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.protecao-resumo {
+    margin-top: 10px;
+    color: #6f6f6f;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.protecao-lista-lixeira {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.protecao-lixeira-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid #ececec;
+    border-radius: 12px;
+    padding: 12px;
+    background: #fff;
+}
+
+.protecao-lixeira-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.protecao-lixeira-info strong {
+    color: #292929;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.protecao-lixeira-info span {
+    color: #7d7d7d;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.protecao-vazio {
+    padding: 18px;
+    border: 1px dashed #ddd;
+    border-radius: 12px;
+    color: #777;
+    text-align: center;
+    font-size: 12px;
+}
+
+.protecao-restauracao-nota {
+    display: inline-block;
+    margin-top: 8px;
+    color: #5e5e5e;
+    font-size: 12px;
+}
+
+.config-card-lixeira {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 760px) {
+    .protecao-grid-status,
+    .protecao-acoes {
+        grid-template-columns: 1fr;
+    }
+
+    .protecao-lixeira-item {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .protecao-lixeira-item .btn-config-secundario {
+        width: 100%;
+        min-height: 44px;
+    }
+}
