@@ -5,66 +5,67 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>X-Burguer | Configurações</title>
 <link rel="stylesheet" href="style.css?v=4.5.1">
+<link rel="stylesheet" href="data-protection-v3.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js?v=4.5.1"></script>
 <script src="app.js?v=4.5.1"></script>
-    <link rel="manifest" href="../manifest.webmanifest">
-    <meta name="theme-color" content="#7a0b0b">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="X-Burguer">
-    <link rel="apple-touch-icon" sizes="180x180" href="../icons/xburguer-rounded-180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="../icons/xburguer-rounded-192.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#7a0b0b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="X-Burguer Consumo">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/xburguer-rounded-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/xburguer-rounded-192.png">
 </head>
 <body class="corpo-dashboard">
 <div class="layout-sistema">
     <aside class="sidebar" aria-label="Menu principal">
-            <div class="sidebar-topo">
-                <img src="logo.jfif" alt="Logo X-Burguer" class="logo-sidebar">
-                <div class="logo-texto">
-                    <span class="logo-titulo">X-BURGUER</span>
-                    <span class="logo-sub">Sanduicheria e Chopperia</span>
-                </div>
+        <div class="sidebar-topo">
+            <img src="logo.jfif" alt="Logo X-Burguer" class="logo-sidebar">
+            <div class="logo-texto">
+                <span class="logo-titulo">X-BURGUER</span>
+                <span class="logo-sub">Sanduicheria e Chopperia</span>
             </div>
+        </div>
 
-            <nav class="sidebar-menu" aria-label="Seções do sistema">
-                <a href="dashboard.html" class="menu-item"><span aria-hidden="true">🏠</span> Dashboard</a>
-                <a href="funcionarios.html" class="menu-item"><span aria-hidden="true">👥</span> Funcionários</a>
-                <a href="produtos.html" class="menu-item"><span aria-hidden="true">🍔</span> Produtos</a>
-                <a href="consumos.html" class="menu-item"><span aria-hidden="true">📋</span> Consumos</a>
-                <a href="faltas.html" class="menu-item"><span aria-hidden="true">📅</span> Faltas</a>
-                <a href="relatorios.html" class="menu-item"><span aria-hidden="true">📊</span> Relatórios</a>
-                <a href="historico.html" class="menu-item"><span aria-hidden="true">🔄</span> Histórico de Ações</a>
-                <a href="configuracoes.html" class="menu-item ativo" aria-current="page"><span aria-hidden="true">⚙️</span> Configurações <span class="ponto-ativo" aria-hidden="true"></span></a>
-            </nav>
+        <nav class="sidebar-menu" aria-label="Seções do sistema">
+            <a href="dashboard.html" class="menu-item"><span aria-hidden="true">🏠</span> Dashboard</a>
+            <a href="funcionarios.html" class="menu-item"><span aria-hidden="true">👥</span> Funcionários</a>
+            <a href="produtos.html" class="menu-item"><span aria-hidden="true">🍔</span> Produtos</a>
+            <a href="consumos.html" class="menu-item"><span aria-hidden="true">📋</span> Consumos</a>
+            <a href="faltas.html" class="menu-item"><span aria-hidden="true">📅</span> Faltas</a>
+            <a href="relatorios.html" class="menu-item"><span aria-hidden="true">📊</span> Relatórios</a>
+            <a href="historico.html" class="menu-item"><span aria-hidden="true">🔄</span> Histórico de Ações</a>
+            <a href="configuracoes.html" class="menu-item ativo" aria-current="page"><span aria-hidden="true">⚙️</span> Configurações <span class="ponto-ativo" aria-hidden="true"></span></a>
+        </nav>
 
-            <div class="sidebar-sair">
-                <a href="login.html" class="menu-item"><span aria-hidden="true">🚪</span> Sair</a>
-            </div>
-        </aside>
+        <div class="sidebar-sair">
+            <a href="login.html" class="menu-item"><span aria-hidden="true">🚪</span> Sair</a>
+        </div>
+    </aside>
 
     <main class="conteudo-principal">
         <header class="topbar">
-                <div class="topbar-marca">
-                    <img src="logo.jfif" alt="Logo X-Burguer" class="logo-mini">
-                    <span class="topbar-titulo">X-BURGUER</span>
-                    <span class="topbar-sub">Sanduicheria e Chopperia</span>
+            <div class="topbar-marca">
+                <img src="logo.jfif" alt="Logo X-Burguer" class="logo-mini">
+                <span class="topbar-titulo">X-BURGUER</span>
+                <span class="topbar-sub">Sanduicheria e Chopperia</span>
+            </div>
+            <div class="topbar-usuario" aria-label="Identificação do sistema">
+                <div class="info-usuario">
+                    <span class="saudacao">X-Burguer</span>
+                    <span class="cargo">Sistema de Gestão</span>
                 </div>
-                <div class="topbar-usuario" aria-label="Identificação do sistema">
-                    <div class="info-usuario">
-                        <span class="saudacao">X-Burguer</span>
-                        <span class="cargo">Sistema de Gestão</span>
-                    </div>
-                    <div class="avatar-admin" aria-hidden="true">XB</div>
-                </div>
-            </header>
+                <div class="avatar-admin" aria-hidden="true">XB</div>
+            </div>
+        </header>
 
         <div class="dashboard-container">
             <div class="dashboard-cabecalho config-cabecalho">
                 <div class="config-cabecalho-intro">
                     <h1>⚙️ Configurações</h1>
-                    <span class="config-subtitulo">Backup, recuperação e status do sistema.</span>
+                    <span class="config-subtitulo">Proteção, backup, recuperação e status do sistema.</span>
                 </div>
                 <div class="config-status-geral">
                     <span id="status-configuracoes">Verificando sistema...</span>
@@ -95,31 +96,52 @@
 
                 <section class="painel-bloco config-card">
                     <div class="painel-cabecalho">
-                        <h3>💾 Backup completo</h3>
+                        <h3>💾 Backup protegido</h3>
                     </div>
-                    <p class="config-texto">Baixa um arquivo JSON com todos os dados atuais do banco: funcionários, produtos, consumos, faltas e histórico.</p>
+                    <p class="config-texto">O banco mantém cópias internas automáticas e, ao baixar um backup, cria primeiro outra cópia protegida no Supabase. O arquivo inclui dados, histórico, lixeira e auditoria.</p>
+
+                    <div class="protecao-grid-status">
+                        <div class="protecao-status-card">
+                            <span>Último backup interno</span>
+                            <strong id="backup-interno-ultimo">—</strong>
+                        </div>
+                        <div class="protecao-status-card">
+                            <span>Cópias internas</span>
+                            <strong id="backup-interno-total">—</strong>
+                        </div>
+                    </div>
 
                     <div class="config-destaque">
-                        <span>Último backup feito neste navegador</span>
-                        <strong id="ultimo-backup">Nenhum registrado</strong>
+                        <span>Backup automático</span>
+                        <strong>Todos os dias • 00:15</strong>
+                    </div>
+                    <div id="backup-interno-resumo" class="protecao-resumo">Carregando resumo da última cópia...</div>
+
+                    <div class="protecao-acoes">
+                        <button id="btn-exportar-backup" class="btn-novo-funcionario config-botao-largo" type="button" onclick="exportarBackupSupabase()">
+                            ⬇ Criar e baixar backup protegido
+                        </button>
+                        <button id="btn-backup-interno" class="btn-config-secundario config-botao-largo" type="button" onclick="criarBackupInternoAgora()">
+                            🛡️ Criar cópia interna agora
+                        </button>
                     </div>
 
-                    <button id="btn-exportar-backup" class="btn-novo-funcionario config-botao-largo" type="button" onclick="exportarBackupSupabase()">
-                        ⬇ Baixar backup agora
-                    </button>
-
-                    <div id="status-backup" class="config-status-linha">Pronto para gerar backup.</div>
+                    <div class="config-destaque" style="margin-top:12px">
+                        <span>Último arquivo baixado neste navegador</span>
+                        <strong id="ultimo-backup">Nenhum registrado</strong>
+                    </div>
+                    <div id="status-backup" class="config-status-linha">Proteção pronta.</div>
                 </section>
 
                 <section class="painel-bloco config-card">
                     <div class="painel-cabecalho">
-                        <h3>♻️ Recuperar dados</h3>
+                        <h3>♻️ Recuperação transacional</h3>
                     </div>
-                    <p class="config-texto">Importa um backup criado pelo próprio sistema e recupera registros operacionais que estejam faltando no banco.</p>
+                    <p class="config-texto">Recupera somente registros que estejam faltando. Antes da recuperação, o sistema cria uma cópia do banco atual; se ocorrer qualquer erro, a recuperação inteira é desfeita pelo PostgreSQL.</p>
 
                     <div class="config-aviso">
-                        <strong>Proteção do histórico:</strong>
-                        o arquivo inclui o histórico completo, mas esta tela não regrava ações antigas automaticamente. Isso evita adulterar o registro de auditoria.
+                        <strong>Proteção contra recuperação parcial:</strong>
+                        funcionários, produtos, consumos, faltas e histórico são recuperados em uma única transação. Registros atuais não são sobrescritos.
                     </div>
 
                     <button class="btn-config-secundario config-botao-largo" type="button" onclick="document.getElementById('arquivo-backup').click()">
@@ -132,22 +154,34 @@
 
                 <section class="painel-bloco config-card">
                     <div class="painel-cabecalho">
-                        <h3>🛡️ Segurança e sincronização</h3>
+                        <h3>🛡️ Proteção e auditoria</h3>
                     </div>
-                    <p class="config-texto">Mostra o estado da sessão e sincroniza ações de histórico que possam ter ficado pendentes durante uma falha temporária de internet.</p>
+                    <p class="config-texto">A proteção agora acontece dentro do banco. Toda inclusão, alteração ou exclusão de dados operacionais deixa um registro independente, mesmo que o navegador feche durante a operação.</p>
 
                     <div class="config-info-menor">
                         <div><span>Sessão:</span><strong id="config-sessao">—</strong></div>
                         <div><span>Projeto:</span><strong id="config-projeto">—</strong></div>
                         <div><span>Histórico pendente:</span><strong id="config-pendencias">—</strong></div>
+                        <div><span>Lixeira protegida:</span><strong id="lixeira-protegida">—</strong></div>
+                        <div><span>Auditoria do banco:</span><strong id="auditoria-protegida">—</strong></div>
                     </div>
 
                     <button class="btn-config-secundario config-botao-largo" type="button" onclick="sincronizarPendenciasManual()">
-                        🔄 Sincronizar pendências
+                        🔄 Sincronizar pendências do histórico
                     </button>
 
                     <div class="config-aviso-suave">
-                        Nenhuma chave secreta do Supabase é armazenada no site. O frontend usa apenas a chave publicável e as regras RLS do banco.
+                        O site usa apenas a chave publicável do Supabase. O acesso aos dados continua protegido por autenticação, lista de usuários autorizados e regras RLS.
+                    </div>
+                </section>
+
+                <section class="painel-bloco config-card config-card-lixeira">
+                    <div class="painel-cabecalho">
+                        <h3>🗑️ Lixeira protegida</h3>
+                    </div>
+                    <p class="config-texto">Exclusões de funcionários, produtos, consumos e faltas são copiadas automaticamente para esta área pelo próprio banco antes de desaparecerem da tabela original.</p>
+                    <div id="lista-lixeira-protegida" class="protecao-lista-lixeira">
+                        <div class="protecao-vazio">Carregando lixeira protegida...</div>
                     </div>
                 </section>
             </div>
@@ -156,5 +190,6 @@
 </div>
 
 <script src="configuracoes-supabase.js?v=4.5.1"></script>
+<script src="data-protection-v3.js"></script>
 </body>
 </html>
