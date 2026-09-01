@@ -1,0 +1,57 @@
+/* X-Burguer Consumo — correção de topo/área segura no iPhone */
+@media (max-width: 1024px) {
+    html,
+    body.corpo-dashboard {
+        background: #f4f6f9 !important;
+    }
+
+    /* O menu cobre a tela toda, mas o conteúdo dele começa abaixo da área segura do iPhone. */
+    body.corpo-dashboard .sidebar {
+        top: 0 !important;
+        bottom: 0 !important;
+        height: var(--x-viewport-height, 100dvh) !important;
+        max-height: var(--x-viewport-height, 100dvh) !important;
+        background: #7a0b0b !important;
+    }
+
+    body.corpo-dashboard .sidebar-topo {
+        flex: 0 0 calc(72px + env(safe-area-inset-top)) !important;
+        min-height: calc(72px + env(safe-area-inset-top)) !important;
+        height: calc(72px + env(safe-area-inset-top)) !important;
+        padding: calc(13px + env(safe-area-inset-top)) 15px 13px !important;
+        background: #7a0b0b !important;
+    }
+
+    /* Evita o efeito embaçado que o Safari/iOS aplica ao fundo quando o menu abre. */
+    body.corpo-dashboard .sidebar-overlay {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: rgba(0, 0, 0, .42) !important;
+    }
+
+    /* Mantém o cabeçalho visível abaixo do recorte/status bar. */
+    body.corpo-dashboard .topbar {
+        box-sizing: border-box !important;
+        min-height: calc(58px + env(safe-area-inset-top)) !important;
+        height: calc(58px + env(safe-area-inset-top)) !important;
+        padding-top: env(safe-area-inset-top) !important;
+        background: #ffffff !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    body.corpo-dashboard .btn-menu-mobile,
+    body.corpo-dashboard .topbar-usuario {
+        margin-top: 0 !important;
+        align-self: center !important;
+    }
+}
+
+/* Em iPhone instalado como PWA, impede que a primeira faixa pareça translúcida. */
+@supports (padding: max(0px)) {
+    @media (max-width: 1024px) {
+        body.corpo-dashboard.menu-mobile-aberto .sidebar {
+            background-color: #7a0b0b !important;
+        }
+    }
+}
