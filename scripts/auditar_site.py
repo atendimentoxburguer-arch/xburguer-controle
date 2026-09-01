@@ -150,7 +150,8 @@ def main():
         auditar_html(path, versao)
 
     checar_js()
-    checar_css(APP / "style.css")
+    for path in sorted(APP.glob("*.css")):
+        checar_css(path)
 
     try:
         manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
@@ -173,6 +174,7 @@ def main():
     faltas_js = (APP / "faltas-supabase.js").read_text(encoding="utf-8")
     relatorios_js = (APP / "relatorios-supabase.js").read_text(encoding="utf-8")
     configuracoes_js = (APP / "configuracoes-supabase.js").read_text(encoding="utf-8")
+    configuracoes_html = (APP / "configuracoes.html").read_text(encoding="utf-8")
     consumos_js = (APP / "consumos-supabase.js").read_text(encoding="utf-8")
 
     if "cad-descontar-falta" not in faltas_html or "cad-valor-desconto-falta" not in faltas_html:
@@ -182,7 +184,7 @@ def main():
     if "valor_desconto" not in relatorios_js or "Desconto Faltas" not in relatorios_js:
         erro("relatorios: desconto de faltas nao esta integrado ao relatorio mensal")
     if "valor_desconto: Math.max(0, Number(r.valor_desconto || 0))" not in configuracoes_js:
-        erro("backup: restauracao de faltas nao preserva valor_desconto")
+        erro("backup legado: restauracao de faltas nao preserva valor_desconto")
     if (APP / "desconto-faltas.js").exists():
         erro("faltas: camada antiga desconto-faltas.js ainda existe")
     if "valor_total: precoUnitario * quantidade" in consumos_js:
@@ -195,6 +197,42 @@ def main():
     if "buscarHistoricoCompleto" not in historico_js:
         erro("historico: consulta sem paginacao")
 
+    # Protecao de dados v3: impede regressao silenciosa do backup e da recuperacao.
+    protecao_js_path = APP / "data-protection-v3.js"
+    protecao_css_path = APP / "data-protection-v3.css"
+    if not protecao_js_path.exists():
+        erro("protecao de dados: data-protection-v3.js ausente")
+        protecao_js = ""
+    else:
+        protecao_js = protecao_js_path.read_text(encoding="utf-8")
+    if not protecao_css_path.exists():
+        erro("protecao de dados: data-protection-v3.css ausente")
+
+    for token, descricao in [
+        ("criar_backup_protegido", "criacao de backup protegido"),
+        ("restaurar_backup_seguro", "restauracao transacional"),
+        ("restaurar_da_lixeira", "restauracao da lixeira"),
+        ("SHA-256", "verificacao de integridade"),
+        ("antes-restauracao", "backup antes de restaurar"),
+        ("apos-restauracao", "backup depois de restaurar"),
+    ]:
+        if token not in protecao_js:
+            erro(f"protecao de dados: {descricao} nao esta ativa no frontend")
+
+    if "data-protection-v3.js" not in configuracoes_html:
+        erro("configuracoes: camada de protecao v3 nao esta carregada")
+    if "data-protection-v3.css" not in configuracoes_html:
+        erro("configuracoes: estilos da protecao v3 nao estao carregados")
+    for id_obrigatorio in (
+        "backup-interno-ultimo",
+        "backup-interno-total",
+        "lixeira-protegida",
+        "auditoria-protegida",
+        "lista-lixeira-protegida",
+    ):
+        if f'id="{id_obrigatorio}"' not in configuracoes_html:
+            erro(f"configuracoes: indicador de protecao ausente: {id_obrigatorio}")
+
     for path in APP.glob("*.js"):
         texto = path.read_text(encoding="utf-8")
         if 'avatar.textContent = "X"' in texto:
@@ -203,6 +241,19 @@ def main():
     sw = (ROOT / "service-worker.js").read_text(encoding="utf-8")
     if versao and f"xburguer-pwa-v{versao}" not in sw:
         erro(f"service-worker: cache nao corresponde a versao {versao}")
+    if "caches.match(request" in sw:
+        erro("service-worker: busca global de cache pode misturar aplicativos da mesma origem")
+    if "const cache = await caches.open(CACHE_NAME)" not in sw or "cache.match(request" not in sw:
+        erro("service-worker: cache exclusivo do Consumo nao esta sendo usado")
+
+    for obrigatorio in (
+        "./CONTROLE%20DE%20CONSUMO/data-protection-v3.js",
+        "./CONTROLE%20DE%20CONSUMO/data-protection-v3.css",
+        "./CONTROLE%20DE%20CONSUMO/ios-mobile-fix.css",
+        "./CONTROLE%20DE%20CONSUMO/dashboard-startup-guard.js",
+    ):
+        if obrigatorio not in sw:
+            erro(f"service-worker: arquivo critico fora do precache: {obrigatorio}")
 
     for ref in re.findall(r'[\"\'](\./[^\"\']+)[\"\']', sw):
         ref_fs = unquote(urlsplit(ref).path).removeprefix("./")
@@ -215,7 +266,7 @@ def main():
     print("Avisos:", len(AVISOS))
     if ERROS:
         return 1
-    print("Auditoria estrutural concluida com sucesso.")
+    print("Auditoria estrutural e de protecao de dados concluida com sucesso.")
     return 0
 
 
