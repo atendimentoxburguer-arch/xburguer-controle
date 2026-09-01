@@ -2,15 +2,27 @@
 @media (max-width: 1024px) {
     html,
     body.corpo-dashboard {
+        width: 100% !important;
+        min-height: 100dvh !important;
         background: #f4f6f9 !important;
+    }
+
+    /* No iOS, visualViewport pode ficar menor que a tela real e criar faixas vazias.
+       O shell do app deve ocupar sempre a viewport dinâmica completa. */
+    body.corpo-dashboard .layout-sistema,
+    body.corpo-dashboard .conteudo-principal {
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        max-height: 100dvh !important;
     }
 
     /* O menu cobre a tela toda, mas o conteúdo dele começa abaixo da área segura do iPhone. */
     body.corpo-dashboard .sidebar {
         top: 0 !important;
         bottom: 0 !important;
-        height: var(--x-viewport-height, 100dvh) !important;
-        max-height: var(--x-viewport-height, 100dvh) !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        max-height: 100dvh !important;
         background: #7a0b0b !important;
     }
 
@@ -22,7 +34,13 @@
         background: #7a0b0b !important;
     }
 
-    /* Evita o efeito embaçado que o Safari/iOS aplica ao fundo quando o menu abre. */
+    body.corpo-dashboard .sidebar-sair {
+        flex: 0 0 auto !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+        background: #7a0b0b !important;
+    }
+
+    /* O fundo fica apenas escurecido; não desfoca o cabeçalho nem o conteúdo. */
     body.corpo-dashboard .sidebar-overlay {
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
@@ -32,6 +50,7 @@
     /* Mantém o cabeçalho visível abaixo do recorte/status bar. */
     body.corpo-dashboard .topbar {
         box-sizing: border-box !important;
+        flex: 0 0 calc(58px + env(safe-area-inset-top)) !important;
         min-height: calc(58px + env(safe-area-inset-top)) !important;
         height: calc(58px + env(safe-area-inset-top)) !important;
         padding-top: env(safe-area-inset-top) !important;
@@ -47,9 +66,15 @@
     }
 }
 
-/* Em iPhone instalado como PWA, impede que a primeira faixa pareça translúcida. */
-@supports (padding: max(0px)) {
+@supports (-webkit-touch-callout: none) {
     @media (max-width: 1024px) {
+        /* Fallback específico de WebKit/iOS. */
+        body.corpo-dashboard .layout-sistema,
+        body.corpo-dashboard .sidebar,
+        body.corpo-dashboard .conteudo-principal {
+            min-height: -webkit-fill-available !important;
+        }
+
         body.corpo-dashboard.menu-mobile-aberto .sidebar {
             background-color: #7a0b0b !important;
         }
