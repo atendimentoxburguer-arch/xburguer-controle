@@ -13,6 +13,7 @@ const PRECACHE = [
   "./CONTROLE%20DE%20CONSUMO/configuracoes-supabase.js",
   "./CONTROLE%20DE%20CONSUMO/configuracoes.html",
   "./CONTROLE%20DE%20CONSUMO/consumos-supabase.js",
+  "./CONTROLE%20DE%20CONSUMO/consumos-edicao.js",
   "./CONTROLE%20DE%20CONSUMO/consumos.html",
   "./CONTROLE%20DE%20CONSUMO/dashboard-supabase.js",
   "./CONTROLE%20DE%20CONSUMO/dashboard-startup-guard.js",
