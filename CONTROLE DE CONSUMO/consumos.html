@@ -115,7 +115,7 @@
 
     </div>
 
-    <!-- MODAL DE NOVO CONSUMO -->
+    <!-- MODAL DE NOVO/EDIÇÃO DE CONSUMO -->
     <div id="modal-consumo" class="modal-fundo" style="display: none;">
         <div class="modal-caixa">
             <div class="modal-topo">
@@ -191,7 +191,7 @@
                 <h3>Excluir consumo</h3>
             </div>
             <p class="texto-aviso-excluir" id="texto-confirma-exclusao">
-                Deseja realmente excluir este registro de consumo? Esta ação não pode ser desfeita.
+                Deseja realmente excluir este registro de consumo? Uma cópia ficará disponível na lixeira protegida.
             </p>
             <input type="hidden" id="excluir-index" value="">
             <div class="modal-botoes">
@@ -203,5 +203,6 @@
 
     <!-- CONSUMOS CONECTADOS AO SUPABASE -->
     <script src="consumos-supabase.js?v=4.5.1"></script>
+    <script src="consumos-edicao.js?v=1.0.0"></script>
 </body>
 </html>
