@@ -2,6 +2,7 @@
     "use strict";
 
     const $ = (id) => document.getElementById(id);
+    const TAMANHO_PAGINA = 1000;
     let carregando = false;
     let intervaloAtualizacao = null;
 
@@ -134,6 +135,58 @@
         return user;
     }
 
+    async function carregarConsumosPeriodoPaginados(inicio, fim) {
+        const todos = [];
+        let offset = 0;
+
+        while (true) {
+            const { data, error } = await window.supabaseClient
+                .from("consumos")
+                .select("quantidade,data_hora,created_at")
+                .gte("data_hora", inicio.toISOString())
+                .lt("data_hora", fim.toISOString())
+                .order("data_hora", { ascending: true })
+                .range(offset, offset + TAMANHO_PAGINA - 1);
+
+            if (error) throw error;
+
+            const lote = Array.isArray(data) ? data : [];
+            todos.push(...lote);
+
+            if (lote.length < TAMANHO_PAGINA) break;
+            offset += TAMANHO_PAGINA;
+        }
+
+        return todos;
+    }
+
+    function quantidadeDoConsumo(consumo) {
+        return Math.max(1, Number(consumo?.quantidade) || 1);
+    }
+
+    function somarQuantidades(consumos) {
+        return consumos.reduce(
+            (total, consumo) => total + quantidadeDoConsumo(consumo),
+            0
+        );
+    }
+
+    function somarQuantidadesNoPeriodo(consumos, inicio, fim) {
+        const inicioMs = inicio.getTime();
+        const fimMs = fim.getTime();
+
+        return consumos.reduce((total, consumo) => {
+            const data = new Date(consumo.data_hora || consumo.created_at);
+            const momento = data.getTime();
+
+            if (Number.isNaN(momento) || momento < inicioMs || momento >= fimMs) {
+                return total;
+            }
+
+            return total + quantidadeDoConsumo(consumo);
+        }, 0);
+    }
+
     function renderizarUltimosConsumos(consumos, funcionarios) {
         const listaEl = $("lista-ultimos-registros");
         if (!listaEl) return;
@@ -159,7 +212,7 @@
                 item.descricao ||
                 (item.tipo === "avulso" ? "Consumo avulso" : "Produto");
 
-            const quantidade = Math.max(1, Number(item.quantidade) || 1);
+            const quantidade = quantidadeDoConsumo(item);
             const valorTotal = Number(
                 item.valor_total ??
                 ((Number(item.preco_unitario) || 0) * quantidade)
@@ -216,14 +269,15 @@
             const chave = dataLocalParaISODate(data);
             if (!totais.has(chave)) return;
 
-            const quantidade = Math.max(1, Number(consumo.quantidade) || 1);
-            totais.set(chave, totais.get(chave) + quantidade);
+            totais.set(
+                chave,
+                totais.get(chave) + quantidadeDoConsumo(consumo)
+            );
         });
 
         const contagens = chaves.map(chave => totais.get(chave) || 0);
         const maiorValor = Math.max(...contagens, 0);
 
-        // Topo sempre divisível por 4: mantém 5 marcas inteiras e bem alinhadas.
         const topo = Math.max(4, Math.ceil(maiorValor / 4) * 4);
         const passos = [
             topo,
@@ -260,7 +314,6 @@
                 </div>`;
         }).join("");
 
-        // Linhas de referência realmente alinhadas com os números do eixo Y.
         const linhas = passos.slice(0, 4).map(valor => {
             const bottom = (valor / topo) * 100;
             return `<div class="linha-referencia" style="bottom:${bottom}%;"></div>`;
@@ -303,10 +356,9 @@
             const [
                 respFuncAtivos,
                 respFuncionarios,
-                respConsumosDia,
-                respConsumosMes,
+                consumosMes,
                 respFaltasMes,
-                respGrafico,
+                consumosGrafico,
                 respUltimos
             ] = await Promise.all([
                 window.supabaseClient
@@ -319,17 +371,7 @@
                     .select("id,nome")
                     .order("nome", { ascending: true }),
 
-                window.supabaseClient
-                    .from("consumos")
-                    .select("id", { count: "exact", head: true })
-                    .gte("data_hora", inicioHoje.toISOString())
-                    .lt("data_hora", inicioAmanha.toISOString()),
-
-                window.supabaseClient
-                    .from("consumos")
-                    .select("id", { count: "exact", head: true })
-                    .gte("data_hora", inicioMes.toISOString())
-                    .lt("data_hora", inicioProximoMes.toISOString()),
+                carregarConsumosPeriodoPaginados(inicioMes, inicioProximoMes),
 
                 window.supabaseClient
                     .from("faltas")
@@ -337,12 +379,7 @@
                     .gte("data", dataLocalParaISODate(inicioMes))
                     .lt("data", dataLocalParaISODate(inicioProximoMes)),
 
-                window.supabaseClient
-                    .from("consumos")
-                    .select("quantidade,data_hora,created_at")
-                    .gte("data_hora", inicio7Dias.toISOString())
-                    .lt("data_hora", inicioAmanha.toISOString())
-                    .order("data_hora", { ascending: true }),
+                carregarConsumosPeriodoPaginados(inicio7Dias, inicioAmanha),
 
                 window.supabaseClient
                     .from("consumos")
@@ -354,21 +391,25 @@
             const respostas = [
                 respFuncAtivos,
                 respFuncionarios,
-                respConsumosDia,
-                respConsumosMes,
                 respFaltasMes,
-                respGrafico,
                 respUltimos
             ];
 
             const respostaComErro = respostas.find(resp => resp?.error);
             if (respostaComErro?.error) throw respostaComErro.error;
 
+            const totalMes = somarQuantidades(consumosMes);
+            const totalDia = somarQuantidadesNoPeriodo(
+                consumosMes,
+                inicioHoje,
+                inicioAmanha
+            );
+
             limparErroCards();
 
             $("card-func-ativos").textContent = Number(respFuncAtivos.count || 0).toLocaleString("pt-BR");
-            $("card-consumos-dia").textContent = Number(respConsumosDia.count || 0).toLocaleString("pt-BR");
-            $("card-consumos-mes").textContent = Number(respConsumosMes.count || 0).toLocaleString("pt-BR");
+            $("card-consumos-dia").textContent = totalDia.toLocaleString("pt-BR");
+            $("card-consumos-mes").textContent = totalMes.toLocaleString("pt-BR");
             $("card-faltas-mes").textContent = Number(respFaltasMes.count || 0).toLocaleString("pt-BR");
 
             renderizarUltimosConsumos(
@@ -376,9 +417,7 @@
                 Array.isArray(respFuncionarios.data) ? respFuncionarios.data : []
             );
 
-            renderizarGraficoConsumos(
-                Array.isArray(respGrafico.data) ? respGrafico.data : []
-            );
+            renderizarGraficoConsumos(consumosGrafico);
 
             const horario = new Date().toLocaleTimeString("pt-BR", {
                 hour: "2-digit",
@@ -428,8 +467,6 @@
     window.addEventListener("DOMContentLoaded", function () {
         carregarDashboard();
 
-        // Atualiza automaticamente a cada 60 segundos para refletir registros
-        // feitos em outros computadores sem precisar recarregar a página.
         intervaloAtualizacao = window.setInterval(
             () => carregarDashboard(),
             60000
