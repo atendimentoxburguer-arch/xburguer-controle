@@ -24,7 +24,7 @@
       }
 
       const reg=await navigator.serviceWorker.register(
-        '/xburguer-controle/service-worker.js?v=4.5.1',
+        '/xburguer-controle/service-worker.js',
         {scope:'/xburguer-controle/',updateViaCache:'none'}
       );
 
