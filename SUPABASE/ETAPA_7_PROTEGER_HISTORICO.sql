@@ -1,3 +1,9 @@
+-- =====================================================================
+-- ARQUIVO HISTORICO / LEGADO - NAO EXECUTAR EM PRODUCAO
+-- A estrutura atual e controlada pelas migrations aplicadas no Supabase.
+-- Este arquivo permanece apenas como registro das etapas antigas do projeto.
+-- =====================================================================
+
 -- X-Burguer - Etapa 7
 -- Torna o histórico de ações "append-only" para usuários do site:
 -- podem consultar e inserir, mas não alterar nem apagar registros existentes.
