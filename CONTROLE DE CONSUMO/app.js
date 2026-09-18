@@ -67,11 +67,29 @@
                 return false;
             }
 
-            const { data: autorizado, error: erroAutorizacao } = await window.supabaseClient
-                .rpc("usuario_autorizado_atual");
+            let autorizado = null;
+            let erroAutorizacao = null;
 
-            if (erroAutorizacao || autorizado !== true) {
-                console.warn("Acesso bloqueado: usuário não autorizado.", erroAutorizacao || "UUID fora da lista autorizada");
+            for (let tentativa = 0; tentativa < 3; tentativa += 1) {
+                const respostaAutorizacao = await window.supabaseClient
+                    .rpc("usuario_autorizado_atual");
+
+                autorizado = respostaAutorizacao.data;
+                erroAutorizacao = respostaAutorizacao.error;
+
+                if (!erroAutorizacao) break;
+                if (tentativa < 2) {
+                    await new Promise(resolve => setTimeout(resolve, 350 + (tentativa * 350)));
+                }
+            }
+
+            if (erroAutorizacao) {
+                console.error("Falha temporária ao validar autorização:", erroAutorizacao);
+                return false;
+            }
+
+            if (autorizado !== true) {
+                console.warn("Acesso bloqueado: UUID fora da lista autorizada.");
                 await window.supabaseClient.auth.signOut().catch(() => {});
                 location.replace("login.html");
                 return false;
