@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "4.6.0";
+    window.XBURGUER_VERSAO = "4.6.1";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     
@@ -39,7 +39,7 @@
     }
 
 // ========================================================
-    // X-BURGUER PWA 4.6 - sem botão visual de instalação
+    // X-BURGUER PWA 4.6.1 - sem botão visual de instalação
     // ========================================================
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
