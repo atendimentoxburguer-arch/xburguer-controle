@@ -121,11 +121,32 @@
                     return;
                 }
 
-                const { data: autorizado, error: erroAutorizacao } = await window.supabaseClient
-                    .rpc("usuario_autorizado_atual");
+                let autorizado = null;
+                let erroAutorizacao = null;
 
-                if (erroAutorizacao || autorizado !== true) {
-                    console.warn("Login recusado: conta não autorizada.", erroAutorizacao || "UUID fora da lista autorizada");
+                for (let tentativa = 0; tentativa < 3; tentativa += 1) {
+                    const respostaAutorizacao = await window.supabaseClient
+                        .rpc("usuario_autorizado_atual");
+
+                    autorizado = respostaAutorizacao.data;
+                    erroAutorizacao = respostaAutorizacao.error;
+
+                    if (!erroAutorizacao) break;
+                    if (tentativa < 2) {
+                        await new Promise(resolve => setTimeout(resolve, 350 + (tentativa * 350)));
+                    }
+                }
+
+                if (erroAutorizacao) {
+                    console.error("Não foi possível validar a autorização da conta:", erroAutorizacao);
+                    alert("Não foi possível confirmar sua autorização agora. Verifique a conexão e tente novamente.");
+                    botao.disabled = false;
+                    botao.innerText = textoOriginal;
+                    return;
+                }
+
+                if (autorizado !== true) {
+                    console.warn("Login recusado: UUID fora da lista autorizada.");
                     await window.supabaseClient.auth.signOut().catch(() => {});
                     alert("Esta conta não está autorizada a acessar o sistema.");
                     botao.disabled = false;
