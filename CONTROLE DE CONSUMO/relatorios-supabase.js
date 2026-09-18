@@ -254,7 +254,7 @@
         );
 
         $("stat-total-consumido").textContent = moeda(totalConsumido);
-        $("stat-num-consumos").textContent = consumos.length.toLocaleString("pt-BR");
+        $("stat-num-consumos").textContent = consumos.reduce((soma, consumo) => soma + quantidadeConsumo(consumo), 0).toLocaleString("pt-BR");
         $("stat-total-faltas").textContent = faltas.length.toLocaleString("pt-BR");
         $("stat-funcionarios").textContent = funcionariosRelatorio.length.toLocaleString("pt-BR");
     }
@@ -272,7 +272,7 @@
             "Resumo Mensal — Desconto em Folha";
 
         $("titulo-card-1").textContent = "Total consumido";
-        $("titulo-card-2").textContent = "Nº consumos";
+        $("titulo-card-2").textContent = "Unidades consumidas";
         $("titulo-card-4").textContent = "Funcionários";
 
         const funcionarios = funcionariosParaRelatorio(funcionarioId);
@@ -351,7 +351,7 @@
                 <th>Funcionário</th>
                 <th>Cargo</th>
                 <th>Salário Base</th>
-                <th>Consumos</th>
+                <th>Unidades</th>
                 <th>Desconto Consumos</th>
                 <th>Faltas</th>
                 <th>Desconto Faltas</th>
@@ -366,7 +366,7 @@
             "Detalhe Completo de Consumos por Funcionário";
 
         $("titulo-card-1").textContent = "Total consumido";
-        $("titulo-card-2").textContent = "Nº consumos";
+        $("titulo-card-2").textContent = "Unidades consumidas";
         $("titulo-card-4").textContent = "Funcionários";
 
         const funcionarios = funcionariosParaRelatorio(funcionarioId);
