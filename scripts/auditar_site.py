@@ -149,6 +149,13 @@ def main():
     for path in sorted(ROOT.glob("*.html")) + sorted(APP.glob("*.html")):
         auditar_html(path, versao)
 
+    for path in sorted(APP.glob("*.html")):
+        texto_html = path.read_text(encoding="utf-8")
+        if "@supabase/supabase-js@2.116.0" not in texto_html:
+            erro(f"{path.relative_to(ROOT)}: SDK Supabase deve permanecer fixado em 2.116.0")
+        if re.search(r'@supabase/supabase-js@2(?:["\'])', texto_html):
+            erro(f"{path.relative_to(ROOT)}: SDK Supabase voltou a usar versao flutuante")
+
     checar_js()
     for path in sorted(APP.glob("*.css")):
         checar_css(path)
@@ -215,6 +222,7 @@ def main():
         ("SHA-256", "verificacao de integridade"),
         ("antes-restauracao", "backup antes de restaurar"),
         ("apos-restauracao", "backup depois de restaurar"),
+        ("pacote.projeto", "validacao do projeto de origem do backup"),
     ]:
         if token not in protecao_js:
             erro(f"protecao de dados: {descricao} nao esta ativa no frontend")
