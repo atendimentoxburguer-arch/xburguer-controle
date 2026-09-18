@@ -300,6 +300,23 @@ def main():
     if 'updateViaCache: "none"' not in app_js:
         erro("PWA: registro interno nao força verificacao de atualizacao sem cache")
 
+    # Supply-chain da CI: Actions oficiais fixadas em commits revisados.
+    workflow_site = (ROOT / ".github/workflows/validar-site.yml").read_text(encoding="utf-8")
+    workflow_isolamento = (ROOT / ".github/workflows/validar-isolamento.yml").read_text(encoding="utf-8")
+    actions_obrigatorias = {
+        "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1": "checkout v7.0.1",
+        "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97": "setup-python v7.0.0",
+        "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020": "setup-node v7.0.0",
+        "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f": "upload-artifact v6.0.0",
+    }
+    for token, descricao in actions_obrigatorias.items():
+        if token not in workflow_site:
+            erro(f"CI: {descricao} nao esta fixada no commit revisado")
+    if "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" not in workflow_isolamento:
+        erro("CI isolamento: checkout nao esta fixado no commit revisado")
+    if "node-version: '24'" not in workflow_site:
+        erro("CI: auditoria JavaScript deve usar Node 24")
+
     print("\n================ RESUMO ================")
     print("Erros:", len(ERROS))
     print("Avisos:", len(AVISOS))
