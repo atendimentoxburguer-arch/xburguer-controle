@@ -1,3 +1,9 @@
+-- =====================================================================
+-- ARQUIVO HISTORICO / LEGADO - NAO EXECUTAR EM PRODUCAO
+-- A estrutura atual e controlada pelas migrations aplicadas no Supabase.
+-- Este arquivo permanece apenas como registro das etapas antigas do projeto.
+-- =====================================================================
+
 -- X-Burguer - Etapa 11 / Produção
 -- Execute no Supabase > SQL Editor antes de publicar o sistema.
 
