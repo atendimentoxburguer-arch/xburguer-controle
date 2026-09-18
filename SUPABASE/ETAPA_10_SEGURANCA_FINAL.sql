@@ -1,3 +1,9 @@
+-- =====================================================================
+-- ARQUIVO HISTORICO / LEGADO - NAO EXECUTAR EM PRODUCAO
+-- A estrutura atual e controlada pelas migrations aplicadas no Supabase.
+-- Este arquivo permanece apenas como registro das etapas antigas do projeto.
+-- =====================================================================
+
 -- X-Burguer - Etapa 10
 -- Ajuste final de privilégios mínimos para o usuário autenticado do site.
 -- Execute no Supabase > SQL Editor.
