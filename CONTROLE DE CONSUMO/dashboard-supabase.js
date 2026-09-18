@@ -3,6 +3,7 @@
 
     const $ = (id) => document.getElementById(id);
     const TAMANHO_PAGINA = 1000;
+    const MAX_TENTATIVAS_INICIAIS = 3;
     let carregando = false;
     let intervaloAtualizacao = null;
 
@@ -322,7 +323,7 @@
         corpoGraficoEl.innerHTML = linhas + barras;
     }
 
-    async function carregarDashboard({ manual = false } = {}) {
+    async function carregarDashboard({ manual = false, tentativa = 0 } = {}) {
         if (carregando) return;
 
         carregando = true;
@@ -428,6 +429,42 @@
             definirStatus(`Banco de dados conectado • atualizado às ${horario}`, "ok");
         } catch (erro) {
             console.error("Erro ao carregar Dashboard:", erro);
+
+            const podeTentarNovamente =
+                !manual &&
+                navigator.onLine &&
+                tentativa < (MAX_TENTATIVAS_INICIAIS - 1);
+
+            if (podeTentarNovamente) {
+                [
+                    "card-func-ativos",
+                    "card-consumos-dia",
+                    "card-consumos-mes",
+                    "card-faltas-mes"
+                ].forEach(id => {
+                    const el = $(id);
+                    if (!el) return;
+                    el.textContent = "…";
+                    el.classList.remove("dashboard-erro-card");
+                });
+
+                const lista = $("lista-ultimos-registros");
+                if (lista) {
+                    lista.innerHTML = `
+                        <div style="padding:20px;text-align:center;color:#777;font-size:13px;">
+                            Carregando dados...
+                        </div>`;
+                }
+
+                definirStatus("Conectando ao banco de dados...");
+
+                const atraso = 650 + (tentativa * 450);
+                window.setTimeout(
+                    () => carregarDashboard({ manual: false, tentativa: tentativa + 1 }),
+                    atraso
+                );
+                return;
+            }
 
             definirCardsComoErro();
 
