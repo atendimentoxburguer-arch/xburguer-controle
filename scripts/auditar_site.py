@@ -279,10 +279,20 @@ def main():
     if "MAX_TENTATIVAS_INICIAIS" not in dashboard_js or "tentativa + 1" not in dashboard_js:
         erro("dashboard: retry inicial nativo nao esta ativo")
 
-    if "usuarios_autorizados" not in login_html:
-        erro("login: falta validacao explicita da lista de usuarios autorizados")
-    if "usuarios_autorizados" not in app_js:
-        erro("app: paginas internas nao validam a lista de usuarios autorizados")
+    if "usuario_autorizado_atual" not in login_html:
+        erro("login: falta validacao encapsulada do usuario autorizado")
+    if "usuario_autorizado_atual" not in app_js:
+        erro("app: paginas internas nao validam o usuario pela funcao encapsulada")
+    if '.from("usuarios_autorizados")' in login_html or ".from('usuarios_autorizados')" in login_html:
+        erro("login: nao deve consultar usuarios_autorizados diretamente")
+    if '.from("usuarios_autorizados")' in app_js or ".from('usuarios_autorizados')" in app_js:
+        erro("app: nao deve consultar usuarios_autorizados diretamente")
+    if "for (let tentativa = 0; tentativa < 3; tentativa += 1)" not in login_html:
+        erro("login: validacao de autorizacao sem retry contra falhas temporarias")
+    if "for (let tentativa = 0; tentativa < 3; tentativa += 1)" not in app_js:
+        erro("app: validacao de autorizacao sem retry contra falhas temporarias")
+    if "if (erroAutorizacao || autorizado !== true)" in login_html or "if (erroAutorizacao || autorizado !== true)" in app_js:
+        erro("autorizacao: falha tecnica voltou a ser tratada como usuario nao autorizado")
 
     if "Unidades consumidas" not in relatorios_js:
         erro("relatorios: card principal nao esta padronizado por unidades consumidas")
