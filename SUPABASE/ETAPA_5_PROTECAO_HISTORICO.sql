@@ -1,3 +1,9 @@
+-- =====================================================================
+-- ARQUIVO HISTORICO / LEGADO - NAO EXECUTAR EM PRODUCAO
+-- A estrutura atual e controlada pelas migrations aplicadas no Supabase.
+-- Este arquivo permanece apenas como registro das etapas antigas do projeto.
+-- =====================================================================
+
 -- X-Burguer - Etapa 5 - proteção do histórico
 -- Execute uma vez no Supabase > SQL Editor antes de testar Consumos.
 -- Objetivo: impedir que a exclusão de um funcionário apague consumos/faltas históricos.
