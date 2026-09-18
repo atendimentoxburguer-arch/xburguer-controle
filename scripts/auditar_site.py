@@ -250,7 +250,6 @@ def main():
         "./CONTROLE%20DE%20CONSUMO/data-protection-v3.js",
         "./CONTROLE%20DE%20CONSUMO/data-protection-v3.css",
         "./CONTROLE%20DE%20CONSUMO/ios-mobile-fix.css",
-        "./CONTROLE%20DE%20CONSUMO/dashboard-startup-guard.js",
     ):
         if obrigatorio not in sw:
             erro(f"service-worker: arquivo critico fora do precache: {obrigatorio}")
@@ -260,6 +259,38 @@ def main():
         p = (ROOT / ref_fs).resolve()
         if not p.exists():
             erro(f"service-worker: precache inexistente {ref}")
+
+    # Revisao arquitetural 2026-09: autenticacao, Dashboard, Consumos e semantica dos relatorios.
+    dashboard_js = (APP / "dashboard-supabase.js").read_text(encoding="utf-8")
+    login_html = (APP / "login.html").read_text(encoding="utf-8")
+    index_html = (ROOT / "index.html").read_text(encoding="utf-8")
+    pwa_compat = (ROOT / "pwa-consumo.js").read_text(encoding="utf-8") if (ROOT / "pwa-consumo.js").exists() else ""
+
+    if (APP / "dashboard-startup-guard.js").exists():
+        erro("dashboard: hotfix antigo voltou; retry deve permanecer integrado ao dashboard-supabase.js")
+    if "MAX_TENTATIVAS_INICIAIS" not in dashboard_js or "tentativa + 1" not in dashboard_js:
+        erro("dashboard: retry inicial nativo nao esta ativo")
+
+    if "usuarios_autorizados" not in login_html:
+        erro("login: falta validacao explicita da lista de usuarios autorizados")
+    if "usuarios_autorizados" not in app_js:
+        erro("app: paginas internas nao validam a lista de usuarios autorizados")
+
+    if "Unidades consumidas" not in relatorios_js:
+        erro("relatorios: card principal nao esta padronizado por unidades consumidas")
+    if '$("stat-num-consumos").textContent = consumos.length' in relatorios_js:
+        erro("relatorios: card voltou a contar lancamentos em vez de unidades")
+
+    edicao_js_path = APP / "consumos-edicao.js"
+    if not edicao_js_path.exists():
+        erro("consumos: modulo de edicao ausente")
+    if "abrirModalEdicaoConsumo" not in consumos_js or "btn-editar-consumo" not in consumos_js:
+        erro("consumos: botao de edicao nao e renderizado diretamente pela tabela")
+
+    if "service-worker.js?v=" in index_html or "service-worker.js?v=" in app_js or "service-worker.js?v=" in pwa_compat:
+        erro("PWA: registros do mesmo Service Worker usam URLs diferentes por querystring")
+    if 'updateViaCache: "none"' not in app_js:
+        erro("PWA: registro interno nao força verificacao de atualizacao sem cache")
 
     print("\n================ RESUMO ================")
     print("Erros:", len(ERROS))
