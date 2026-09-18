@@ -122,12 +122,9 @@
                 }
 
                 const { data: autorizado, error: erroAutorizacao } = await window.supabaseClient
-                    .from("usuarios_autorizados")
-                    .select("user_id")
-                    .eq("user_id", data.session.user.id)
-                    .maybeSingle();
+                    .rpc("usuario_autorizado_atual");
 
-                if (erroAutorizacao || !autorizado) {
+                if (erroAutorizacao || autorizado !== true) {
                     console.warn("Login recusado: conta não autorizada.", erroAutorizacao || "UUID fora da lista autorizada");
                     await window.supabaseClient.auth.signOut().catch(() => {});
                     alert("Esta conta não está autorizada a acessar o sistema.");
