@@ -231,6 +231,12 @@
         if (pacote.sistema !== "XBurguer Controle") {
             throw new Error("Este arquivo não pertence ao Controle de Consumo.");
         }
+        if (pacote.projeto) {
+            const projetoAtual = new URL(SUPABASE_URL).hostname;
+            if (String(pacote.projeto).toLowerCase() !== projetoAtual.toLowerCase()) {
+                throw new Error("Este backup pertence a outro projeto do banco de dados.");
+            }
+        }
         const versao = Number(pacote.versao || 0);
         if (![2, 3].includes(versao)) {
             throw new Error("Versão de backup não suportada.");
