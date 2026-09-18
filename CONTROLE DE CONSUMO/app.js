@@ -68,12 +68,9 @@
             }
 
             const { data: autorizado, error: erroAutorizacao } = await window.supabaseClient
-                .from("usuarios_autorizados")
-                .select("user_id")
-                .eq("user_id", data.session.user.id)
-                .maybeSingle();
+                .rpc("usuario_autorizado_atual");
 
-            if (erroAutorizacao || !autorizado) {
+            if (erroAutorizacao || autorizado !== true) {
                 console.warn("Acesso bloqueado: usuário não autorizado.", erroAutorizacao || "UUID fora da lista autorizada");
                 await window.supabaseClient.auth.signOut().catch(() => {});
                 location.replace("login.html");
