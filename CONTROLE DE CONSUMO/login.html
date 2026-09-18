@@ -121,6 +121,21 @@
                     return;
                 }
 
+                const { data: autorizado, error: erroAutorizacao } = await window.supabaseClient
+                    .from("usuarios_autorizados")
+                    .select("user_id")
+                    .eq("user_id", data.session.user.id)
+                    .maybeSingle();
+
+                if (erroAutorizacao || !autorizado) {
+                    console.warn("Login recusado: conta não autorizada.", erroAutorizacao || "UUID fora da lista autorizada");
+                    await window.supabaseClient.auth.signOut().catch(() => {});
+                    alert("Esta conta não está autorizada a acessar o sistema.");
+                    botao.disabled = false;
+                    botao.innerText = textoOriginal;
+                    return;
+                }
+
                 document.querySelector(".pagina-login").classList.add("saindo-login");
                 setTimeout(function () {
                     window.location.href = "dashboard.html";
