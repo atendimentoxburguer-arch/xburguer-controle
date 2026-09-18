@@ -46,10 +46,14 @@
             const swUrl = new URL("../service-worker.js", window.location.href);
             const swScope = new URL("../", window.location.href).pathname;
 
-            navigator.serviceWorker.register(swUrl.href, { scope: swScope })
-                .catch(function (erro) {
-                    console.error("Não foi possível registrar o aplicativo PWA:", erro);
-                });
+            navigator.serviceWorker.register(swUrl.href, {
+                scope: swScope,
+                updateViaCache: "none"
+            }).then(function (registro) {
+                return registro.update().catch(() => {});
+            }).catch(function (erro) {
+                console.error("Não foi possível registrar o aplicativo PWA:", erro);
+            });
         });
     }
 
