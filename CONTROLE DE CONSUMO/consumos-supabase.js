@@ -546,6 +546,9 @@
                     <td style="text-align:left;color:#666;font-size:13px;">${escaparHtml(formatarDataHoraTela(c.data_hora))}</td>
                     <td>
                         <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
+                            <button type="button" class="btn-editar-consumo" aria-label="Editar consumo"
+                                onclick='abrirModalEdicaoConsumo(${idSeguro})' title="Editar"
+                                style="border:none;background:none;cursor:pointer;font-size:16px;">✏️</button>
                             <button type="button" aria-label="Excluir" onclick='abrirModalExcluir(${idSeguro})' title="Excluir"
                                 style="border:none;background:none;cursor:pointer;font-size:16px;">🗑️</button>
                         </div>
