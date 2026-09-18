@@ -58,12 +58,29 @@
         if (isLogin) return;
         try {
             const { data, error } = await window.supabaseClient.auth.getSession();
-            if (error || !data.session) {
+            if (error || !data?.session?.user) {
                 location.replace("login.html");
+                return false;
             }
+
+            const { data: autorizado, error: erroAutorizacao } = await window.supabaseClient
+                .from("usuarios_autorizados")
+                .select("user_id")
+                .eq("user_id", data.session.user.id)
+                .maybeSingle();
+
+            if (erroAutorizacao || !autorizado) {
+                console.warn("Acesso bloqueado: usuário não autorizado.", erroAutorizacao || "UUID fora da lista autorizada");
+                await window.supabaseClient.auth.signOut().catch(() => {});
+                location.replace("login.html");
+                return false;
+            }
+
+            return true;
         } catch (erro) {
-            console.error("Falha ao verificar sessão:", erro);
+            console.error("Falha ao verificar sessão/autorização:", erro);
             location.replace("login.html");
+            return false;
         }
     }
 
