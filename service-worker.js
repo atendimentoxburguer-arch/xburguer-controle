@@ -16,7 +16,6 @@ const PRECACHE = [
   "./CONTROLE%20DE%20CONSUMO/consumos-edicao.js",
   "./CONTROLE%20DE%20CONSUMO/consumos.html",
   "./CONTROLE%20DE%20CONSUMO/dashboard-supabase.js",
-  "./CONTROLE%20DE%20CONSUMO/dashboard-startup-guard.js",
   "./CONTROLE%20DE%20CONSUMO/dashboard.html",
   "./CONTROLE%20DE%20CONSUMO/data-protection-v3.js",
   "./CONTROLE%20DE%20CONSUMO/data-protection-v3.css",
