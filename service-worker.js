@@ -1,4 +1,4 @@
-const CACHE_NAME = "xburguer-pwa-v4.6.1";
+const CACHE_NAME = "xburguer-pwa-v4.7.0";
 const APP_PATH = "/xburguer-controle/";
 const PRECACHE = [
   "./",
