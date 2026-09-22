@@ -4059,3 +4059,722 @@ textarea:focus-visible {
         box-sizing: border-box !important;
     }
 }
+
+
+/* ============================================================
+   X-BURGUER 4.7 - REFINO VISUAL / UX
+   Camada visual não destrutiva: mantém regras de negócio,
+   estrutura de dados e comportamento funcional intactos.
+   ============================================================ */
+
+:root {
+    --x-vermelho: #7a0b0b;
+    --x-vermelho-2: #9e1717;
+    --x-vermelho-escuro: #520606;
+    --x-dourado: #d9a92e;
+    --x-dourado-claro: #f7e8b0;
+    --x-fundo: #f5f7fa;
+    --x-superficie: #ffffff;
+    --x-texto: #20242a;
+    --x-texto-2: #69717c;
+    --x-borda: #e6e9ee;
+    --x-sombra: 0 10px 30px rgba(31, 35, 41, .07);
+    --x-sombra-forte: 0 18px 45px rgba(31, 35, 41, .12);
+    --x-raio: 18px;
+    --x-raio-pequeno: 12px;
+}
+
+/* ---------- base / leitura ---------- */
+body.corpo-dashboard {
+    background:
+        radial-gradient(circle at 90% 0%, rgba(122, 11, 11, .055), transparent 28%),
+        var(--x-fundo) !important;
+    color: var(--x-texto);
+}
+
+.conteudo-principal {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.58), rgba(245,247,250,.96)) !important;
+}
+
+.dashboard-container,
+.relatorios-container {
+    position: relative;
+}
+
+/* ---------- menu lateral ---------- */
+.sidebar {
+    background:
+        linear-gradient(180deg, #7f0c0c 0%, #700909 52%, #5e0707 100%) !important;
+    box-shadow: 8px 0 28px rgba(60, 4, 4, .14);
+}
+
+.sidebar-topo {
+    background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,0)) !important;
+}
+
+.logo-sidebar {
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,.10),
+        0 8px 18px rgba(0,0,0,.18);
+}
+
+.logo-titulo {
+    letter-spacing: .8px !important;
+}
+
+.sidebar-menu {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.18) transparent;
+}
+
+.menu-item {
+    margin: 3px 9px !important;
+    width: calc(100% - 18px) !important;
+    border: 1px solid transparent;
+    border-radius: 13px !important;
+    transition:
+        background-color .18s ease,
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+.menu-item:hover {
+    background: rgba(255,255,255,.085) !important;
+    border-color: rgba(255,255,255,.08);
+    transform: translateX(2px);
+}
+
+.menu-item.ativo {
+    background: linear-gradient(90deg, rgba(255,255,255,.14), rgba(255,255,255,.055)) !important;
+    border-color: rgba(255,255,255,.10);
+    box-shadow: inset 3px 0 0 var(--x-dourado);
+}
+
+.menu-item.ativo .ponto-ativo {
+    width: 7px !important;
+    height: 7px !important;
+    background: var(--x-dourado) !important;
+    box-shadow: 0 0 0 4px rgba(217,169,46,.10);
+}
+
+.sidebar-sair {
+    background: rgba(0,0,0,.06);
+}
+
+.sidebar-sair .menu-item:hover {
+    background: rgba(255,255,255,.10) !important;
+}
+
+/* ---------- topo ---------- */
+.topbar {
+    background: rgba(255,255,255,.92) !important;
+    border-bottom: 1px solid rgba(222,226,232,.88) !important;
+    box-shadow: 0 4px 18px rgba(31,35,41,.045) !important;
+    backdrop-filter: blur(12px);
+}
+
+.topbar-titulo {
+    font-size: 15px !important;
+    letter-spacing: .35px;
+}
+
+.topbar-sub {
+    color: #8a919a !important;
+}
+
+.avatar-admin {
+    background: linear-gradient(145deg, var(--x-vermelho-2), var(--x-vermelho)) !important;
+    box-shadow: 0 7px 18px rgba(122,11,11,.22);
+}
+
+/* ---------- títulos e cabeçalhos ---------- */
+.dashboard-cabecalho h1,
+.topo-acoes h1,
+.config-cabecalho h1 {
+    color: #1e2329 !important;
+    letter-spacing: -.35px;
+}
+
+.dashboard-cabecalho h1::after,
+.topo-acoes h1::after,
+.config-cabecalho h1::after {
+    content: "";
+    display: block;
+    width: 34px;
+    height: 3px;
+    margin-top: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--x-vermelho), var(--x-dourado));
+}
+
+/* ---------- cards de resumo ---------- */
+.card-resumo,
+.card-stat {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(226,230,235,.88) !important;
+    border-radius: var(--x-raio) !important;
+    box-shadow: var(--x-sombra) !important;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.card-resumo::before,
+.card-stat::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--x-vermelho), var(--x-dourado));
+    opacity: .9;
+}
+
+.card-resumo:hover,
+.card-stat:hover {
+    transform: translateY(-3px);
+    border-color: rgba(122,11,11,.14) !important;
+    box-shadow: var(--x-sombra-forte) !important;
+}
+
+.card-resumo .icone-caixa {
+    border: 1px solid rgba(0,0,0,.045);
+    box-shadow: 0 5px 12px rgba(0,0,0,.045);
+}
+
+.card-valor {
+    letter-spacing: -.7px;
+}
+
+.card-rodape,
+.card-stat-title {
+    color: var(--x-texto-2) !important;
+}
+
+/* ---------- painéis ---------- */
+.painel-bloco,
+.painel-tabela,
+.tabela-relatorio-box,
+.filtros-box,
+.aba-card {
+    border: 1px solid rgba(226,230,235,.92) !important;
+    border-radius: var(--x-raio) !important;
+    box-shadow: var(--x-sombra) !important;
+}
+
+.painel-bloco,
+.painel-tabela,
+.tabela-relatorio-box {
+    background: rgba(255,255,255,.97) !important;
+}
+
+.painel-cabecalho {
+    border-bottom: 1px solid #f0f2f5;
+    padding-bottom: 12px;
+}
+
+.painel-cabecalho h3 {
+    color: #252a31 !important;
+    letter-spacing: -.15px;
+}
+
+.link-ver-todos {
+    padding: 6px 9px;
+    border-radius: 8px;
+    transition: background-color .18s ease, color .18s ease;
+}
+
+.link-ver-todos:hover {
+    background: #fff1ef;
+    color: var(--x-vermelho) !important;
+}
+
+/* ---------- registros do dashboard ---------- */
+.item-registro {
+    border-bottom-color: #edf0f3 !important;
+    padding: 10px 7px 13px !important;
+    margin: 0 -7px;
+    border-radius: 11px;
+    transition: background-color .16s ease;
+}
+
+.item-registro:hover {
+    background: #fafbfc;
+}
+
+.avatar-letra {
+    box-shadow: 0 5px 12px rgba(122,11,11,.16);
+}
+
+/* ---------- gráfico ---------- */
+.grafico-simulado {
+    border-color: #e3e6ea !important;
+}
+
+.linha-referencia {
+    background: #edf0f3 !important;
+}
+
+.barra-grafico {
+    box-shadow: 0 5px 12px rgba(122,11,11,.13);
+    transition:
+        height .35s cubic-bezier(.2,.8,.2,1),
+        transform .18s ease,
+        filter .18s ease,
+        opacity .18s ease;
+}
+
+.coluna-grafico:hover .barra-grafico {
+    transform: scaleX(1.06);
+    filter: brightness(1.06);
+    opacity: 1;
+}
+
+/* ---------- botões ---------- */
+.btn-novo-funcionario,
+.btn-visualizar,
+.btn-imprimir,
+.btn-entrar,
+.btn-config-secundario,
+.btn-salvar {
+    border-radius: 12px !important;
+    font-weight: 800 !important;
+    transition:
+        transform .16s ease,
+        box-shadow .16s ease,
+        background-color .16s ease,
+        filter .16s ease;
+}
+
+.btn-novo-funcionario,
+.btn-visualizar,
+.btn-entrar,
+.btn-salvar {
+    background: linear-gradient(135deg, var(--x-vermelho-2), var(--x-vermelho)) !important;
+    box-shadow: 0 7px 16px rgba(122,11,11,.17);
+}
+
+.btn-novo-funcionario:hover,
+.btn-visualizar:hover,
+.btn-entrar:hover,
+.btn-salvar:hover {
+    filter: brightness(1.07);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(122,11,11,.22);
+}
+
+.btn-novo-funcionario:active,
+.btn-visualizar:active,
+.btn-entrar:active,
+.btn-salvar:active,
+.btn-config-secundario:active,
+.btn-imprimir:active {
+    transform: translateY(1px) scale(.99);
+}
+
+.btn-config-secundario,
+.btn-imprimir {
+    background: #fff !important;
+    border: 1px solid #dddfe4 !important;
+    color: var(--x-vermelho) !important;
+    box-shadow: 0 4px 10px rgba(31,35,41,.05);
+}
+
+.btn-config-secundario:hover,
+.btn-imprimir:hover {
+    background: #fff9f8 !important;
+    border-color: #d8b0aa !important;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 17px rgba(31,35,41,.08);
+}
+
+button:disabled {
+    cursor: wait !important;
+    opacity: .68 !important;
+    transform: none !important;
+}
+
+/* ---------- campos ---------- */
+.grupo-input input,
+.barra-pesquisa input,
+.grupo-input-modal input,
+.grupo-input-modal select,
+.grupo-input-modal textarea,
+.filtro-grupo input,
+.filtro-grupo select,
+.barra-filtros-lista select {
+    border-color: #dfe3e8 !important;
+    border-radius: 12px !important;
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background-color .18s ease;
+}
+
+.grupo-input input:focus,
+.barra-pesquisa input:focus,
+.grupo-input-modal input:focus,
+.grupo-input-modal select:focus,
+.grupo-input-modal textarea:focus,
+.filtro-grupo input:focus,
+.filtro-grupo select:focus,
+.barra-filtros-lista select:focus {
+    border-color: #a94343 !important;
+    box-shadow: 0 0 0 4px rgba(122,11,11,.09) !important;
+    outline: none !important;
+    background: #fff !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid rgba(217,169,46,.55) !important;
+    outline-offset: 2px;
+}
+
+/* ---------- tabelas ---------- */
+.painel-tabela,
+.tabela-relatorio-box {
+    overflow: hidden;
+}
+
+.tabela-dados th {
+    background: linear-gradient(180deg, #fff, #f7f8fa) !important;
+    color: #626a74 !important;
+    border-bottom: 1px solid #e4e7eb !important;
+    text-transform: uppercase;
+    letter-spacing: .65px;
+}
+
+.tabela-dados td {
+    color: #353b43 !important;
+    border-bottom-color: #eef0f3 !important;
+}
+
+.tabela-dados tbody tr {
+    transition: background-color .16s ease;
+}
+
+.tabela-dados tbody tr:hover {
+    background: #fffaf9;
+}
+
+.tabela-dados tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.tabela-dados button {
+    border-radius: 10px !important;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.tabela-dados button:hover {
+    transform: translateY(-1px);
+}
+
+/* ---------- pesquisa ---------- */
+.barra-pesquisa {
+    background: linear-gradient(180deg, #fff, #fcfcfd) !important;
+}
+
+.barra-pesquisa input::placeholder {
+    color: #9aa1aa;
+}
+
+/* ---------- relatórios ---------- */
+.abas-relatorio {
+    gap: 12px !important;
+}
+
+.aba-card {
+    position: relative;
+    background: #fff !important;
+    cursor: pointer;
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease,
+        background-color .18s ease;
+}
+
+.aba-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(122,11,11,.18) !important;
+    box-shadow: 0 12px 26px rgba(31,35,41,.09) !important;
+}
+
+.aba-card.ativa {
+    background: linear-gradient(135deg, #fffafa, #fff) !important;
+    border-color: rgba(122,11,11,.30) !important;
+    box-shadow: 0 10px 24px rgba(122,11,11,.10) !important;
+}
+
+.aba-card.ativa::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 0;
+    height: 3px;
+    border-radius: 999px 999px 0 0;
+    background: linear-gradient(90deg, var(--x-vermelho), var(--x-dourado));
+}
+
+.filtros-box {
+    background: rgba(255,255,255,.98) !important;
+}
+
+.card-stat {
+    min-height: 112px;
+}
+
+.card-stat-value {
+    letter-spacing: -.5px;
+}
+
+/* ---------- configurações / proteção ---------- */
+.config-card {
+    background: rgba(255,255,255,.98) !important;
+}
+
+.config-status-item,
+.protecao-status-card,
+.config-destaque,
+.config-info-menor > div {
+    border-color: #e8ebef !important;
+}
+
+.config-status-item {
+    transition: background-color .16s ease, transform .16s ease;
+}
+
+.config-status-item:hover {
+    background: #fffafa;
+    transform: translateX(2px);
+}
+
+.protecao-status-card {
+    background: linear-gradient(180deg, #fff, #fbfcfd) !important;
+}
+
+.config-aviso,
+.config-aviso-suave {
+    border-radius: 12px !important;
+}
+
+/* ---------- modais ---------- */
+.modal-fundo {
+    background: rgba(20, 22, 26, .58) !important;
+    backdrop-filter: blur(5px);
+}
+
+.modal-caixa {
+    border: 1px solid rgba(255,255,255,.82);
+    border-radius: 20px !important;
+    box-shadow: 0 28px 70px rgba(0,0,0,.24) !important;
+    animation: xburguerModalEntrada .22s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.modal-topo h3 {
+    letter-spacing: -.25px;
+}
+
+.modal-botoes button {
+    border-radius: 11px !important;
+}
+
+/* ---------- login ---------- */
+.pagina-login {
+    background: #7a0b0b;
+}
+
+.lado-esquerdo {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(217,169,46,.14), transparent 24%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,.07), transparent 28%),
+        linear-gradient(145deg, #8a0d0d, #610707) !important;
+}
+
+.lado-esquerdo::before,
+.lado-esquerdo::after {
+    content: "";
+    position: absolute;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.lado-esquerdo::before {
+    width: 420px;
+    height: 420px;
+    left: -170px;
+    top: -150px;
+}
+
+.lado-esquerdo::after {
+    width: 320px;
+    height: 320px;
+    right: -150px;
+    bottom: -140px;
+}
+
+.conteudo-esquerda {
+    position: relative;
+    z-index: 1;
+}
+
+.imagem-logo {
+    border: 5px solid rgba(255,255,255,.86);
+    box-shadow:
+        0 0 0 7px rgba(217,169,46,.20),
+        0 18px 42px rgba(0,0,0,.28);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.imagem-logo:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow:
+        0 0 0 8px rgba(217,169,46,.24),
+        0 24px 48px rgba(0,0,0,.32);
+}
+
+.texto-sistema {
+    letter-spacing: .2px;
+}
+
+.lado-direito {
+    background:
+        radial-gradient(circle at 100% 0%, rgba(122,11,11,.045), transparent 25%),
+        #fff !important;
+}
+
+.caixa-login {
+    animation: xburguerLoginEntrada .35s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.caixa-login h2 {
+    font-size: 32px;
+    letter-spacing: -.7px;
+}
+
+.caixa-login .subtitulo {
+    color: #7a828c;
+}
+
+.btn-entrar {
+    min-height: 50px;
+    letter-spacing: .25px;
+}
+
+.rodape-login {
+    color: #9aa1aa !important;
+}
+
+/* ---------- pequenos estados de interação ---------- */
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+body.corpo-dashboard .conteudo-principal {
+    animation: xburguerConteudoEntrada .25s ease both;
+}
+
+@keyframes xburguerConteudoEntrada {
+    from { opacity: .72; }
+    to { opacity: 1; }
+}
+
+@keyframes xburguerModalEntrada {
+    from { opacity: 0; transform: translateY(8px) scale(.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes xburguerLoginEntrada {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- mobile: preservar estabilidade e dar acabamento ---------- */
+@media (max-width: 700px) {
+    .conteudo-principal {
+        background:
+            linear-gradient(180deg, #f7f8fa 0%, #f4f6f9 100%) !important;
+    }
+
+    .topbar {
+        background: rgba(255,255,255,.96) !important;
+        box-shadow: 0 5px 18px rgba(31,35,41,.07) !important;
+        backdrop-filter: blur(12px);
+    }
+
+    .btn-menu-mobile {
+        border-radius: 12px !important;
+        box-shadow: 0 4px 12px rgba(31,35,41,.06);
+    }
+
+    .cards-grid,
+    .cards-relatorio-grid {
+        gap: 12px !important;
+    }
+
+    .card-resumo,
+    .card-stat {
+        border-radius: 16px !important;
+    }
+
+    .card-resumo:hover,
+    .card-stat:hover,
+    .aba-card:hover {
+        transform: none !important;
+        box-shadow: var(--x-sombra) !important;
+    }
+
+    .painel-bloco,
+    .painel-tabela,
+    .tabela-relatorio-box,
+    .filtros-box,
+    .config-card,
+    .aba-card {
+        border-radius: 16px !important;
+    }
+
+    .menu-item {
+        margin-left: 5px !important;
+        margin-right: 5px !important;
+        width: calc(100% - 10px) !important;
+    }
+
+    .sidebar {
+        box-shadow: 18px 0 42px rgba(0,0,0,.28) !important;
+    }
+
+    .modal-caixa {
+        animation: xburguerModalEntradaMobile .22s cubic-bezier(.2,.8,.2,1) both;
+    }
+}
+
+@keyframes xburguerModalEntradaMobile {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+    }
+}
