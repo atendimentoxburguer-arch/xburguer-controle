@@ -44,6 +44,8 @@ Somente a lista autorizada atual pode acessar clientes; `anon` é bloqueado. Esc
 
 Pagamentos e cancelamentos são serializados por cliente. Backups e recuperações coordenam um bloqueio com as gravações para preservar a consistência. Os gatilhos de auditoria existentes também registram inclusões e alterações de clientes e notinhas no banco, independentemente do histórico da tela.
 
+As funções expostas da área de clientes executam com as permissões do chamador e verificam a autorização. As implementações privilegiadas ficam no schema privado, com `search_path` fixado e permissões explícitas de execução. Os testes verificam esse isolamento, além do acesso aos dados.
+
 ## Validação
 
 ```sh

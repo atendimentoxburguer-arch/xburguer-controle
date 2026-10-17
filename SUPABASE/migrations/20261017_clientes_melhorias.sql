@@ -369,4 +369,78 @@ create trigger trg_clientes_auditoria after insert or update on public.clientes_
     for each row execute function private.proteger_dados_operacionais();
 create trigger trg_movimentos_clientes_auditoria after insert or update on public.movimentos_clientes
     for each row execute function private.proteger_dados_operacionais();
+
+-- Somente wrappers SECURITY INVOKER ficam expostos no schema public.
+alter function public.salvar_cliente_conta(jsonb) set schema private;
+alter function private.salvar_cliente_conta(jsonb) rename to salvar_cliente_conta_api_impl;
+revoke all on function private.salvar_cliente_conta_api_impl(jsonb) from public, anon;
+grant execute on function private.salvar_cliente_conta_api_impl(jsonb) to authenticated;
+create function public.salvar_cliente_conta(p_dados jsonb) returns uuid
+language plpgsql security invoker set search_path = '' as $$
+begin
+    if auth.uid() is null or public.usuario_autorizado_atual() is distinct from true then
+        raise exception 'Usuário não autorizado.' using errcode = '42501';
+    end if;
+    return private.salvar_cliente_conta_api_impl(p_dados);
+end $$;
+revoke all on function public.salvar_cliente_conta(jsonb) from public, anon;
+grant execute on function public.salvar_cliente_conta(jsonb) to authenticated;
+alter function public.obter_contas_clientes() set schema private;
+alter function private.obter_contas_clientes() rename to obter_contas_clientes_api_impl;
+revoke all on function private.obter_contas_clientes_api_impl() from public, anon;
+grant execute on function private.obter_contas_clientes_api_impl() to authenticated;
+create function public.obter_contas_clientes() returns jsonb
+language plpgsql stable security invoker set search_path = '' as $$
+begin
+    if auth.uid() is null or public.usuario_autorizado_atual() is distinct from true then
+        raise exception 'Usuário não autorizado.' using errcode = '42501';
+    end if;
+    return private.obter_contas_clientes_api_impl();
+end $$;
+revoke all on function public.obter_contas_clientes() from public, anon;
+grant execute on function public.obter_contas_clientes() to authenticated;
+alter function public.registrar_movimento_cliente(jsonb) set schema private;
+alter function private.registrar_movimento_cliente(jsonb) rename to registrar_movimento_cliente_api_impl;
+revoke all on function private.registrar_movimento_cliente_api_impl(jsonb) from public, anon;
+grant execute on function private.registrar_movimento_cliente_api_impl(jsonb) to authenticated;
+create function public.registrar_movimento_cliente(p_dados jsonb) returns uuid
+language plpgsql security invoker set search_path = '' as $$
+begin
+    if auth.uid() is null or public.usuario_autorizado_atual() is distinct from true then
+        raise exception 'Usuário não autorizado.' using errcode = '42501';
+    end if;
+    return private.registrar_movimento_cliente_api_impl(p_dados);
+end $$;
+revoke all on function public.registrar_movimento_cliente(jsonb) from public, anon;
+grant execute on function public.registrar_movimento_cliente(jsonb) to authenticated;
+alter function public.cancelar_movimento_cliente(uuid,text) set schema private;
+alter function private.cancelar_movimento_cliente(uuid,text) rename to cancelar_movimento_cliente_api_impl;
+revoke all on function private.cancelar_movimento_cliente_api_impl(uuid,text) from public, anon;
+grant execute on function private.cancelar_movimento_cliente_api_impl(uuid,text) to authenticated;
+create function public.cancelar_movimento_cliente(p_id uuid, p_motivo text) returns uuid
+language plpgsql security invoker set search_path = '' as $$
+begin
+    if auth.uid() is null or public.usuario_autorizado_atual() is distinct from true then
+        raise exception 'Usuário não autorizado.' using errcode = '42501';
+    end if;
+    return private.cancelar_movimento_cliente_api_impl(p_id, p_motivo);
+end $$;
+revoke all on function public.cancelar_movimento_cliente(uuid,text) from public, anon;
+grant execute on function public.cancelar_movimento_cliente(uuid,text) to authenticated;
+alter function public.restaurar_contas_clientes(jsonb) set schema private;
+alter function private.restaurar_contas_clientes(jsonb) rename to restaurar_contas_clientes_api_impl;
+revoke all on function private.restaurar_contas_clientes_api_impl(jsonb) from public, anon;
+grant execute on function private.restaurar_contas_clientes_api_impl(jsonb) to authenticated;
+create function public.restaurar_contas_clientes(p_dados jsonb) returns jsonb
+language plpgsql security invoker set search_path = '' as $$
+begin
+    if auth.uid() is null or public.usuario_autorizado_atual() is distinct from true then
+        raise exception 'Usuário não autorizado.' using errcode = '42501';
+    end if;
+    return private.restaurar_contas_clientes_api_impl(p_dados);
+end $$;
+revoke all on function public.restaurar_contas_clientes(jsonb) from public, anon;
+grant execute on function public.restaurar_contas_clientes(jsonb) to authenticated;
+
+notify pgrst, 'reload schema';
 commit;

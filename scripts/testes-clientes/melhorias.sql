@@ -1,6 +1,12 @@
 -- Somente no banco descartável preparado pelos testes.
 do $$ begin
     if current_setting('xburguer.testes_clientes',true) is distinct from 'ativo' then raise exception 'Banco de testes não preparado.'; end if;
+    if exists(select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('salvar_cliente_conta','obter_contas_clientes','registrar_movimento_cliente','cancelar_movimento_cliente','restaurar_contas_clientes','restaurar_backup_seguro') and p.prosecdef) then
+        raise exception 'Uma rotina privilegiada ficou exposta no schema public.';
+    end if;
+    if exists(select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname like '%clientes%api_impl' and has_function_privilege('anon',p.oid,'EXECUTE')) then
+        raise exception 'Anon recebeu acesso a uma implementação privada.';
+    end if;
 end $$;
 begin;
 set request.jwt.claim.sub = '11111111-1111-1111-1111-111111111111';
