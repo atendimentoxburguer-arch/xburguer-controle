@@ -47,6 +47,12 @@
 .clientes-ajuda { font-size:13px; color:#666; line-height:1.5; margin:0; }
 .clientes-print { display:none; }
 @media (max-width:700px) {
+    .clientes-scroll .tabela-dados tbody td:last-child button.clientes-btn {
+        width:auto !important; min-width:64px !important; height:auto !important;
+        min-height:40px !important; max-width:100% !important; padding:8px 10px !important;
+        font-size:13px !important; line-height:1.3 !important; white-space:nowrap;
+        border:1px solid #d9c5c5 !important; background:#fff !important; color:#7a0b0b !important;
+    }
     .clientes-resumo { grid-template-columns:1fr; gap:10px; }
     .clientes-card { padding:16px; }
     .clientes-card strong { font-size:23px; }
