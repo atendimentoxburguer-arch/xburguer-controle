@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "4.8.0";
+    window.XBURGUER_VERSAO = "4.8.1";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     
@@ -611,6 +611,7 @@
     }
 
     function fecharModaisResiduais() {
+        document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
         document.querySelectorAll(".modal-fundo").forEach(function (modal) {
             modal.style.display = "none";
         });

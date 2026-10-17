@@ -67,6 +67,9 @@
     }
 
     async function montarArquivoBackup(registro) {
+        if (!Array.isArray(registro.conteudo?.dados?.clientes_conta) || !Array.isArray(registro.conteudo?.dados?.movimentos_clientes)) {
+            throw new Error("O banco ainda não inclui clientes no backup completo. Aplique a atualização de melhorias de Clientes e Notinhas antes de baixar o backup desta versão.");
+        }
         const base = {
             ...registro.conteudo,
             backup_id: registro.id,
@@ -100,7 +103,9 @@
             `${Number(totais.produtos || 0)} produtos`,
             `${Number(totais.consumos || 0)} consumos`,
             `${Number(totais.faltas || 0)} faltas`,
-            `${Number(totais.historico_acoes || 0)} ações`
+            `${Number(totais.historico_acoes || 0)} ações`,
+            `${Number(totais.clientes_conta || 0)} clientes`,
+            `${Number(totais.movimentos_clientes || 0)} lançamentos de clientes`
         ].join(" • ");
     }
 
@@ -249,6 +254,11 @@
                 throw new Error(`O backup não contém a tabela ${tabela}.`);
             }
         }
+        if ("clientes_conta" in pacote.dados || "movimentos_clientes" in pacote.dados) {
+            if (!Array.isArray(pacote.dados.clientes_conta) || !Array.isArray(pacote.dados.movimentos_clientes)) {
+                throw new Error("O backup deve conter clientes e movimentos juntos.");
+            }
+        }
     }
 
     async function validarIntegridadeBackup(pacote) {
@@ -267,7 +277,8 @@
             `${d.produtos.length} produto(s)`,
             `${d.consumos.length} consumo(s)`,
             `${d.faltas.length} falta(s)`,
-            `${d.historico_acoes.length} ação(ões)`
+            `${d.historico_acoes.length} ação(ões)`,
+            Array.isArray(d.clientes_conta) ? `${d.clientes_conta.length} cliente(s) e ${d.movimentos_clientes.length} lançamento(s) de clientes` : "Clientes não incluídos neste arquivo antigo"
         ].join(" • ");
     }
 
@@ -343,8 +354,10 @@
                     `${Number(resultado.funcionarios || 0)} funcionário(s), ` +
                     `${Number(resultado.produtos || 0)} produto(s), ` +
                     `${Number(resultado.consumos || 0)} consumo(s), ` +
-                    `${Number(resultado.faltas || 0)} falta(s) e ` +
-                    `${Number(resultado.historico_acoes || 0)} ação(ões) recuperada(s).`;
+                    `${Number(resultado.faltas || 0)} falta(s), ` +
+                    `${Number(resultado.historico_acoes || 0)} ação(ões), ` +
+                    `${Number(resultado.clientes_conta || 0)} cliente(s) e ` +
+                    `${Number(resultado.movimentos_clientes || 0)} lançamento(s) de clientes recuperado(s).`;
             }
             backupSelecionadoV3 = null;
             if (window.verificarSistema) await window.verificarSistema();

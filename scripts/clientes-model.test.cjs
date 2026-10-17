@@ -39,3 +39,15 @@ test('extratos não truncam ao passar de mil notinhas e escapam texto de cliente
     assert.equal(M.resumo(lista).saldo, 1001);
     assert.equal(M.escapar('<script>"&\''), '&lt;script&gt;&quot;&amp;&#39;');
 });
+
+test('listas grandes paginam sem alterar totais e a busca normaliza acentos', () => {
+    const lista = Array.from({ length: 1001 }, (_, i) => ({ ...movimento(String(i), 'notinha', '2026-01-01', 0.01), cliente_id: i % 2 ? 'a' : 'b' }));
+    const indice = M.indexar(lista);
+    assert.equal(indice.totais.get('a').saldo, 500);
+    assert.equal(indice.totais.get('b').saldo, 501);
+    assert.equal(M.paginar(lista, 1, 50).itens.length, 50);
+    assert.equal(M.paginar(lista, 999, 50).itens.length, 1);
+    assert.equal(M.paginar(lista, 999, 50).pagina, 21);
+    assert.deepEqual(M.paginar([], -1, 25), { itens: [], pagina: 1, paginas: 1, total: 0 });
+    assert.equal(M.normalizar('  João São José  '), 'joao sao jose');
+});

@@ -52,5 +52,21 @@
     function escapar(texto) {
         return String(texto ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
     }
-    return { centavos, valorCentavos, moeda, resumo, extrato, dataBR, escapar };
+    function normalizar(texto) {
+        return String(texto ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR").trim();
+    }
+    function paginar(lista, pagina, tamanho) {
+        const paginas = Math.max(1, Math.ceil(lista.length / tamanho));
+        const atual = Math.max(1, Math.min(pagina, paginas));
+        return { itens: lista.slice((atual - 1) * tamanho, atual * tamanho), pagina: atual, paginas, total: lista.length };
+    }
+    function indexar(movimentos) {
+        const porCliente = new Map();
+        for (const m of movimentos) {
+            if (!porCliente.has(m.cliente_id)) porCliente.set(m.cliente_id, []);
+            porCliente.get(m.cliente_id).push(m);
+        }
+        return { porCliente, totais: new Map([...porCliente].map(([id, lista]) => [id, resumo(lista)])) };
+    }
+    return { centavos, valorCentavos, moeda, resumo, extrato, dataBR, escapar, normalizar, paginar, indexar };
 });

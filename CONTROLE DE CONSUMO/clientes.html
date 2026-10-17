@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Clientes e Notinhas</title>
-    <link rel="stylesheet" href="style.css?v=4.8.0">
-    <link rel="stylesheet" href="clientes.css?v=4.8.0">
+    <link rel="stylesheet" href="style.css?v=4.8.1">
+    <link rel="stylesheet" href="clientes.css?v=4.8.1">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-    <script src="supabase-config.js?v=4.8.0"></script>
-    <script src="app.js?v=4.8.0"></script>
+    <script src="supabase-config.js?v=4.8.1"></script>
+    <script src="app.js?v=4.8.1"></script>
     <link rel="manifest" href="../manifest.webmanifest">
     <meta name="theme-color" content="#7a0b0b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -74,6 +74,7 @@
                     <div class="clientes-acoes">
                         <button type="button" class="clientes-btn" id="atualizar-clientes">Atualizar</button>
                         <button type="button" class="clientes-btn" id="backup-clientes" disabled>Baixar backup de clientes</button>
+                        <button type="button" class="clientes-btn" id="recuperar-clientes" disabled>Recuperar backup</button>
                         <button type="button" class="btn-novo-funcionario" id="novo-cliente" disabled>+ Novo cliente</button>
                     </div>
                 </div>
@@ -96,6 +97,7 @@
                         <tbody id="tabela-clientes"><tr><td colspan="5" class="tabela-vazia">Carregando...</td></tr></tbody>
                     </table></div>
                     <div class="tabela-rodape" id="contador-clientes">Aguardando dados</div>
+                    <div class="clientes-paginacao" aria-label="Páginas de clientes"><button type="button" class="clientes-btn" id="clientes-anterior">Anterior</button><span id="clientes-pagina" role="status"></span><button type="button" class="clientes-btn" id="clientes-proxima">Próxima</button></div>
                 </section>
                 <section id="extrato-cliente" class="clientes-extrato" aria-labelledby="titulo-extrato" hidden>
                     <div class="clientes-extrato-topo">
@@ -104,6 +106,7 @@
                             <button type="button" class="btn-novo-funcionario" id="nova-notinha">+ Notinha</button>
                             <button type="button" class="clientes-btn" id="novo-pagamento">Registrar pagamento</button>
                             <button type="button" class="clientes-btn" id="imprimir-extrato">Imprimir / PDF</button>
+                            <button type="button" class="clientes-btn" id="copiar-extrato">Copiar resumo</button>
                         </div>
                     </div>
                     <p id="detalhes-cliente"></p>
@@ -118,6 +121,7 @@
                         <thead><tr><th>DATA</th><th>LANÇAMENTO</th><th>VALOR</th><th>SALDO</th><th>AÇÕES</th></tr></thead>
                         <tbody id="tabela-extrato"></tbody>
                     </table></div>
+                    <div class="clientes-paginacao" aria-label="Páginas do extrato"><button type="button" class="clientes-btn" id="extrato-anterior">Anterior</button><span id="extrato-pagina" role="status"></span><button type="button" class="clientes-btn" id="extrato-proxima">Próxima</button></div>
                     <p class="clientes-ajuda">Os pagamentos abatem o saldo total do cliente. Os lançamentos cancelados continuam no histórico e não entram no saldo.</p>
                 </section>
             </div>
@@ -141,7 +145,7 @@
         <form id="form-movimento" class="clientes-form">
             <input type="hidden" id="movimento-tipo">
             <p id="movimento-cliente" class="clientes-ajuda"></p>
-            <label for="movimento-data">Data *<input id="movimento-data" type="date" required></label>
+            <label for="movimento-data">Data *<input id="movimento-data" type="date" min="1900-01-01" required></label>
             <label id="campo-mesa" for="movimento-mesa">Mesa<input id="movimento-mesa" maxlength="40" placeholder="Ex.: 12"></label>
             <label for="movimento-valor">Valor total (R$) *<input id="movimento-valor" inputmode="decimal" placeholder="0,00" required></label>
             <label id="campo-forma" for="movimento-forma" hidden>Forma de pagamento<select id="movimento-forma"><option>Pix</option><option>Dinheiro</option><option>Cartão</option><option>Outro</option></select></label>
@@ -162,8 +166,19 @@
             <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-cancelamento">Voltar</button><button type="submit" class="btn-excluir-modal">Confirmar cancelamento</button></div>
         </form>
     </dialog>
+    <dialog id="dialog-backup" class="clientes-modal" aria-labelledby="titulo-backup-clientes">
+        <h2 id="titulo-backup-clientes">Recuperar backup de clientes</h2>
+        <form id="form-backup" class="clientes-form">
+            <label for="arquivo-clientes">Arquivo JSON<input id="arquivo-clientes" type="file" accept=".json,application/json" required></label>
+            <p class="clientes-ajuda">Selecione um backup de clientes ou o backup completo do sistema. Serão recuperados apenas clientes e lançamentos ausentes; os registros atuais serão preservados. O banco criará cópias protegidas antes e depois.</p>
+            <p id="resumo-backup-clientes" role="status">Nenhum arquivo selecionado.</p>
+            <p id="erro-backup-clientes" class="clientes-form-erro" role="alert"></p>
+            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-backup">Cancelar</button><button type="submit" class="btn-salvar-modal" id="confirmar-recuperacao-clientes" disabled>Recuperar registros ausentes</button></div>
+        </form>
+    </dialog>
     <div id="impressao-clientes" class="clientes-print"></div>
-    <script src="clientes-model.js?v=4.8.0"></script>
-    <script src="clientes-supabase.js?v=4.8.0"></script>
+    <script src="clientes-model.js?v=4.8.1"></script>
+    <script src="clientes-backup.js?v=4.8.1"></script>
+    <script src="clientes-supabase.js?v=4.8.1"></script>
 </body>
 </html>

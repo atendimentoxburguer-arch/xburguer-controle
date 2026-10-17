@@ -1,9 +1,10 @@
-const CACHE_NAME = "xburguer-pwa-v4.8.0";
+const CACHE_NAME = "xburguer-pwa-v4.8.1";
 const APP_PATH = "/xburguer-controle/";
 const PRECACHE = [
   "./CONTROLE%20DE%20CONSUMO/clientes.html",
   "./CONTROLE%20DE%20CONSUMO/clientes.css",
   "./CONTROLE%20DE%20CONSUMO/clientes-model.js",
+  "./CONTROLE%20DE%20CONSUMO/clientes-backup.js",
   "./CONTROLE%20DE%20CONSUMO/clientes-supabase.js",
   "./",
   "./index.html",

@@ -42,7 +42,7 @@ do $$ begin
         raise exception 'TESTE_FALHOU: permitiu escrita direta';
     exception when insufficient_privilege then null; end;
 end $$;
-select public.salvar_cliente_conta('{"id":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","nome":"Cliente Teste","ativo":false}');
+select public.salvar_cliente_conta('{"id":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","nome":"Cliente Teste","ativo":false,"revisao":1}');
 do $$ begin
     begin
         perform public.registrar_movimento_cliente('{"id":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa3","cliente_id":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","tipo":"notinha","data":"2026-01-02","valor":10}');
