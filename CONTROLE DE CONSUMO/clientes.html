@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Clientes e Notinhas</title>
     <link rel="stylesheet" href="style.css?v=4.8.1">
-    <link rel="stylesheet" href="clientes.css?v=4.8.1&amp;visual=3">
+    <link rel="stylesheet" href="clientes.css?v=4.8.1&amp;visual=4">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="supabase-config.js?v=4.8.1"></script>
     <script src="app.js?v=4.8.1"></script>
@@ -72,7 +72,7 @@
                 <div class="dashboard-cabecalho clientes-cabecalho">
                     <div class="titulo-com-icone"><span class="icone-secao" aria-hidden="true">🧾</span><h1>Clientes e Notinhas</h1></div>
                     <div class="clientes-acoes">
-                        <button type="button" class="clientes-btn btn-config-secundario" id="atualizar-clientes">🔄 Atualizar</button>
+                        <span id="sincronia-clientes" class="clientes-sincronia" data-estado="carregando" title="Sincronização automática a cada 10 segundos.">Atualização automática</span>
                         <details class="clientes-ferramentas"><summary class="clientes-btn btn-config-secundario">💾 Backup e opções</summary><div class="clientes-menu-opcoes"><button type="button" class="clientes-btn btn-config-secundario" id="backup-clientes" disabled>💾 Baixar backup de clientes</button><button type="button" class="clientes-btn btn-config-secundario" id="recuperar-clientes" disabled>📂 Recuperar backup</button></div></details>
                         <button type="button" class="btn-novo-funcionario" id="novo-cliente" disabled>+ Novo cliente</button>
                     </div>
@@ -172,6 +172,6 @@
     <div id="impressao-clientes" class="clientes-print"></div>
     <script src="clientes-model.js?v=4.8.1"></script>
     <script src="clientes-backup.js?v=4.8.1"></script>
-    <script src="clientes-supabase.js?v=4.8.1&amp;visual=3"></script>
+    <script src="clientes-supabase.js?v=4.8.1&amp;visual=4"></script>
 </body>
 </html>

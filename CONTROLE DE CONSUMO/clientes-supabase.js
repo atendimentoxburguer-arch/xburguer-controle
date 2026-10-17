@@ -17,6 +17,13 @@
     let backupSelecionado = null;
     let analisandoBackup = false;
     let versaoArquivo = 0;
+    let cargaEmAndamento = null;
+    let controleCarga = null;
+    let assinaturaDados = "";
+    let sincronizacaoPendente = false;
+    let intervaloSincronizacao = null;
+    let tentativaAgendada = null;
+    let paginaAtiva = true;
 
     function hoje() {
         const d = new Date();
@@ -26,8 +33,28 @@
     const movimentosDoCliente = id => indice.porCliente.get(id) || [];
     const resumoDoCliente = id => indice.totais.get(id) || { notinhas: 0, pagamentos: 0, saldo: 0 };
     function status(texto, erro = false) {
-        $("status-clientes").textContent = texto;
+        if ($("status-clientes").textContent !== texto) $("status-clientes").textContent = texto;
         $("status-clientes").dataset.erro = String(erro);
+    }
+    function indicarSincronizacao(estado) {
+        const indicador = $("sincronia-clientes");
+        indicador.dataset.estado = estado;
+        indicador.textContent = estado === "offline" ? "Sem conexão" : estado === "erro" ? "Reconectando…" : "Atualização automática";
+        if (estado === "ok") indicador.title = `Última sincronização às ${new Date().toLocaleTimeString("pt-BR")} · Atualização automática a cada 10 segundos.`;
+    }
+    function deveAdiarSincronizacao() {
+        // Na reconexão, recuperar a tela mesmo com um formulário aberto, sem alterar os campos.
+        return !paginaAtiva || document.hidden || !navigator.onLine || salvando || (pronto && !!document.querySelector("dialog[open]"));
+    }
+    function sincronizarAutomaticamente() {
+        return carregar({ automatica: true });
+    }
+    function agendarSincronizacao() {
+        clearTimeout(tentativaAgendada);
+        tentativaAgendada = setTimeout(sincronizarAutomaticamente, 100);
+    }
+    function iniciarSincronizacao() {
+        if (intervaloSincronizacao === null) intervaloSincronizacao = setInterval(sincronizarAutomaticamente, 10000);
     }
     function mensagemErro(erro) {
         if (["PGRST202", "42P01", "42883"].includes(erro?.code)) {
@@ -35,9 +62,11 @@
         }
         return erro?.message || "Não foi possível conectar ao banco. Verifique a conexão e tente novamente.";
     }
-    async function rpc(nome, parametros) {
-        if (!window.supabaseClient) throw new Error("Conexão com o banco indisponível. Atualize a página.");
-        const { data, error } = await window.supabaseClient.rpc(nome, parametros);
+    async function rpc(nome, parametros, sinal) {
+        if (!window.supabaseClient) throw new Error("A conexão com o sistema está indisponível no momento.");
+        let consulta = window.supabaseClient.rpc(nome, parametros);
+        if (sinal && typeof consulta.abortSignal === "function") consulta = consulta.abortSignal(sinal);
+        const { data, error } = await consulta;
         if (error) throw error;
         return data;
     }
@@ -50,33 +79,74 @@
         document.querySelectorAll(".clientes-form button[type=submit]").forEach(b => b.disabled = !pronto || salvando || (b.id === "confirmar-recuperacao-clientes" && (!backupSelecionado || analisandoBackup)));
         document.querySelectorAll("[data-cliente], [data-editar], [data-cancelar]").forEach(b => b.disabled = !pronto || salvando);
     }
-    async function carregar() {
+    function carregar({ automatica = false } = {}) {
+        if (automatica && deveAdiarSincronizacao()) {
+            sincronizacaoPendente = true;
+            return Promise.resolve(false);
+        }
+        if (cargaEmAndamento) {
+            // Após uma gravação, aguardar a leitura anterior e buscar um snapshot novo.
+            return automatica ? cargaEmAndamento : cargaEmAndamento.then(() => carregar());
+        }
+        const tarefa = executarCarga(automatica).finally(() => {
+            if (cargaEmAndamento === tarefa) cargaEmAndamento = null;
+        });
+        cargaEmAndamento = tarefa;
+        return tarefa;
+    }
+    async function executarCarga(automatica) {
         const carga = ++versaoCarga;
+        const controle = new AbortController();
+        controleCarga = controle;
+        const limite = setTimeout(() => controle.abort(), 15000);
         try {
-            if (!window.supabaseClient) throw new Error("Conexão com o banco indisponível. Atualize a página.");
-            const { data, error } = await window.supabaseClient.auth.getSession();
-            if (error) throw error;
-            if (!data?.session) { location.replace("login.html"); return false; }
-            const snapshot = await rpc("obter_contas_clientes");
-            if (carga !== versaoCarga) return false;
+            if (!window.supabaseClient) throw new Error("A conexão com o sistema está indisponível no momento.");
+            const cancelamento = new Promise((_, rejeitar) => controle.signal.addEventListener("abort", () => rejeitar(new Error("A sincronização demorou mais que o esperado. O sistema tentará novamente automaticamente.")), { once: true }));
+            const leitura = (async () => {
+                const { data, error } = await window.supabaseClient.auth.getSession();
+                if (error) throw error;
+                if (controle.signal.aborted) return null;
+                if (!data?.session) { location.replace("login.html"); return null; }
+                return rpc("obter_contas_clientes", undefined, controle.signal);
+            })();
+            const snapshot = await Promise.race([leitura, cancelamento]);
+            if (carga !== versaoCarga || !snapshot) return false;
+            // Um formulário pode ter sido aberto enquanto a resposta estava a caminho.
+            if (automatica && deveAdiarSincronizacao()) { sincronizacaoPendente = true; return false; }
             if (!Array.isArray(snapshot?.clientes) || !Array.isArray(snapshot?.movimentos)) throw new Error("O banco retornou dados de clientes incompletos.");
             if (snapshot.versao !== 2) throw new Error("Aplique a atualização de melhorias de Clientes e Notinhas no Supabase antes de usar esta versão.");
-            dados = snapshot;
-            indice = M.indexar(dados.movimentos);
+            const assinatura = JSON.stringify(snapshot);
+            const mudou = assinatura !== assinaturaDados;
+            const recuperando = !pronto;
             pronto = true;
-            renderizar();
-            status("Dados atualizados. Os valores incluem todos os períodos e clientes ativos e inativos.");
+            if (mudou || recuperando) {
+                const foco = document.activeElement;
+                const atributo = ["data-cliente", "data-editar", "data-cancelar"].find(nome => foco?.hasAttribute(nome));
+                const idFocado = atributo && foco.getAttribute(atributo);
+                dados = snapshot;
+                assinaturaDados = assinatura;
+                indice = M.indexar(dados.movimentos);
+                renderizar();
+                if (atributo) document.querySelector(`[${atributo}="${CSS.escape(idFocado)}"]`)?.focus({ preventScroll: true });
+            } else atualizarBotoes();
+            sincronizacaoPendente = false;
+            indicarSincronizacao("ok");
+            if (!automatica || mudou || recuperando) status("Dados sincronizados automaticamente. Os valores incluem todos os períodos e clientes ativos e inativos.");
             return true;
         } catch (erro) {
             if (carga !== versaoCarga) return false;
             pronto = false;
             atualizarBotoes();
-            if (!dados.clientes.length) $("tabela-clientes").innerHTML = '<tr><td colspan="5" class="tabela-vazia">Não foi possível carregar os clientes. Clique em Atualizar para tentar novamente.</td></tr>';
-            status(mensagemErro(erro), true);
+            indicarSincronizacao(navigator.onLine ? "erro" : "offline");
+            if (!dados.clientes.length) $("tabela-clientes").innerHTML = '<tr><td colspan="5" class="tabela-vazia">Aguardando sincronização. O sistema tentará novamente automaticamente.</td></tr>';
+            status(`${mensagemErro(erro)} A atualização será retomada automaticamente.`, true);
             return false;
+        } finally {
+            clearTimeout(limite);
+            if (controleCarga === controle) controleCarga = null;
         }
     }
-    window.recarregarContasClientes = carregar;
+    window.recarregarContasClientes = sincronizarAutomaticamente;
 
     function renderizar() {
         const total = M.resumo(dados.movimentos);
@@ -193,8 +263,11 @@
     }
     async function salvar(form, erroId, dialogId, operacao, mensagem) {
         if (salvando) return;
-        if (!pronto || !navigator.onLine) { $(erroId).textContent = "Atualize a conexão e os dados antes de salvar."; return; }
+        if (!pronto || !navigator.onLine) { $(erroId).textContent = "Aguarde a sincronização automática para salvar. Os campos preenchidos serão preservados."; return; }
         salvando = true;
+        // Uma leitura iniciada antes desta gravação não pode repor valores antigos.
+        versaoCarga++;
+        controleCarga?.abort();
         $(erroId).textContent = "";
         form.querySelectorAll("button,input,select,textarea").forEach(b => b.disabled = true);
         atualizarBotoes();
@@ -202,13 +275,15 @@
             await operacao();
             $(dialogId).close();
             const atualizado = await carregar();
-            status(atualizado ? mensagem : `${mensagem} Não foi possível atualizar a tela. Clique em Atualizar.`, !atualizado);
+            status(atualizado ? mensagem : `${mensagem} A tela tentará sincronizar novamente automaticamente.`, !atualizado);
         } catch (erro) {
+            sincronizacaoPendente = true;
             $(erroId).textContent = mensagemErro(erro);
         } finally {
             salvando = false;
             form.querySelectorAll("button,input,select,textarea").forEach(b => b.disabled = false);
             atualizarBotoes();
+            if (sincronizacaoPendente) agendarSincronizacao();
         }
     }
     async function registrarHistorico(acao, detalhes) {
@@ -375,7 +450,6 @@
         });
 
         $("novo-cliente").addEventListener("click", () => abrirCliente());
-        $("atualizar-clientes").addEventListener("click", () => { if (!salvando) carregar(); });
         $("backup-clientes").addEventListener("click", baixarBackup);
         $("recuperar-clientes").addEventListener("click", abrirRecuperacao);
         $("arquivo-clientes").addEventListener("change", analisarBackup);
@@ -396,6 +470,7 @@
         $("form-cancelamento").addEventListener("submit", cancelarMovimento);
         document.querySelectorAll("[data-fechar]").forEach(b => b.addEventListener("click", () => { if (!salvando) $(b.dataset.fechar).close(); }));
         document.querySelectorAll("dialog").forEach(d => d.addEventListener("cancel", evento => { if (salvando) evento.preventDefault(); }));
+        document.querySelectorAll("dialog").forEach(d => d.addEventListener("close", () => { if (sincronizacaoPendente) agendarSincronizacao(); }));
         $("tabela-clientes").addEventListener("click", evento => {
             const b = evento.target.closest("button");
             if (!b || !pronto || salvando) return;
@@ -413,9 +488,25 @@
             const b = evento.target.closest("[data-cancelar]");
             if (b) abrirCancelamento(b.dataset.cancelar);
         });
+        iniciarSincronizacao();
         carregar();
     });
     window.addEventListener("beforeprint", montarImpressao);
-    window.addEventListener("offline", () => { pronto = false; atualizarBotoes(); status("Sem conexão. Os dados exibidos podem estar desatualizados; os lançamentos estão bloqueados até reconectar.", true); });
-    window.addEventListener("online", () => { if (!salvando) carregar(); });
+    window.addEventListener("offline", () => {
+        versaoCarga++; controleCarga?.abort(); pronto = false; sincronizacaoPendente = true;
+        atualizarBotoes(); indicarSincronizacao("offline");
+        status("Sem conexão. Os dados podem estar desatualizados. A sincronização e os lançamentos serão retomados automaticamente ao reconectar.", true);
+    });
+    window.addEventListener("online", agendarSincronizacao);
+    window.addEventListener("focus", agendarSincronizacao);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) agendarSincronizacao(); });
+    window.addEventListener("pagehide", () => {
+        paginaAtiva = false; versaoCarga++; controleCarga?.abort();
+        clearInterval(intervaloSincronizacao); intervaloSincronizacao = null;
+        clearTimeout(tentativaAgendada);
+    });
+    window.addEventListener("pageshow", evento => {
+        paginaAtiva = true;
+        if (evento.persisted) { iniciarSincronizacao(); agendarSincronizacao(); }
+    });
 })();
