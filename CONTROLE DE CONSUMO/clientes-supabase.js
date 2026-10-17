@@ -109,8 +109,8 @@
                 <span class="clientes-tag cliente-status">${c.ativo ? "Ativo" : "Inativo"}</span></div></div></td>
                 <td data-label="Notinhas">${M.moeda(r.notinhas)}</td><td data-label="Recebido">${M.moeda(r.pagamentos)}</td>
                 <td data-label="A receber" class="clientes-saldo">${M.moeda(r.saldo)}${r.saldo > 0 ? '<span class="clientes-detalhe clientes-tag clientes-pendente">Pendente</span>' : '<span class="clientes-detalhe clientes-tag clientes-em-dia">Em dia</span>'}</td>
-                <td><div class="clientes-botoes-linha"><button type="button" class="clientes-btn" data-cliente="${h(c.id)}" aria-controls="extrato-cliente" aria-expanded="${selecionado === c.id}" aria-label="Abrir extrato de ${h(c.nome)}">Ver extrato</button>
-                <button type="button" class="clientes-btn" data-editar="${h(c.id)}" aria-label="Editar cliente ${h(c.nome)}">Editar</button></div></td></tr>`;
+                <td><div class="clientes-botoes-linha"><button type="button" class="clientes-btn btn-config-secundario" data-cliente="${h(c.id)}" aria-controls="extrato-cliente" aria-expanded="${selecionado === c.id}" aria-label="Abrir extrato de ${h(c.nome)}">Ver extrato</button>
+                <button type="button" class="clientes-btn btn-config-secundario" data-editar="${h(c.id)}" aria-label="Editar cliente ${h(c.nome)}">Editar</button></div></td></tr>`;
         }).join("") || `<tr><td colspan="5" class="tabela-vazia"><div class="clientes-vazio"><strong>${dados.clientes.length ? "Nenhum cliente encontrado." : "Sua primeira conta começa aqui."}</strong><span>${dados.clientes.length ? "Tente outro nome ou ajuste os filtros da busca." : "Clique em Novo cliente para começar a organizar suas notinhas."}</span></div></td></tr>`;
         $("contador-clientes").textContent = `${clientes.length} cliente(s) encontrado(s)`;
         atualizarBotoes();
@@ -148,7 +148,7 @@
                 <td>${M.dataBR(m.data)}</td><td><span class="clientes-tipo clientes-tipo-${m.tipo === "pagamento" ? "pagamento" : "notinha"}">${m.tipo === "pagamento" ? "PAGAMENTO" : "NOTINHA"}</span><span class="clientes-descricao">${h(descricao(m))}</span>${m.observacao ? `<span class="clientes-detalhe">${h(m.observacao)}</span>` : ''}
                 ${m.cancelado_em ? `<span class="clientes-detalhe">Cancelado em ${dataCancelamento(m)}: ${h(m.motivo_cancelamento)}</span>` : ''}</td>
                 <td${m.tipo === "pagamento" && !m.cancelado_em ? ' class="clientes-valor-pagamento"' : ''}>${m.tipo === "pagamento" ? "− " : ""}${M.moeda(M.valorCentavos(m.valor))}${m.cancelado_em ? ' (cancelado)' : ''}</td>
-                <td>${M.moeda(m.saldo)}</td><td>${!m.cancelado_em ? `<button type="button" class="clientes-btn clientes-btn-perigo" data-cancelar="${h(m.id)}" aria-label="Cancelar ${h(m.tipo)} de ${M.dataBR(m.data)}">Cancelar</button>` : '—'}</td></tr>`).join("") ||
+                <td>${M.moeda(m.saldo)}</td><td>${!m.cancelado_em ? `<button type="button" class="clientes-btn clientes-btn-perigo btn-config-secundario" data-cancelar="${h(m.id)}" aria-label="Cancelar ${h(m.tipo)} de ${M.dataBR(m.data)}">Cancelar</button>` : '—'}</td></tr>`).join("") ||
                 '<tr><td colspan="5" class="tabela-vazia">Nenhum lançamento neste período.</td></tr>';
         } catch (erro) {
             $("periodo-extrato").textContent = erro.message;
