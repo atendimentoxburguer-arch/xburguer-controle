@@ -1,5 +1,5 @@
 (function () {
-    window.XBURGUER_VERSAO = "4.7.0";
+    window.XBURGUER_VERSAO = "4.8.0";
     const isLogin = /(^|\/)login\.html$/i.test(location.pathname);
 
     
@@ -528,6 +528,7 @@
     let atualizacaoAutomaticaEmAndamento = false;
 
     function existeInteracaoAtiva() {
+        if (document.querySelector("dialog[open]")) return true;
         const ativo = document.activeElement;
         if (ativo && ["INPUT", "SELECT", "TEXTAREA"].includes(ativo.tagName)) {
             return true;
@@ -542,6 +543,7 @@
         const pagina = (location.pathname.split("/").pop() || "").toLowerCase();
 
         const mapa = {
+            "clientes.html": () => window.recarregarContasClientes?.(),
             "funcionarios.html": () => window.recarregarFuncionariosDoBanco?.(),
             "produtos.html": () => window.recarregarProdutosDoBanco?.(),
             "consumos.html": () => window.recarregarConsumosDoBanco?.(),
