@@ -104,13 +104,14 @@
         $("clientes-proxima").disabled = p.pagina === p.paginas;
         $("tabela-clientes").innerHTML = p.itens.map(c => {
             const r = resumoDoCliente(c.id);
-            return `<tr><td><strong>${h(c.nome)}</strong><span class="clientes-detalhe">${h(c.telefone || "Sem telefone")}</span>
-                <span class="clientes-tag">${c.ativo ? "Ativo" : "Inativo"}</span></td>
-                <td>${M.moeda(r.notinhas)}</td><td>${M.moeda(r.pagamentos)}</td>
-                <td class="clientes-saldo">${M.moeda(r.saldo)}${r.saldo > 0 ? '<span class="clientes-detalhe clientes-tag clientes-pendente">Pendente</span>' : ''}</td>
-                <td><div class="clientes-botoes-linha"><button type="button" class="clientes-btn" data-cliente="${h(c.id)}" aria-label="Abrir extrato de ${h(c.nome)}">Extrato</button>
+            const iniciais = c.nome.trim().split(/\s+/).slice(0, 2).map(nome => Array.from(nome)[0] || "").join("").toLocaleUpperCase("pt-BR");
+            return `<tr${selecionado === c.id ? ' class="cliente-selecionado"' : ''}><td><div class="cliente-identidade"><span class="cliente-avatar" aria-hidden="true">${h(iniciais)}</span><div><strong>${h(c.nome)}</strong><span class="clientes-detalhe">${h(c.telefone || "Sem telefone")}</span>
+                <span class="clientes-tag cliente-status">${c.ativo ? "Ativo" : "Inativo"}</span></div></div></td>
+                <td data-label="Notinhas">${M.moeda(r.notinhas)}</td><td data-label="Recebido">${M.moeda(r.pagamentos)}</td>
+                <td data-label="A receber" class="clientes-saldo">${M.moeda(r.saldo)}${r.saldo > 0 ? '<span class="clientes-detalhe clientes-tag clientes-pendente">Pendente</span>' : '<span class="clientes-detalhe clientes-tag clientes-em-dia">Em dia</span>'}</td>
+                <td><div class="clientes-botoes-linha"><button type="button" class="clientes-btn" data-cliente="${h(c.id)}" aria-controls="extrato-cliente" aria-expanded="${selecionado === c.id}" aria-label="Abrir extrato de ${h(c.nome)}">Ver extrato</button>
                 <button type="button" class="clientes-btn" data-editar="${h(c.id)}" aria-label="Editar cliente ${h(c.nome)}">Editar</button></div></td></tr>`;
-        }).join("") || '<tr><td colspan="5" class="tabela-vazia">Nenhum cliente encontrado.</td></tr>';
+        }).join("") || `<tr><td colspan="5" class="tabela-vazia"><div class="clientes-vazio"><strong>${dados.clientes.length ? "Nenhum cliente encontrado." : "Sua primeira conta começa aqui."}</strong><span>${dados.clientes.length ? "Tente outro nome ou ajuste os filtros da busca." : "Clique em Novo cliente para começar a organizar suas notinhas."}</span></div></td></tr>`;
         $("contador-clientes").textContent = `${clientes.length} cliente(s) encontrado(s)`;
         atualizarBotoes();
     }
@@ -134,7 +135,7 @@
         if (!c) return;
         $("titulo-extrato").textContent = `Extrato · ${c.nome}`;
         $("detalhes-cliente").textContent = [c.telefone, c.observacao, !c.ativo ? "Cliente inativo" : ""].filter(Boolean).join(" · ");
-        $("saldo-cliente").textContent = `Saldo atual a pagar: ${M.moeda(resumoDoCliente(c.id).saldo)}`;
+        $("saldo-cliente").textContent = M.moeda(resumoDoCliente(c.id).saldo);
         try {
             const e = obterExtrato();
             const p = M.paginar(e.linhas, paginaExtrato, 50);
@@ -144,9 +145,9 @@
             $("extrato-proxima").disabled = p.pagina === p.paginas;
             $("periodo-extrato").textContent = `${periodo()} · Saldo anterior: ${M.moeda(e.saldoAnterior)} · Saldo ao final: ${M.moeda(e.saldoFinal)}`;
             $("tabela-extrato").innerHTML = p.itens.map(m => `<tr${m.cancelado_em ? ' class="clientes-cancelado"' : ''}>
-                <td>${M.dataBR(m.data)}</td><td>${h(descricao(m))}${m.observacao ? `<span class="clientes-detalhe">${h(m.observacao)}</span>` : ''}
+                <td>${M.dataBR(m.data)}</td><td><span class="clientes-tipo clientes-tipo-${m.tipo === "pagamento" ? "pagamento" : "notinha"}">${m.tipo === "pagamento" ? "PAGAMENTO" : "NOTINHA"}</span><span class="clientes-descricao">${h(descricao(m))}</span>${m.observacao ? `<span class="clientes-detalhe">${h(m.observacao)}</span>` : ''}
                 ${m.cancelado_em ? `<span class="clientes-detalhe">Cancelado em ${dataCancelamento(m)}: ${h(m.motivo_cancelamento)}</span>` : ''}</td>
-                <td>${m.tipo === "pagamento" ? "− " : ""}${M.moeda(M.valorCentavos(m.valor))}${m.cancelado_em ? ' (cancelado)' : ''}</td>
+                <td${m.tipo === "pagamento" && !m.cancelado_em ? ' class="clientes-valor-pagamento"' : ''}>${m.tipo === "pagamento" ? "− " : ""}${M.moeda(M.valorCentavos(m.valor))}${m.cancelado_em ? ' (cancelado)' : ''}</td>
                 <td>${M.moeda(m.saldo)}</td><td>${!m.cancelado_em ? `<button type="button" class="clientes-btn clientes-btn-perigo" data-cancelar="${h(m.id)}" aria-label="Cancelar ${h(m.tipo)} de ${M.dataBR(m.data)}">Cancelar</button>` : '—'}</td></tr>`).join("") ||
                 '<tr><td colspan="5" class="tabela-vazia">Nenhum lançamento neste período.</td></tr>';
         } catch (erro) {
@@ -358,6 +359,21 @@
         }, "Recuperação concluída. Os registros atuais foram preservados e o banco guardou cópias antes e depois.");
     }
     window.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("click", function (event) {
+            document.querySelectorAll(".clientes-ferramentas[open]").forEach(function (menu) {
+                const botao = event.target.closest("button");
+                if (!menu.contains(event.target) || (botao && !botao.disabled && menu.contains(botao))) menu.open = false;
+            });
+        });
+        document.addEventListener("keydown", function (event) {
+            if (event.key !== "Escape") return;
+            document.querySelectorAll(".clientes-ferramentas[open]").forEach(function (menu) {
+                const tinhaFoco = menu.contains(document.activeElement);
+                menu.open = false;
+                if (tinhaFoco) menu.querySelector("summary").focus();
+            });
+        });
+
         $("novo-cliente").addEventListener("click", () => abrirCliente());
         $("atualizar-clientes").addEventListener("click", () => { if (!salvando) carregar(); });
         $("backup-clientes").addEventListener("click", baixarBackup);
@@ -388,6 +404,7 @@
                 selecionado = b.dataset.cliente;
                 paginaExtrato = 1;
                 $("extrato-inicio").value = ""; $("extrato-fim").value = "";
+                renderizarClientes();
                 renderizarExtrato();
                 $("titulo-extrato").focus();
             }

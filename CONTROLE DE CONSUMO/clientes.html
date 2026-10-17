@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>X-Burguer | Clientes e Notinhas</title>
     <link rel="stylesheet" href="style.css?v=4.8.1">
-    <link rel="stylesheet" href="clientes.css?v=4.8.1">
+    <link rel="stylesheet" href="clientes.css?v=4.8.1&amp;visual=2">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
     <script src="supabase-config.js?v=4.8.1"></script>
     <script src="app.js?v=4.8.1"></script>
@@ -19,10 +19,10 @@
 
     <link rel="icon" type="image/png" sizes="192x192" href="../icons/xburguer-rounded-192.png">
 </head>
-<body class="corpo-dashboard">
+<body class="corpo-dashboard pagina-clientes">
 
     <div class="layout-sistema">
-        
+
         <!-- MENU LATERAL -->
         <aside class="sidebar" aria-label="Menu principal">
             <div class="sidebar-topo">
@@ -52,7 +52,7 @@
 
         <!-- CONTEÚDO PRINCIPAL -->
         <main class="conteudo-principal">
-            
+
             <header class="topbar">
                 <div class="topbar-marca">
                     <img src="logo.jfif" alt="Logo X-Burguer" class="logo-mini">
@@ -68,49 +68,45 @@
                 </div>
             </header>
 
-            <div class="dashboard-container">
-                <div class="dashboard-cabecalho">
-                    <div class="titulo-com-icone"><span class="icone-secao" aria-hidden="true">🧾</span><h1>Clientes e Notinhas</h1></div>
+            <div class="dashboard-container clientes-area">
+                <div class="dashboard-cabecalho clientes-cabecalho">
+                    <div class="page-heading"><p class="page-eyebrow">CONTAS DOS CLIENTES</p><h1>Clientes e Notinhas<span class="titulo-ponto">.</span></h1><p class="page-subtitulo">Comandas no papel. Contas organizadas por aqui.</p></div>
                     <div class="clientes-acoes">
-                        <button type="button" class="clientes-btn" id="atualizar-clientes">Atualizar</button>
-                        <button type="button" class="clientes-btn" id="backup-clientes" disabled>Baixar backup de clientes</button>
-                        <button type="button" class="clientes-btn" id="recuperar-clientes" disabled>Recuperar backup</button>
-                        <button type="button" class="btn-novo-funcionario" id="novo-cliente" disabled>+ Novo cliente</button>
+                        <button type="button" class="clientes-btn" id="atualizar-clientes"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 6.1A8 8 0 0 1 20 12M4 12a8 8 0 0 0 13.9 5.9"/></svg><span>Atualizar</span></button>
+                        <details class="clientes-ferramentas"><summary class="clientes-btn"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg><span>Backup e opções</span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></summary><div class="clientes-menu-opcoes"><button type="button" class="clientes-btn" id="backup-clientes" disabled><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg> Baixar backup de clientes</button><button type="button" class="clientes-btn" id="recuperar-clientes" disabled><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-7 5-5 5 5m-5-5v12"/></svg> Recuperar backup</button></div></details>
+                        <button type="button" class="btn-novo-funcionario" id="novo-cliente" disabled><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg> Novo cliente</button>
                     </div>
                 </div>
-                <p class="clientes-intro">Registre as comandas assinadas em papel e acompanhe o que cada cliente tem a pagar.</p>
-                <p id="status-clientes" class="clientes-status" role="status" aria-live="polite">Carregando clientes...</p>
                 <div class="clientes-resumo">
-                    <div class="clientes-card"><span>Total a receber</span><strong id="resumo-saldo">—</strong></div>
-                    <div class="clientes-card"><span>Clientes com saldo pendente</span><strong id="resumo-pendentes">—</strong></div>
-                    <div class="clientes-card"><span>Pagamentos recebidos (todo o período)</span><strong id="resumo-pagamentos">—</strong></div>
+                    <div class="clientes-card clientes-card-destaque"><div class="clientes-card-topo"><span>Total a receber</span><span class="clientes-card-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 8V5a2 2 0 0 0-2-2H5a3 3 0 0 0 0 6h15v11H5a3 3 0 0 1-3-3V6m18 6h-5v5h5m-3-2.5h.01"/></svg></span></div><strong id="resumo-saldo">—</strong><small>Saldo em aberto de todos os clientes</small></div>
+                    <div class="clientes-card"><div class="clientes-card-topo"><span>Clientes com pendências</span><span class="clientes-card-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m20 0v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></svg></span></div><strong id="resumo-pendentes">—</strong><small>Contas que ainda têm valor a pagar</small></div>
+                    <div class="clientes-card clientes-card-recebido"><div class="clientes-card-topo"><span>Pagamentos recebidos</span><span class="clientes-card-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"/></svg></span></div><strong id="resumo-pagamentos">—</strong><small>Acumulado de todo o período</small></div>
                 </div>
-                <section class="painel-tabela" aria-label="Contas dos clientes">
+                <p id="status-clientes" class="clientes-status" role="status" aria-live="polite">Carregando clientes...</p>
+                <section class="painel-tabela clientes-contas" aria-labelledby="titulo-contas"><div class="clientes-painel-topo"><div><h2 id="titulo-contas">Contas dos clientes</h2><p id="contador-clientes">Aguardando dados</p></div><span class="clientes-indicacao">Selecione um cliente para ver o extrato <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
                     <div class="clientes-filtros">
-                        <input type="search" id="busca-cliente" aria-label="Buscar cliente por nome ou telefone" placeholder="Buscar nome ou telefone...">
-                        <label for="situacao-cliente">Situação</label>
-                        <select id="situacao-cliente"><option value="todos">Todos os clientes</option><option value="ativos">Ativos</option><option value="inativos">Inativos</option></select>
-                        <label><input type="checkbox" id="somente-pendentes"> Somente com saldo pendente</label>
+                        <label class="clientes-busca"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input type="search" id="busca-cliente" aria-label="Buscar cliente por nome ou telefone" placeholder="Buscar por nome ou telefone"></label>
+                        <label class="clientes-situacao" for="situacao-cliente"><span class="sr-only">Situação</span><select id="situacao-cliente"><option value="todos">Todos os clientes</option><option value="ativos">Ativos</option><option value="inativos">Inativos</option></select></label>
+                        <label class="clientes-filtro-pendente"><input type="checkbox" id="somente-pendentes"> Só pendentes</label>
                     </div>
                     <div class="clientes-scroll"><table class="tabela-dados">
-                        <thead><tr><th>CLIENTE</th><th>NOTINHAS</th><th>PAGAMENTOS</th><th>SALDO A PAGAR</th><th>AÇÕES</th></tr></thead>
+                        <thead><tr><th scope="col">CLIENTE</th><th scope="col">NOTINHAS</th><th scope="col">RECEBIDO</th><th scope="col">A RECEBER</th><th scope="col">AÇÕES</th></tr></thead>
                         <tbody id="tabela-clientes"><tr><td colspan="5" class="tabela-vazia">Carregando...</td></tr></tbody>
                     </table></div>
-                    <div class="tabela-rodape" id="contador-clientes">Aguardando dados</div>
+
                     <div class="clientes-paginacao" aria-label="Páginas de clientes"><button type="button" class="clientes-btn" id="clientes-anterior">Anterior</button><span id="clientes-pagina" role="status"></span><button type="button" class="clientes-btn" id="clientes-proxima">Próxima</button></div>
                 </section>
                 <section id="extrato-cliente" class="clientes-extrato" aria-labelledby="titulo-extrato" hidden>
                     <div class="clientes-extrato-topo">
-                        <h2 id="titulo-extrato" tabindex="-1">Extrato do cliente</h2>
+                        <div class="clientes-extrato-identidade"><span class="clientes-extrato-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3v18l3-2 4 2 4-2 3 2V3l-3 2-4-2-4 2-3-2Z"/><path d="M9 9h6m-6 4h6"/></svg></span><div><p class="page-eyebrow">EXTRATO DA CONTA</p><h2 id="titulo-extrato" tabindex="-1">Extrato do cliente</h2><p id="detalhes-cliente"></p></div></div>
                         <div class="clientes-acoes">
-                            <button type="button" class="btn-novo-funcionario" id="nova-notinha">+ Notinha</button>
-                            <button type="button" class="clientes-btn" id="novo-pagamento">Registrar pagamento</button>
-                            <button type="button" class="clientes-btn" id="imprimir-extrato">Imprimir / PDF</button>
-                            <button type="button" class="clientes-btn" id="copiar-extrato">Copiar resumo</button>
+                            <button type="button" class="btn-novo-funcionario" id="nova-notinha"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg> Nova notinha</button>
+                            <button type="button" class="clientes-btn" id="novo-pagamento"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 8V5a2 2 0 0 0-2-2H5a3 3 0 0 0 0 6h15v11H5a3 3 0 0 1-3-3V6m18 6h-5v5h5m-3-2.5h.01"/></svg> Receber pagamento</button>
+                            <button type="button" class="clientes-btn" id="imprimir-extrato"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9V3h12v6m0 8h3V9H3v8h3m0-3h12v7H6Zm11-3h.01"/></svg> Imprimir / PDF</button>
+                            <button type="button" class="clientes-btn" id="copiar-extrato"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></svg> Copiar resumo</button>
                         </div>
                     </div>
-                    <p id="detalhes-cliente"></p>
-                    <p id="saldo-cliente" class="clientes-saldo"></p>
+                    <div class="clientes-conta-saldo"><span>Saldo atual a pagar</span><strong id="saldo-cliente" class="clientes-saldo"></strong><small>Os pagamentos abatem o saldo total da conta.</small></div>
                     <div class="clientes-filtros">
                         <label class="data" for="extrato-inicio">De<input type="date" id="extrato-inicio"></label>
                         <label class="data" for="extrato-fim">Até<input type="date" id="extrato-fim"></label>
@@ -118,7 +114,7 @@
                     </div>
                     <p id="periodo-extrato" role="status"></p>
                     <div class="clientes-scroll"><table class="tabela-dados">
-                        <thead><tr><th>DATA</th><th>LANÇAMENTO</th><th>VALOR</th><th>SALDO</th><th>AÇÕES</th></tr></thead>
+                        <thead><tr><th scope="col">DATA</th><th scope="col">LANÇAMENTO</th><th scope="col">VALOR</th><th scope="col">SALDO</th><th scope="col">AÇÕES</th></tr></thead>
                         <tbody id="tabela-extrato"></tbody>
                     </table></div>
                     <div class="clientes-paginacao" aria-label="Páginas do extrato"><button type="button" class="clientes-btn" id="extrato-anterior">Anterior</button><span id="extrato-pagina" role="status"></span><button type="button" class="clientes-btn" id="extrato-proxima">Próxima</button></div>
@@ -127,12 +123,11 @@
             </div>
         </main>
     </div>
-    <dialog id="dialog-cliente" class="clientes-modal" aria-labelledby="titulo-dialog-cliente">
-        <h2 id="titulo-dialog-cliente">Novo cliente</h2>
+    <dialog id="dialog-cliente" class="clientes-modal" aria-labelledby="titulo-dialog-cliente"><button type="button" class="clientes-modal-fechar" data-fechar="dialog-cliente" aria-label="Fechar janela">×</button><div class="clientes-modal-cabecalho"><span class="clientes-modal-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m20 0v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></svg></span><h2 id="titulo-dialog-cliente">Novo cliente</h2></div>
         <form id="form-cliente" class="clientes-form">
             <input type="hidden" id="cliente-id">
-            <label for="cliente-nome">Nome *<input id="cliente-nome" maxlength="120" required autocomplete="name"></label>
-            <label for="cliente-telefone">Telefone<input id="cliente-telefone" maxlength="40" type="tel" autocomplete="tel"></label>
+            <label for="cliente-nome">Nome completo *<input id="cliente-nome" placeholder="Como o cliente se chama?" maxlength="120" required autocomplete="name"></label>
+            <label for="cliente-telefone">Telefone<input id="cliente-telefone" placeholder="(00) 00000-0000" maxlength="40" type="tel" autocomplete="tel"></label>
             <label for="cliente-observacao">Observação<textarea id="cliente-observacao" maxlength="1000"></textarea></label>
             <label class="clientes-check"><input id="cliente-ativo" type="checkbox" checked> Cliente ativo para novas notinhas</label>
             <p class="clientes-ajuda">Ao inativar, o histórico permanece disponível e você ainda pode receber pagamentos.</p>
@@ -140,8 +135,7 @@
             <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-cliente">Cancelar</button><button type="submit" class="btn-salvar-modal">Salvar cliente</button></div>
         </form>
     </dialog>
-    <dialog id="dialog-movimento" class="clientes-modal" aria-labelledby="titulo-dialog-movimento">
-        <h2 id="titulo-dialog-movimento">Nova notinha</h2>
+    <dialog id="dialog-movimento" class="clientes-modal" aria-labelledby="titulo-dialog-movimento"><button type="button" class="clientes-modal-fechar" data-fechar="dialog-movimento" aria-label="Fechar janela">×</button><div class="clientes-modal-cabecalho"><span class="clientes-modal-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3v18l3-2 4 2 4-2 3 2V3l-3 2-4-2-4 2-3-2Z"/><path d="M9 9h6m-6 4h6"/></svg></span><h2 id="titulo-dialog-movimento">Nova notinha</h2></div>
         <form id="form-movimento" class="clientes-form">
             <input type="hidden" id="movimento-tipo">
             <p id="movimento-cliente" class="clientes-ajuda"></p>
@@ -155,8 +149,7 @@
             <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-movimento">Cancelar</button><button type="submit" class="btn-salvar-modal">Salvar lançamento</button></div>
         </form>
     </dialog>
-    <dialog id="dialog-cancelamento" class="clientes-modal" aria-labelledby="titulo-cancelamento">
-        <h2 id="titulo-cancelamento">Cancelar lançamento</h2>
+    <dialog id="dialog-cancelamento" class="clientes-modal" aria-labelledby="titulo-cancelamento"><button type="button" class="clientes-modal-fechar" data-fechar="dialog-cancelamento" aria-label="Fechar janela">×</button><div class="clientes-modal-cabecalho"><span class="clientes-modal-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11a9 9 0 1 1 2.5 7M3 4v7h7m2-4v5l3 2"/></svg></span><h2 id="titulo-cancelamento">Cancelar lançamento</h2></div>
         <form id="form-cancelamento" class="clientes-form">
             <input type="hidden" id="cancelamento-id">
             <p id="cancelamento-resumo" class="clientes-ajuda"></p>
@@ -166,8 +159,7 @@
             <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-cancelamento">Voltar</button><button type="submit" class="btn-excluir-modal">Confirmar cancelamento</button></div>
         </form>
     </dialog>
-    <dialog id="dialog-backup" class="clientes-modal" aria-labelledby="titulo-backup-clientes">
-        <h2 id="titulo-backup-clientes">Recuperar backup de clientes</h2>
+    <dialog id="dialog-backup" class="clientes-modal" aria-labelledby="titulo-backup-clientes"><button type="button" class="clientes-modal-fechar" data-fechar="dialog-backup" aria-label="Fechar janela">×</button><div class="clientes-modal-cabecalho"><span class="clientes-modal-icone"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-7 5-5 5 5m-5-5v12"/></svg></span><h2 id="titulo-backup-clientes">Recuperar backup de clientes</h2></div>
         <form id="form-backup" class="clientes-form">
             <label for="arquivo-clientes">Arquivo JSON<input id="arquivo-clientes" type="file" accept=".json,application/json" required></label>
             <p class="clientes-ajuda">Selecione um backup de clientes ou o backup completo do sistema. Serão recuperados apenas clientes e lançamentos ausentes; os registros atuais serão preservados. O banco criará cópias protegidas antes e depois.</p>
@@ -179,6 +171,6 @@
     <div id="impressao-clientes" class="clientes-print"></div>
     <script src="clientes-model.js?v=4.8.1"></script>
     <script src="clientes-backup.js?v=4.8.1"></script>
-    <script src="clientes-supabase.js?v=4.8.1"></script>
+    <script src="clientes-supabase.js?v=4.8.1&amp;visual=2"></script>
 </body>
 </html>
