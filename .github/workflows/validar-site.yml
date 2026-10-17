@@ -12,8 +12,13 @@ on:
       - 'offline.html'
       - '404.html'
       - 'scripts/auditar_site.py'
+      - 'scripts/testes-clientes/**'
+      - 'scripts/clientes*.test.cjs'
+      - 'SUPABASE/migrations/**'
       - '.github/workflows/validar-site.yml'
   workflow_dispatch:
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -21,6 +26,20 @@ permissions:
 jobs:
   validar:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: clientes_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Baixar repositorio
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -40,6 +59,34 @@ jobs:
         run: |
           set -o pipefail
           python scripts/auditar_site.py 2>&1 | tee auditoria-site.txt
+
+      - name: Testar cálculos e extratos de clientes
+        run: node --test scripts/clientes-model.test.cjs scripts/clientes-backup.test.cjs
+
+      - name: Testar migration e regras de clientes em banco descartável
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: clientes_test
+        run: >-
+          psql -v ON_ERROR_STOP=1
+          -f scripts/testes-clientes/preparar.sql
+          -f scripts/testes-clientes/funcoes-producao.sql
+          -f SUPABASE/migrations/20261017_clientes_notinhas.sql
+          -f SUPABASE/migrations/20261017_clientes_melhorias.sql
+          -f scripts/testes-clientes/verificar.sql
+          -f scripts/testes-clientes/melhorias.sql
+
+      - name: Testar pagamentos e edições simultâneos
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: clientes_test
+        run: python scripts/testes-clientes/concorrencia.py
 
       - name: Guardar relatorio da auditoria
         if: always()

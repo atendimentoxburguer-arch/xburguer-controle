@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>X-Burguer | Clientes e Notinhas</title>
+    <link rel="stylesheet" href="style.css?v=4.8.1">
+    <link rel="stylesheet" href="clientes.css?v=4.8.1">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+    <script src="supabase-config.js?v=4.8.1"></script>
+    <script src="app.js?v=4.8.1"></script>
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#7a0b0b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="X-Burguer">
+    <link rel="apple-touch-icon" sizes="180x180" href="../icons/xburguer-rounded-180.png">
+
+    <link rel="icon" type="image/png" sizes="192x192" href="../icons/xburguer-rounded-192.png">
+</head>
+<body class="corpo-dashboard">
+
+    <div class="layout-sistema">
+        
+        <!-- MENU LATERAL -->
+        <aside class="sidebar" aria-label="Menu principal">
+            <div class="sidebar-topo">
+                <img src="logo.jfif" alt="Logo X-Burguer" class="logo-sidebar">
+                <div class="logo-texto">
+                    <span class="logo-titulo">X-BURGUER</span>
+                    <span class="logo-sub">Sanduicheria e Chopperia</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu" aria-label="Seções do sistema">
+                <a href="dashboard.html" class="menu-item"><span aria-hidden="true">🏠</span> Dashboard</a>
+                <a href="funcionarios.html" class="menu-item"><span aria-hidden="true">👥</span> Funcionários</a>
+                <a href="clientes.html" class="menu-item ativo" aria-current="page"><span aria-hidden="true">🧾</span> Clientes e Notinhas</a>
+                <a href="produtos.html" class="menu-item"><span aria-hidden="true">🍔</span> Produtos</a>
+                <a href="consumos.html" class="menu-item"><span aria-hidden="true">📋</span> Consumos</a>
+                <a href="faltas.html" class="menu-item"><span aria-hidden="true">📅</span> Faltas</a>
+                <a href="relatorios.html" class="menu-item"><span aria-hidden="true">📊</span> Relatórios</a>
+                <a href="historico.html" class="menu-item"><span aria-hidden="true">🔄</span> Histórico de Ações</a>
+                <a href="configuracoes.html" class="menu-item"><span aria-hidden="true">⚙️</span> Configurações</a>
+            </nav>
+
+            <div class="sidebar-sair">
+                <a href="login.html" class="menu-item"><span aria-hidden="true">🚪</span> Sair</a>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="conteudo-principal">
+            
+            <header class="topbar">
+                <div class="topbar-marca">
+                    <img src="logo.jfif" alt="Logo X-Burguer" class="logo-mini">
+                    <span class="topbar-titulo">X-BURGUER</span>
+                    <span class="topbar-sub">Sanduicheria e Chopperia</span>
+                </div>
+                <div class="topbar-usuario" aria-label="Identificação do sistema">
+                    <div class="info-usuario">
+                        <span class="saudacao">X-Burguer</span>
+                        <span class="cargo">Sistema de Gestão</span>
+                    </div>
+                    <div class="avatar-admin" aria-hidden="true">XB</div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div class="dashboard-cabecalho">
+                    <div class="titulo-com-icone"><span class="icone-secao" aria-hidden="true">🧾</span><h1>Clientes e Notinhas</h1></div>
+                    <div class="clientes-acoes">
+                        <button type="button" class="clientes-btn" id="atualizar-clientes">Atualizar</button>
+                        <button type="button" class="clientes-btn" id="backup-clientes" disabled>Baixar backup de clientes</button>
+                        <button type="button" class="clientes-btn" id="recuperar-clientes" disabled>Recuperar backup</button>
+                        <button type="button" class="btn-novo-funcionario" id="novo-cliente" disabled>+ Novo cliente</button>
+                    </div>
+                </div>
+                <p class="clientes-intro">Registre as comandas assinadas em papel e acompanhe o que cada cliente tem a pagar.</p>
+                <p id="status-clientes" class="clientes-status" role="status" aria-live="polite">Carregando clientes...</p>
+                <div class="clientes-resumo">
+                    <div class="clientes-card"><span>Total a receber</span><strong id="resumo-saldo">—</strong></div>
+                    <div class="clientes-card"><span>Clientes com saldo pendente</span><strong id="resumo-pendentes">—</strong></div>
+                    <div class="clientes-card"><span>Pagamentos recebidos (todo o período)</span><strong id="resumo-pagamentos">—</strong></div>
+                </div>
+                <section class="painel-tabela" aria-label="Contas dos clientes">
+                    <div class="clientes-filtros">
+                        <input type="search" id="busca-cliente" aria-label="Buscar cliente por nome ou telefone" placeholder="Buscar nome ou telefone...">
+                        <label for="situacao-cliente">Situação</label>
+                        <select id="situacao-cliente"><option value="todos">Todos os clientes</option><option value="ativos">Ativos</option><option value="inativos">Inativos</option></select>
+                        <label><input type="checkbox" id="somente-pendentes"> Somente com saldo pendente</label>
+                    </div>
+                    <div class="clientes-scroll"><table class="tabela-dados">
+                        <thead><tr><th>CLIENTE</th><th>NOTINHAS</th><th>PAGAMENTOS</th><th>SALDO A PAGAR</th><th>AÇÕES</th></tr></thead>
+                        <tbody id="tabela-clientes"><tr><td colspan="5" class="tabela-vazia">Carregando...</td></tr></tbody>
+                    </table></div>
+                    <div class="tabela-rodape" id="contador-clientes">Aguardando dados</div>
+                    <div class="clientes-paginacao" aria-label="Páginas de clientes"><button type="button" class="clientes-btn" id="clientes-anterior">Anterior</button><span id="clientes-pagina" role="status"></span><button type="button" class="clientes-btn" id="clientes-proxima">Próxima</button></div>
+                </section>
+                <section id="extrato-cliente" class="clientes-extrato" aria-labelledby="titulo-extrato" hidden>
+                    <div class="clientes-extrato-topo">
+                        <h2 id="titulo-extrato" tabindex="-1">Extrato do cliente</h2>
+                        <div class="clientes-acoes">
+                            <button type="button" class="btn-novo-funcionario" id="nova-notinha">+ Notinha</button>
+                            <button type="button" class="clientes-btn" id="novo-pagamento">Registrar pagamento</button>
+                            <button type="button" class="clientes-btn" id="imprimir-extrato">Imprimir / PDF</button>
+                            <button type="button" class="clientes-btn" id="copiar-extrato">Copiar resumo</button>
+                        </div>
+                    </div>
+                    <p id="detalhes-cliente"></p>
+                    <p id="saldo-cliente" class="clientes-saldo"></p>
+                    <div class="clientes-filtros">
+                        <label class="data" for="extrato-inicio">De<input type="date" id="extrato-inicio"></label>
+                        <label class="data" for="extrato-fim">Até<input type="date" id="extrato-fim"></label>
+                        <button type="button" class="clientes-btn" id="limpar-periodo">Todo o período</button>
+                    </div>
+                    <p id="periodo-extrato" role="status"></p>
+                    <div class="clientes-scroll"><table class="tabela-dados">
+                        <thead><tr><th>DATA</th><th>LANÇAMENTO</th><th>VALOR</th><th>SALDO</th><th>AÇÕES</th></tr></thead>
+                        <tbody id="tabela-extrato"></tbody>
+                    </table></div>
+                    <div class="clientes-paginacao" aria-label="Páginas do extrato"><button type="button" class="clientes-btn" id="extrato-anterior">Anterior</button><span id="extrato-pagina" role="status"></span><button type="button" class="clientes-btn" id="extrato-proxima">Próxima</button></div>
+                    <p class="clientes-ajuda">Os pagamentos abatem o saldo total do cliente. Os lançamentos cancelados continuam no histórico e não entram no saldo.</p>
+                </section>
+            </div>
+        </main>
+    </div>
+    <dialog id="dialog-cliente" class="clientes-modal" aria-labelledby="titulo-dialog-cliente">
+        <h2 id="titulo-dialog-cliente">Novo cliente</h2>
+        <form id="form-cliente" class="clientes-form">
+            <input type="hidden" id="cliente-id">
+            <label for="cliente-nome">Nome *<input id="cliente-nome" maxlength="120" required autocomplete="name"></label>
+            <label for="cliente-telefone">Telefone<input id="cliente-telefone" maxlength="40" type="tel" autocomplete="tel"></label>
+            <label for="cliente-observacao">Observação<textarea id="cliente-observacao" maxlength="1000"></textarea></label>
+            <label class="clientes-check"><input id="cliente-ativo" type="checkbox" checked> Cliente ativo para novas notinhas</label>
+            <p class="clientes-ajuda">Ao inativar, o histórico permanece disponível e você ainda pode receber pagamentos.</p>
+            <p id="erro-cliente" class="clientes-form-erro" role="alert"></p>
+            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-cliente">Cancelar</button><button type="submit" class="btn-salvar-modal">Salvar cliente</button></div>
+        </form>
+    </dialog>
+    <dialog id="dialog-movimento" class="clientes-modal" aria-labelledby="titulo-dialog-movimento">
+        <h2 id="titulo-dialog-movimento">Nova notinha</h2>
+        <form id="form-movimento" class="clientes-form">
+            <input type="hidden" id="movimento-tipo">
+            <p id="movimento-cliente" class="clientes-ajuda"></p>
+            <label for="movimento-data">Data *<input id="movimento-data" type="date" min="1900-01-01" required></label>
+            <label id="campo-mesa" for="movimento-mesa">Mesa<input id="movimento-mesa" maxlength="40" placeholder="Ex.: 12"></label>
+            <label for="movimento-valor">Valor total (R$) *<input id="movimento-valor" inputmode="decimal" placeholder="0,00" required></label>
+            <label id="campo-forma" for="movimento-forma" hidden>Forma de pagamento<select id="movimento-forma"><option>Pix</option><option>Dinheiro</option><option>Cartão</option><option>Outro</option></select></label>
+            <label for="movimento-observacao">Observação<textarea id="movimento-observacao" maxlength="1000" placeholder="Ex.: número da comanda"></textarea></label>
+            <label id="campo-assinatura" class="clientes-check"><input id="movimento-assinada" type="checkbox"> Comanda assinada em papel</label>
+            <p id="erro-movimento" class="clientes-form-erro" role="alert"></p>
+            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-movimento">Cancelar</button><button type="submit" class="btn-salvar-modal">Salvar lançamento</button></div>
+        </form>
+    </dialog>
+    <dialog id="dialog-cancelamento" class="clientes-modal" aria-labelledby="titulo-cancelamento">
+        <h2 id="titulo-cancelamento">Cancelar lançamento</h2>
+        <form id="form-cancelamento" class="clientes-form">
+            <input type="hidden" id="cancelamento-id">
+            <p id="cancelamento-resumo" class="clientes-ajuda"></p>
+            <label for="cancelamento-motivo">Motivo *<textarea id="cancelamento-motivo" maxlength="500" required></textarea></label>
+            <p class="clientes-ajuda">O registro será preservado no extrato com o motivo do cancelamento.</p>
+            <p id="erro-cancelamento" class="clientes-form-erro" role="alert"></p>
+            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-cancelamento">Voltar</button><button type="submit" class="btn-excluir-modal">Confirmar cancelamento</button></div>
+        </form>
+    </dialog>
+    <dialog id="dialog-backup" class="clientes-modal" aria-labelledby="titulo-backup-clientes">
+        <h2 id="titulo-backup-clientes">Recuperar backup de clientes</h2>
+        <form id="form-backup" class="clientes-form">
+            <label for="arquivo-clientes">Arquivo JSON<input id="arquivo-clientes" type="file" accept=".json,application/json" required></label>
+            <p class="clientes-ajuda">Selecione um backup de clientes ou o backup completo do sistema. Serão recuperados apenas clientes e lançamentos ausentes; os registros atuais serão preservados. O banco criará cópias protegidas antes e depois.</p>
+            <p id="resumo-backup-clientes" role="status">Nenhum arquivo selecionado.</p>
+            <p id="erro-backup-clientes" class="clientes-form-erro" role="alert"></p>
+            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-backup">Cancelar</button><button type="submit" class="btn-salvar-modal" id="confirmar-recuperacao-clientes" disabled>Recuperar registros ausentes</button></div>
+        </form>
+    </dialog>
+    <div id="impressao-clientes" class="clientes-print"></div>
+    <script src="clientes-model.js?v=4.8.1"></script>
+    <script src="clientes-backup.js?v=4.8.1"></script>
+    <script src="clientes-supabase.js?v=4.8.1"></script>
+</body>
+</html>

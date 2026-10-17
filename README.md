@@ -8,6 +8,8 @@ Este repositório contém **somente o sistema de Controle de Consumo**.
 - Escopo do PWA: `/xburguer-controle/`
 - Banco: projeto Supabase exclusivo do Controle de Consumo
 
+A versão 4.8.1 acrescenta **Clientes e Notinhas**, com cobrança posterior, pagamentos parciais, extrato, recuperação e integração ao backup diário protegido. Veja [ativação, migrations e uso](SUPABASE/CLIENTES_NOTINHAS.md) antes de publicar essa versão.
+
 O **Controle de Caixa** fica no repositório `xburguer-caixa`, usa o caminho `/xburguer-caixa/`, outro PWA, outro cache e outro projeto Supabase.
 
 ## Regra de organização
