@@ -9,6 +9,8 @@
     let salvando = false;
     let versaoCarga = 0;
     let movimentoId = null;
+    let notinhaOriginal = null;
+    let exclusaoOriginal = null;
     let clienteFormularioId = null;
     let clienteFormularioRevisao = null;
     let paginaClientes = 1;
@@ -77,7 +79,7 @@
         $("imprimir-extrato").disabled = !pronto || salvando;
         $("copiar-extrato").disabled = !pronto || salvando;
         document.querySelectorAll(".clientes-form button[type=submit]").forEach(b => b.disabled = !pronto || salvando || (b.id === "confirmar-recuperacao-clientes" && (!backupSelecionado || analisandoBackup)));
-        document.querySelectorAll("[data-cliente], [data-editar], [data-cancelar]").forEach(b => b.disabled = !pronto || salvando);
+        document.querySelectorAll("[data-cliente], [data-editar], [data-editar-notinha], [data-cancelar]").forEach(b => b.disabled = !pronto || salvando);
     }
     function carregar({ automatica = false } = {}) {
         if (automatica && deveAdiarSincronizacao()) {
@@ -121,7 +123,7 @@
             pronto = true;
             if (mudou || recuperando) {
                 const foco = document.activeElement;
-                const atributo = ["data-cliente", "data-editar", "data-cancelar"].find(nome => foco?.hasAttribute(nome));
+                const atributo = ["data-cliente", "data-editar", "data-editar-notinha", "data-cancelar"].find(nome => foco?.hasAttribute(nome));
                 const idFocado = atributo && foco.getAttribute(atributo);
                 dados = snapshot;
                 assinaturaDados = assinatura;
@@ -216,9 +218,9 @@
             $("periodo-extrato").textContent = `${periodo()} · Saldo anterior: ${M.moeda(e.saldoAnterior)} · Saldo ao final: ${M.moeda(e.saldoFinal)}`;
             $("tabela-extrato").innerHTML = p.itens.map(m => `<tr${m.cancelado_em ? ' class="clientes-cancelado"' : ''}>
                 <td>${M.dataBR(m.data)}</td><td><span class="clientes-tipo clientes-tipo-${m.tipo === "pagamento" ? "pagamento" : "notinha"}">${m.tipo === "pagamento" ? "PAGAMENTO" : "NOTINHA"}</span><span class="clientes-descricao">${h(descricao(m))}</span>${m.observacao ? `<span class="clientes-detalhe">${h(m.observacao)}</span>` : ''}
-                ${m.cancelado_em ? `<span class="clientes-detalhe">Cancelado em ${dataCancelamento(m)}: ${h(m.motivo_cancelamento)}</span>` : ''}</td>
-                <td${m.tipo === "pagamento" && !m.cancelado_em ? ' class="clientes-valor-pagamento"' : ''}>${m.tipo === "pagamento" ? "− " : ""}${M.moeda(M.valorCentavos(m.valor))}${m.cancelado_em ? ' (cancelado)' : ''}</td>
-                <td>${M.moeda(m.saldo)}</td><td>${!m.cancelado_em ? `<button type="button" class="clientes-btn clientes-btn-perigo btn-config-secundario" data-cancelar="${h(m.id)}" aria-label="Cancelar ${h(m.tipo)} de ${M.dataBR(m.data)}">Cancelar</button>` : '—'}</td></tr>`).join("") ||
+                ${m.cancelado_em ? `<span class="clientes-detalhe">${m.tipo === "notinha" ? "Excluída" : "Cancelado"} em ${dataCancelamento(m)}: ${h(m.motivo_cancelamento)}</span>` : ''}</td>
+                <td${m.tipo === "pagamento" && !m.cancelado_em ? ' class="clientes-valor-pagamento"' : ''}>${m.tipo === "pagamento" ? "− " : ""}${M.moeda(M.valorCentavos(m.valor))}${m.cancelado_em ? (m.tipo === "notinha" ? ' (excluída)' : ' (cancelado)') : ''}</td>
+                <td>${M.moeda(m.saldo)}</td><td>${!m.cancelado_em ? `<div class="clientes-botoes-linha">${m.tipo === "notinha" ? `<button type="button" class="clientes-btn btn-config-secundario" data-editar-notinha="${h(m.id)}" aria-label="Editar notinha de ${M.dataBR(m.data)}">Editar</button>` : ''}<button type="button" class="clientes-btn clientes-btn-perigo btn-config-secundario" data-cancelar="${h(m.id)}" aria-label="${m.tipo === "notinha" ? "Excluir notinha" : "Cancelar pagamento"} de ${M.dataBR(m.data)}">${m.tipo === "notinha" ? "Excluir" : "Cancelar"}</button></div>` : '—'}</td></tr>`).join("") ||
                 '<tr><td colspan="5" class="tabela-vazia">Nenhum lançamento neste período.</td></tr>';
         } catch (erro) {
             $("periodo-extrato").textContent = erro.message;
@@ -245,16 +247,28 @@
         $("erro-cliente").textContent = "";
         $("dialog-cliente").showModal();
     }
-    function abrirMovimento(tipo) {
+    function originalDaNotinha(m) {
+        return { data: m.data, valor: M.valorCentavos(m.valor) / 100, mesa: m.mesa,
+            observacao: m.observacao, comanda_assinada: m.comanda_assinada };
+    }
+    function abrirMovimento(tipo, id) {
         const c = clienteAtual();
-        if (!pronto || salvando || !c || (tipo === "notinha" && !c.ativo)) return;
+        if (!pronto || salvando || !c) return;
+        const m = id ? movimentosDoCliente(c.id).find(x => x.id === id && x.tipo === "notinha" && !x.cancelado_em) : null;
+        if ((id && !m) || (!id && tipo === "notinha" && !c.ativo)) return;
         $("form-movimento").reset();
-        movimentoId = crypto.randomUUID();
+        notinhaOriginal = m ? originalDaNotinha(m) : null;
+        movimentoId = m?.id || crypto.randomUUID();
         $("movimento-tipo").value = tipo;
-        $("movimento-data").value = hoje();
+        $("movimento-data").value = m?.data || hoje();
         $("movimento-data").max = hoje();
+        $("movimento-mesa").value = m?.mesa || "";
+        $("movimento-valor").value = m ? (M.valorCentavos(m.valor) / 100).toFixed(2).replace(".", ",") : "";
+        $("movimento-observacao").value = m?.observacao || "";
+        $("movimento-assinada").checked = m?.comanda_assinada || false;
         $("movimento-cliente").textContent = `${c.nome} · Saldo a pagar: ${M.moeda(resumoDoCliente(c.id).saldo)}`;
-        $("titulo-dialog-movimento").textContent = tipo === "notinha" ? "Nova notinha" : "Registrar pagamento";
+        $("titulo-dialog-movimento").textContent = m ? "Editar notinha" : tipo === "notinha" ? "Nova notinha" : "Registrar pagamento";
+        $("salvar-movimento").textContent = m ? "Salvar alterações" : "Salvar lançamento";
         $("campo-mesa").hidden = tipo !== "notinha";
         $("campo-assinatura").hidden = tipo !== "notinha";
         $("campo-forma").hidden = tipo !== "pagamento";
@@ -310,31 +324,41 @@
             if ($("movimento-tipo").value === "pagamento" && valor > resumoDoCliente(selecionado).saldo) throw new Error("O pagamento não pode ultrapassar o saldo a pagar.");
         } catch (erro) { $("erro-movimento").textContent = erro.message; return; }
         const tipo = $("movimento-tipo").value;
+        const editando = notinhaOriginal !== null;
         const payload = { id: movimentoId, cliente_id: selecionado, tipo, data: $("movimento-data").value, valor: valor / 100,
             mesa: tipo === "notinha" ? $("movimento-mesa").value.trim() : "", observacao: $("movimento-observacao").value.trim(),
             comanda_assinada: tipo === "notinha" && $("movimento-assinada").checked, forma_pagamento: tipo === "pagamento" ? $("movimento-forma").value : "" };
+        if (editando) payload.original = notinhaOriginal;
         await salvar(evento.target, "erro-movimento", "dialog-movimento", async () => {
             try {
-                await rpc("registrar_movimento_cliente", { p_dados: payload });
+                await rpc(editando ? "editar_notinha_cliente" : "registrar_movimento_cliente", { p_dados: payload });
             } catch (erro) {
                 // Se apenas a resposta se perdeu, reconhecer o ID já gravado evita nova cobrança.
                 let reconhecido = false;
                 if (!erro.code || erro.code === "FETCH_ERROR") {
                     try {
                         const snapshot = await rpc("obter_contas_clientes");
-                        reconhecido = snapshot?.movimentos?.some(m => m.id === payload.id && m.cliente_id === payload.cliente_id && M.valorCentavos(m.valor) === valor && m.tipo === tipo);
+                        reconhecido = snapshot?.movimentos?.some(m => m.id === payload.id && m.cliente_id === payload.cliente_id && !m.cancelado_em &&
+                            M.valorCentavos(m.valor) === valor && m.tipo === tipo && m.data === payload.data && m.mesa === payload.mesa &&
+                            m.observacao === payload.observacao && m.comanda_assinada === payload.comanda_assinada && m.forma_pagamento === payload.forma_pagamento);
                     } catch (_) { /* A próxima tentativa mantém o mesmo ID. */ }
                 }
                 if (!reconhecido) throw erro;
             }
-            await registrarHistorico(tipo === "notinha" ? "Registrou notinha de cliente" : "Recebeu pagamento de cliente", `${clienteAtual().nome} · ${M.moeda(valor)} · ${payload.id}`);
-        }, tipo === "notinha" ? "Notinha registrada." : "Pagamento registrado e abatido do saldo.");
+            await registrarHistorico(editando ? "Editou notinha de cliente" : tipo === "notinha" ? "Registrou notinha de cliente" : "Recebeu pagamento de cliente", `${clienteAtual().nome} · ${M.moeda(valor)} · ${payload.id}`);
+        }, editando ? "Notinha atualizada. O saldo foi recalculado." : tipo === "notinha" ? "Notinha registrada." : "Pagamento registrado e abatido do saldo.");
     }
     function abrirCancelamento(id) {
         if (!pronto || salvando) return;
         const m = movimentosDoCliente(selecionado).find(x => x.id === id);
         if (!m || m.cancelado_em) return;
+        exclusaoOriginal = m.tipo === "notinha" ? originalDaNotinha(m) : null;
         $("form-cancelamento").reset();
+        $("titulo-cancelamento").textContent = exclusaoOriginal ? "Excluir notinha" : "Cancelar lançamento";
+        $("rotulo-motivo-cancelamento").textContent = exclusaoOriginal ? "Motivo (opcional)" : "Motivo *";
+        $("cancelamento-motivo").required = !exclusaoOriginal;
+        $("ajuda-cancelamento").textContent = exclusaoOriginal ? "A notinha será retirada do saldo da conta. O registro da exclusão ficará preservado no histórico." : "O registro será preservado no extrato com o motivo do cancelamento.";
+        $("confirmar-cancelamento").textContent = exclusaoOriginal ? "Excluir notinha" : "Confirmar cancelamento";
         $("cancelamento-id").value = id;
         $("cancelamento-resumo").textContent = `${clienteAtual().nome} · ${descricao(m)} · ${M.dataBR(m.data)} · ${M.moeda(M.valorCentavos(m.valor))}`;
         $("erro-cancelamento").textContent = "";
@@ -343,12 +367,13 @@
     async function cancelarMovimento(evento) {
         evento.preventDefault();
         const motivo = $("cancelamento-motivo").value.trim();
-        if (!motivo) { $("erro-cancelamento").textContent = "Informe o motivo do cancelamento."; return; }
+        if (!motivo && !exclusaoOriginal) { $("erro-cancelamento").textContent = "Informe o motivo do cancelamento."; return; }
         const id = $("cancelamento-id").value;
         await salvar(evento.target, "erro-cancelamento", "dialog-cancelamento", async () => {
-            await rpc("cancelar_movimento_cliente", { p_id: id, p_motivo: motivo });
-            await registrarHistorico("Cancelou lançamento de cliente", `${clienteAtual().nome} · ${id} · ${motivo}`);
-        }, "Lançamento cancelado. O histórico foi preservado.");
+            if (exclusaoOriginal) await rpc("excluir_notinha_cliente", { p_dados: { id, cliente_id: selecionado, original: exclusaoOriginal, motivo } });
+            else await rpc("cancelar_movimento_cliente", { p_id: id, p_motivo: motivo });
+            await registrarHistorico(exclusaoOriginal ? "Excluiu notinha de cliente" : "Cancelou lançamento de cliente", `${clienteAtual().nome} · ${id} · ${motivo}`);
+        }, exclusaoOriginal ? "Notinha excluída. O saldo foi recalculado e o histórico foi preservado." : "Lançamento cancelado. O histórico foi preservado.");
     }
     function montarImpressao() {
         if (!pronto || !clienteAtual()) {
@@ -361,8 +386,8 @@
             $("impressao-clientes").innerHTML = `<h1>X-Burguer · Extrato do cliente</h1><p><strong>${h(c.nome)}</strong>${c.telefone ? ` · ${h(c.telefone)}` : ''}</p>
                 <p>Período: ${h(periodo())}</p><p>Saldo anterior: ${M.moeda(e.saldoAnterior)}</p>
                 <table><thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Saldo</th></tr></thead><tbody>${e.linhas.map(m =>
-                `<tr><td>${M.dataBR(m.data)}</td><td>${h(descricao(m))}${m.observacao ? `<br>${h(m.observacao)}` : ''}${m.cancelado_em ? `<br>Cancelado: ${h(m.motivo_cancelamento)}` : ''}</td>
-                <td>${m.tipo === "pagamento" ? "− " : ""}${M.moeda(M.valorCentavos(m.valor))}${m.cancelado_em ? ' (cancelado)' : ''}</td><td>${M.moeda(m.saldo)}</td></tr>`).join("")}</tbody></table>
+                `<tr><td>${M.dataBR(m.data)}</td><td>${h(descricao(m))}${m.observacao ? `<br>${h(m.observacao)}` : ''}${m.cancelado_em ? `<br>${m.tipo === "notinha" ? "Excluída" : "Cancelado"}: ${h(m.motivo_cancelamento)}` : ''}</td>
+                <td>${m.tipo === "pagamento" ? "− " : ""}${M.moeda(M.valorCentavos(m.valor))}${m.cancelado_em ? (m.tipo === "notinha" ? ' (excluída)' : ' (cancelado)') : ''}</td><td>${M.moeda(m.saldo)}</td></tr>`).join("")}</tbody></table>
                 <p>Notinhas do período: ${M.moeda(e.totais.notinhas)} · Pagamentos do período: ${M.moeda(e.totais.pagamentos)}</p>
                 <p><strong>Saldo ao final do período: ${M.moeda(e.saldoFinal)}</strong></p><p>Saldo atual de todos os períodos: ${M.moeda(M.resumo(movimentosDoCliente(c.id)).saldo)}</p>
                 <p>Emitido em ${h(new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }))}.</p><div class="assinatura">Assinatura do cliente</div>`;
@@ -485,8 +510,9 @@
             }
         });
         $("tabela-extrato").addEventListener("click", evento => {
-            const b = evento.target.closest("[data-cancelar]");
-            if (b) abrirCancelamento(b.dataset.cancelar);
+            const b = evento.target.closest("button");
+            if (b?.dataset.editarNotinha) abrirMovimento("notinha", b.dataset.editarNotinha);
+            if (b?.dataset.cancelar) abrirCancelamento(b.dataset.cancelar);
         });
         iniciarSincronizacao();
         carregar();

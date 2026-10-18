@@ -76,8 +76,10 @@ jobs:
           -f scripts/testes-clientes/funcoes-producao.sql
           -f SUPABASE/migrations/20261017_clientes_notinhas.sql
           -f SUPABASE/migrations/20261017_clientes_melhorias.sql
+          -f SUPABASE/migrations/20261017235408_editar_excluir_notinhas.sql
           -f scripts/testes-clientes/verificar.sql
           -f scripts/testes-clientes/melhorias.sql
+          -f scripts/testes-clientes/editar-excluir.sql
 
       - name: Testar pagamentos e edições simultâneos
         env:

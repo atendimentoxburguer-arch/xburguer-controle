@@ -119,7 +119,7 @@
                         <tbody id="tabela-extrato"></tbody>
                     </table></div>
                     <div class="clientes-paginacao" aria-label="Páginas do extrato"><button type="button" class="clientes-btn btn-config-secundario" id="extrato-anterior">Anterior</button><span id="extrato-pagina" role="status"></span><button type="button" class="clientes-btn btn-config-secundario" id="extrato-proxima">Próxima</button></div>
-                    <p class="clientes-ajuda">Os pagamentos abatem o saldo total do cliente. Os lançamentos cancelados continuam no histórico e não entram no saldo.</p>
+                    <p class="clientes-ajuda">Os pagamentos abatem o saldo total do cliente. Notinhas excluídas e pagamentos cancelados ficam no histórico e não entram no saldo.</p>
                 </section>
             </div>
         </main>
@@ -147,17 +147,17 @@
             <label for="movimento-observacao">Observação<textarea id="movimento-observacao" maxlength="1000" placeholder="Ex.: número da comanda"></textarea></label>
             <label id="campo-assinatura" class="clientes-check"><input id="movimento-assinada" type="checkbox"> Comanda assinada em papel</label>
             <p id="erro-movimento" class="clientes-form-erro" role="alert"></p>
-            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-movimento">Cancelar</button><button type="submit" class="btn-salvar-modal">Salvar lançamento</button></div>
+            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-movimento">Cancelar</button><button type="submit" class="btn-salvar-modal" id="salvar-movimento">Salvar lançamento</button></div>
         </form>
     </dialog>
     <dialog id="dialog-cancelamento" class="clientes-modal" aria-labelledby="titulo-cancelamento"><button type="button" class="clientes-modal-fechar" data-fechar="dialog-cancelamento" aria-label="Fechar janela">×</button><div class="clientes-modal-cabecalho"><h2 id="titulo-cancelamento">Cancelar lançamento</h2></div>
         <form id="form-cancelamento" class="clientes-form">
             <input type="hidden" id="cancelamento-id">
             <p id="cancelamento-resumo" class="clientes-ajuda"></p>
-            <label for="cancelamento-motivo">Motivo *<textarea id="cancelamento-motivo" maxlength="500" required></textarea></label>
-            <p class="clientes-ajuda">O registro será preservado no extrato com o motivo do cancelamento.</p>
+            <label for="cancelamento-motivo"><span id="rotulo-motivo-cancelamento">Motivo *</span><textarea id="cancelamento-motivo" maxlength="500" required></textarea></label>
+            <p class="clientes-ajuda" id="ajuda-cancelamento">O registro será preservado no extrato com o motivo do cancelamento.</p>
             <p id="erro-cancelamento" class="clientes-form-erro" role="alert"></p>
-            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-cancelamento">Voltar</button><button type="submit" class="btn-excluir-modal">Confirmar cancelamento</button></div>
+            <div class="modal-botoes"><button type="button" class="btn-cancelar" data-fechar="dialog-cancelamento">Voltar</button><button type="submit" class="btn-excluir-modal" id="confirmar-cancelamento">Confirmar cancelamento</button></div>
         </form>
     </dialog>
     <dialog id="dialog-backup" class="clientes-modal" aria-labelledby="titulo-backup-clientes"><button type="button" class="clientes-modal-fechar" data-fechar="dialog-backup" aria-label="Fechar janela">×</button><div class="clientes-modal-cabecalho"><h2 id="titulo-backup-clientes">Recuperar backup de clientes</h2></div>
@@ -172,6 +172,6 @@
     <div id="impressao-clientes" class="clientes-print"></div>
     <script src="clientes-model.js?v=4.8.1"></script>
     <script src="clientes-backup.js?v=4.8.1"></script>
-    <script src="clientes-supabase.js?v=4.8.1&amp;visual=4"></script>
+    <script src="clientes-supabase.js?v=4.8.1&amp;visual=5"></script>
 </body>
 </html>
